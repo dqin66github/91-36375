@@ -2373,8 +2373,8 @@ Public Class frmMain
             End Try
 
 
-
-            lblDoseRate.Text = "0.0"  ' need info
+            Dim dose_rate As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(17)
+            lblDoseRate.Text = dose_rate
             lblPulseFreq.Text = Format(prf / 10, "0.0")
             lblTrigDuration.Text = trigger_width
             lblBeamDuration.Text = grid_width
