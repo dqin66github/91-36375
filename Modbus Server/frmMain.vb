@@ -19,13 +19,16 @@ Public Class frmMain
     Public Const REGISTER_AFC_OFFSET As UInt16 = &H9
     Public Const REGISTER_AFC_AFT_CONTROL_VOLTAGE_HIGH_ENERGY As UInt16 = &HA
     Public Const REGISTER_AFC_AFT_CONTROL_VOLTAGE_LOW_ENERGY As UInt16 = &HB
+
     Public Const REGISTER_HIGH_ENERGY_SET_POINT As UInt16 = &H10
     Public Const REGISTER_LOW_ENERGY_SET_POINT As UInt16 = &H11
     Public Const REGISTER_ECB_SYSTEM_SERIAL_NUMBER As UInt16 = &H1F
+
     Public Const REGISTER_GUN_DRIVER_HEATER_VOLTAGE As UInt16 = &H20
     Public Const REGISTER_GUN_DRIVER_HIGH_ENERGY_PULSE_TOP_VOLTAGE As UInt16 = &H21
     Public Const REGISTER_GUN_DRIVER_LOW_ENERGY_PULSE_TOP_VOLTAGE As UInt16 = &H22
     Public Const REGISTER_GUN_DRIVER_CATHODE_VOLTAGE As UInt16 = &H23
+
     Public Const REGISTER_PULSE_SYNC_GRID_PULSE_DELAY_HIGH_ENERGY_A_B As UInt16 = &H30
     Public Const REGISTER_PULSE_SYNC_GRID_PULSE_DELAY_HIGH_ENERGY_C_D As UInt16 = &H31
     Public Const REGISTER_PULSE_SYNC_RF_TRIGGER_AND_THYRATRON_PULSE_DELAY_HIGH_ENERGY As UInt16 = &H32
@@ -39,49 +42,31 @@ Public Class frmMain
     Public Const REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_LOW_ENERGY_C_D As UInt16 = &H3A
     Public Const REGISTER_PULSE_SYNC_AFC_AND_SPARE_PULSE_DELAY_LOW_ENERGY As UInt16 = &H3B
 
+    Public Const REGISTER_CMD_AFC_SELECT_AFC_MODE As UInt16 = &H5202
+    Public Const REGISTER_CMD_AFC_SELECT_MANUAL_MODE As UInt16 = &H5203
+    Public Const REGISTER_CMD_AFC_MANUAL_TARGET_POSITION As UInt16 = &H5204
 
+    Public Const REGISTER_CMD_COOLANT_INTERFACE_ALLOW_25_MORE_SF6_PULSES As UInt16 = &H6200
+    Public Const REGISTER_CMD_COOLANT_INTERFACE_ALLOW_SF6_PULSES_WHEN_PRESSURE_BELOW_LIMIT As UInt16 = &H6201
+    Public Const REGISTER_CMD_COOLANT_INTERFACE_SET_SF6_PULSES_IN_BOTTLE As UInt16 = &H6202
 
-    Public Const REGISTER_CMD_AFC_SELECT_AFC_MODE As UInt16 = &H5081
-    Public Const REGISTER_CMD_AFC_SELECT_MANUAL_MODE As UInt16 = &H5082
-    Public Const REGISTER_CMD_AFC_MANUAL_TARGET_POSITION As UInt16 = &H5083
-    Public Const REGISTER_CMD_AFC_MANUAL_MOVE As UInt16 = &H5084
+    Public Const REGISTER_CMD_ECB_RESET_FAULTS As UInt16 = &HE200
 
-    Public Const REGISTER_CMD_GUN_DRIVER_RESET_FPGA As UInt16 = &H8202
+    Public Const REGISTER_SYSTEM_SET_TIME As UInt16 = &HE300
+    Public Const REGISTER_SYSTEM_ENABLE_HIGH_SPEED_LOGGING As UInt16 = &HE301
+    Public Const REGISTER_SYSTEM_DISABLE_HIGH_SPEED_LOGGING As UInt16 = &HE302
+    Public Const REGISTER_SYSTEM_ECB_LOAD_FACTORY_SETTINGS_FROM_EEPROM_MIRROR_AND_REBOOT As UInt16 = &HE303
 
-    Public Const REGISTER_CMD_COOLANT_INTERFACE_ALLOW_25_MORE_SF6_PULSES As UInt16 = &H6082
-    Public Const REGISTER_CMD_COOLANT_INTERFACE_ALLOW_SF6_PULSES_WHEN_PRESSURE_BELOW_LIMIT As UInt16 = &H6083
-    Public Const REGISTER_CMD_COOLANT_INTERFACE_SET_SF6_PULSES_IN_BOTTLE As UInt16 = &H6084
-    Public Const REGISTER_SPECIAL_ECB_LOAD_DEFAULT_SETTINGS_TO_EEPROM_AND_REBOOT As UInt16 = &HE080
-    Public Const REGISTER_SPECIAL_ECB_REST_ARC_AND_PULSE_COUNT As UInt16 = &HE081
-    Public Const REGISTER_SPECIAL_ECB_RESET_SECONDS_POWERED_HV_ON_XRAY_ON As UInt16 = &HE082
-    Public Const REGISTER_SPECIAL_ECB_RESET_SLAVE As UInt16 = &HE083
-    Public Const REGISTER_SPECIAL_ECB_SEND_SLAVE_RELOAD_EEPROM_WITH_DEFAULTS As UInt16 = &HE084
-    Public Const REGISTER_SPECIAL_ECB_SAVE_SETTINGS_TO_EEPROM_MIRROR As UInt16 = &HE085
-    Public Const REGISTER_SPECIAL_ECB_LOAD_SETTINGS_FROM_EEPROM_MIRROR_AND_REBOOT As UInt16 = &HE086
-    Public Const REGISTER_CMD_ECB_RESET_FAULTS As UInt16 = &HE087
+    Public Const REGISTER_ETM_ECB_RESET_ARC_AND_PULSE_COUNT As UInt16 = &HE400
+    Public Const REGISTER_ETM_ECB_RESET_SECONDS_POWERED_HV_ON_XRAY_ON As UInt16 = &HE401
+    Public Const REGISTER_ETM_ECB_SEND_SLAVE_RELOAD_EEPROM_WITH_DEFAULTS As UInt16 = &HE402
+    Public Const REGISTER_ETM_ECB_LOAD_DEFAULT_SYSTEM_SETTINGS_AND_REBOOT As UInt16 = &HE403
+    Public Const REGISTER_ETM_ECB_SAVE_FACTORY_SETTINGS_TO_EEPROM_MIRROR As UInt16 = &HE404
 
-
-    Public Const REGISTER_DEBUG_TOGGLE_RESET As UInt16 = &HEF00
-    Public Const REGISTER_DEBUG_TOGGLE_HV_ENABLE As UInt16 = &HEF02
-    Public Const REGISTER_DEBUG_TOGGLE_XRAY_ENABLE As UInt16 = &HEF03
-    Public Const REGISTER_DEBUG_TOGGLE_COOLING_FAULT As UInt16 = &HEF04
-    Public Const REGISTER_DEBUG_TOGGLE_RESET_DEBUG As UInt16 = &HEF05
-    Public Const REGISTER_DEBUG_ENABLE_HIGH_SPEED_LOGGING As UInt16 = &HEF06
-    Public Const REGISTER_DEBUG_DISABLE_HIGH_SPEED_LOGGING As UInt16 = &HEF07
-    Public Const REGISTER_SPECIAL_SET_TIME As UInt16 = &HEF08
-    Public Const REGISTER_SPECIAL_TEST_PULSE_FAULT As UInt16 = &HEF09
-
-
-
-    Public Const REGISTER_SPECIAL_2_5_SET_GRID_START As UInt16 = &HEF40
-    Public Const REGISTER_SPECIAL_2_5_SET_GRID_STOP As UInt16 = &HEF41
-    Public Const REGISTER_SPECIAL_2_5_SET_PFN_DELAY As UInt16 = &HEF42
-    Public Const REGISTER_SPECIAL_2_5_SET_DOSE_SAMPLE_DELAY As UInt16 = &HEF43  'Unused for the 2.5 - NOT IMPLIMENTED
-    Public Const REGISTER_SPECIAL_2_5_SET_AFC_SAMPLE_DELAY As UInt16 = &HEF44
-    Public Const REGISTER_SPECIAL_2_5_SET_MAGNETRON_CURRENT_SAMPLE_DELAY As UInt16 = &HEF45
-    Public Const REGISTER_SPECIAL_2_5_SET_HV_LAMBDA_VOLTAGE As UInt16 = &HEF46
-    Public Const REGISTER_SPECIAL_2_5_SET_DOSE_DYNAMIC_START As UInt16 = &HEF47
-    Public Const REGISTER_SPECIAL_2_5_SET_DOSE_DYNAMIC_STOP As UInt16 = &HEF48
+    Public Const REGISTER_DEBUG_TOGGLE_RESET_DEBUG As UInt16 = &HE500
+    Public Const REGISTER_DEBUG_GUN_DRIVER_RESET_FPGA As UInt16 = &HE501
+    Public Const REGISTER_DEBUG_RESET_MCU As UInt16 = &HE502
+    Public Const REGISTER_DEBUG_TEST_PULSE_FAULT As UInt16 = &HE503
 
 
 
@@ -166,6 +151,8 @@ Public Class frmMain
         End If
 
         LoadLogRegisterText()
+
+        btnResetFault.Enabled = True
 
         Me.Size = New System.Drawing.Size(1300, 760)
 
@@ -3534,7 +3521,7 @@ Public Class frmMain
 
 
     Private Sub ButtonToggleReset_Click(sender As System.Object, e As System.EventArgs)
-        ServerSettings.put_modbus_commands(REGISTER_DEBUG_TOGGLE_RESET, 0, 0, 0)
+        'ServerSettings.put_modbus_commands(REGISTER_DEBUG_TOGGLE_RESET, 0, 0, 0)
     End Sub
 
     Private Sub ButtonToggleHighSpeedDataLogging_Click(sender As System.Object, e As System.EventArgs)
@@ -3543,17 +3530,17 @@ Public Class frmMain
 
 
     Private Sub ButtonTogglePulseSyncHV_Click(sender As System.Object, e As System.EventArgs)
-        ServerSettings.put_modbus_commands(REGISTER_DEBUG_TOGGLE_HV_ENABLE, 0, 0, 0)
+        'ServerSettings.put_modbus_commands(REGISTER_DEBUG_TOGGLE_HV_ENABLE, 0, 0, 0)
     End Sub
 
 
     Private Sub ButtonTogglePulseSyncXray_Click(sender As System.Object, e As System.EventArgs)
-        ServerSettings.put_modbus_commands(REGISTER_DEBUG_TOGGLE_XRAY_ENABLE, 0, 0, 0)
+        'ServerSettings.put_modbus_commands(REGISTER_DEBUG_TOGGLE_XRAY_ENABLE, 0, 0, 0)
     End Sub
 
 
     Private Sub ButtonToggleCoolantFault_Click(sender As System.Object, e As System.EventArgs)
-        ServerSettings.put_modbus_commands(REGISTER_DEBUG_TOGGLE_COOLING_FAULT, 0, 0, 0)
+        'ServerSettings.put_modbus_commands(REGISTER_DEBUG_TOGGLE_COOLING_FAULT, 0, 0, 0)
     End Sub
 
     Private Sub ButtonToggleResetDebug_Click(sender As System.Object, e As System.EventArgs)
@@ -3661,11 +3648,11 @@ Public Class frmMain
     End Sub
 #End If
     Private Sub Button1_Click(sender As System.Object, e As System.EventArgs)
-        ServerSettings.put_modbus_commands(REGISTER_SPECIAL_ECB_SEND_SLAVE_RELOAD_EEPROM_WITH_DEFAULTS, selected_board_index, 0, 0)
+        ServerSettings.put_modbus_commands(REGISTER_ETM_ECB_SEND_SLAVE_RELOAD_EEPROM_WITH_DEFAULTS, selected_board_index, 0, 0)
     End Sub
 
     Private Sub ButtonResetSlave_Click(sender As System.Object, e As System.EventArgs)
-        ServerSettings.put_modbus_commands(REGISTER_SPECIAL_ECB_RESET_SLAVE, selected_board_index, 0, 0)
+        ServerSettings.put_modbus_commands(REGISTER_DEBUG_RESET_MCU, selected_board_index, 0, 0)
     End Sub
 
 
@@ -3697,7 +3684,7 @@ Public Class frmMain
         'LabelTimeSet.Text = Format(time_now, "yy MM dd HH mm ss")
         'LabelTimeSet2.Text = time_seconds
         Try
-            ServerSettings.put_modbus_commands(REGISTER_SPECIAL_SET_TIME, time_high_word, time_low_word, 0)
+            ServerSettings.put_modbus_commands(REGISTER_SYSTEM_SET_TIME, time_high_word, time_low_word, 0)
         Catch ex As Exception
             MsgBox("Date Time Type conversion failed")
 
@@ -3705,15 +3692,15 @@ Public Class frmMain
     End Sub
 
     Private Sub ButtonReloadECBDefaults_Click(sender As System.Object, e As System.EventArgs)
-        ServerSettings.put_modbus_commands(REGISTER_SPECIAL_ECB_LOAD_DEFAULT_SETTINGS_TO_EEPROM_AND_REBOOT, 0, 0, 0)
+        ServerSettings.put_modbus_commands(REGISTER_ETM_ECB_LOAD_DEFAULT_SYSTEM_SETTINGS_AND_REBOOT, 0, 0, 0)
     End Sub
 
     Private Sub ButtonZeroOnTime_Click(sender As System.Object, e As System.EventArgs)
-        ServerSettings.put_modbus_commands(REGISTER_SPECIAL_ECB_RESET_SECONDS_POWERED_HV_ON_XRAY_ON, 0, 0, 0)
+        ServerSettings.put_modbus_commands(REGISTER_ETM_ECB_RESET_SECONDS_POWERED_HV_ON_XRAY_ON, 0, 0, 0)
     End Sub
 
     Private Sub ButtonZeroPulseCounters_Click(sender As System.Object, e As System.EventArgs)
-        ServerSettings.put_modbus_commands(REGISTER_SPECIAL_ECB_REST_ARC_AND_PULSE_COUNT, 0, 0, 0)
+        ServerSettings.put_modbus_commands(REGISTER_ETM_ECB_RESET_ARC_AND_PULSE_COUNT, 0, 0, 0)
     End Sub
 
 
@@ -3731,11 +3718,11 @@ Public Class frmMain
     End Sub
 
     Private Sub ButtonSaveFactorySettings_Click(sender As System.Object, e As System.EventArgs)
-        ServerSettings.put_modbus_commands(REGISTER_SPECIAL_ECB_SAVE_SETTINGS_TO_EEPROM_MIRROR, 0, 0, 0)
+        ServerSettings.put_modbus_commands(REGISTER_ETM_ECB_SAVE_FACTORY_SETTINGS_TO_EEPROM_MIRROR, 0, 0, 0)
     End Sub
 
     Private Sub ButtonLoadFactorySettings_Click(sender As System.Object, e As System.EventArgs)
-        ServerSettings.put_modbus_commands(REGISTER_SPECIAL_ECB_LOAD_SETTINGS_FROM_EEPROM_MIRROR_AND_REBOOT, 0, 0, 0)
+        ServerSettings.put_modbus_commands(REGISTER_SYSTEM_ECB_LOAD_FACTORY_SETTINGS_FROM_EEPROM_MIRROR_AND_REBOOT, 0, 0, 0)
     End Sub
 
 
@@ -4131,7 +4118,7 @@ Public Class frmMain
         Dim response As MsgBoxResult = MsgBox("Restore Factory Defaults?", MsgBoxStyle.OkCancel)
 
         If (response = MsgBoxResult.Ok) Then
-            ServerSettings.put_modbus_commands(REGISTER_SPECIAL_ECB_LOAD_SETTINGS_FROM_EEPROM_MIRROR_AND_REBOOT, 0, 0, 0)
+            ServerSettings.put_modbus_commands(REGISTER_SYSTEM_ECB_LOAD_FACTORY_SETTINGS_FROM_EEPROM_MIRROR_AND_REBOOT, 0, 0, 0)
         End If
 
     End Sub
@@ -4139,7 +4126,7 @@ Public Class frmMain
     Private Sub btnServiceStartLog_Click(sender As Object, e As EventArgs) Handles btnServiceStartLog.Click
         Dim filename As String, length As Byte = 50
         If (btnServiceStartLog.Text = "Start Pulse Logging") Then
-            ServerSettings.put_modbus_commands(REGISTER_DEBUG_ENABLE_HIGH_SPEED_LOGGING, 0, 0, 0)
+            ServerSettings.put_modbus_commands(REGISTER_SYSTEM_ENABLE_HIGH_SPEED_LOGGING, 0, 0, 0)
             ServerSettings.OpenPulseLogFile()
             filename = ServerSettings.pulse_log_file_path
             ToolTip1.SetToolTip(lblLogFileName, filename)
@@ -4156,7 +4143,7 @@ Public Class frmMain
         Else
             pulse_log_enabled = False
             ServerSettings.ClosePulseLogFile()
-            ServerSettings.put_modbus_commands(REGISTER_DEBUG_DISABLE_HIGH_SPEED_LOGGING, 0, 0, 0)
+            ServerSettings.put_modbus_commands(REGISTER_SYSTEM_DISABLE_HIGH_SPEED_LOGGING, 0, 0, 0)
             btnServiceStartLog.Text = "Start Pulse Logging"
             lblLogFileName.Text = "Log File Name: "
             ToolTip1.SetToolTip(lblLogFileName, "")
