@@ -570,7 +570,7 @@ Partial Class frmMain
         '
         'btnDispGunDriver
         '
-        Me.btnDispGunDriver.BackColor = System.Drawing.Color.Red
+        Me.btnDispGunDriver.BackColor = System.Drawing.Color.White
         Me.btnDispGunDriver.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.btnDispGunDriver.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnDispGunDriver.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
@@ -634,7 +634,7 @@ Partial Class frmMain
         '
         'btnDispMagHtr
         '
-        Me.btnDispMagHtr.BackColor = System.Drawing.Color.Yellow
+        Me.btnDispMagHtr.BackColor = System.Drawing.Color.White
         Me.btnDispMagHtr.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.btnDispMagHtr.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnDispMagHtr.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
@@ -792,6 +792,7 @@ Partial Class frmMain
         Me.PanelRadLeft.Name = "PanelRadLeft"
         Me.PanelRadLeft.Size = New System.Drawing.Size(96, 110)
         Me.PanelRadLeft.TabIndex = 30
+        Me.PanelRadLeft.Visible = False
         '
         'PictureBox2
         '
@@ -836,6 +837,7 @@ Partial Class frmMain
         Me.PanelRadRight.Name = "PanelRadRight"
         Me.PanelRadRight.Size = New System.Drawing.Size(96, 110)
         Me.PanelRadRight.TabIndex = 30
+        Me.PanelRadRight.Visible = False
         '
         'PictureBox3
         '
@@ -4197,7 +4199,7 @@ Partial Class frmMain
         Me.btnAfcManualPosition.Size = New System.Drawing.Size(236, 33)
         Me.btnAfcManualPosition.TabIndex = 124
         Me.btnAfcManualPosition.Tag = "1"
-        Me.btnAfcManualPosition.Text = "Manual Position  222"
+        Me.btnAfcManualPosition.Text = "Manual Position"
         Me.btnAfcManualPosition.UseVisualStyleBackColor = True
         '
         'btnAfcManualMode

@@ -618,6 +618,7 @@ Public Class frmMain
                     btnAfcCargoCtrlVSet.Text = "Cargo Ctrl V Set  " & blank_string & " V"
                     btnAfcCabCtrlVSet.Text = "Cab Ctrl V Set  " & blank_string & " V"
                     btnAfcManualMode.Text = "Manual Mode"
+                    btnAfcManualPosition.Visible = False
 
                     For Each ctrl In TabPageAFC.Controls
                         If (ctrl.GetType = GetType(Button)) Then
@@ -650,6 +651,7 @@ Public Class frmMain
                     btnAfcHomePosSet.Text = "Home Pos Set  " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).ecb_local_data(0)
                     btnAfcCargoCtrlVSet.Text = "Cargo Ctrl V Set  " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).ecb_local_data(1) / 1000, "0.000") & " V"
                     btnAfcCabCtrlVSet.Text = "Cab Ctrl V Set  " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).ecb_local_data(2) / 1000, "0.000") & " V"
+                    btnAfcManualPosition.Text = "Manual Pos  " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).log_data(2)
 
                     '    Dim control_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(board_index).control_notice_bits
                     Dim fault_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).fault_bits
@@ -747,6 +749,7 @@ Public Class frmMain
                     ledIonUV.FillColor = IIf(fault_bits And &H8, Color.Red, Color.LawnGreen)
                 End If
             Case 10 ' service
+                LabelComputerTime.Text = "Computer UTC = 20" & Format(DateTime.UtcNow, "yy/MM/dd HH:mm:ss")
                 If (bBlank_disp) Then
                     ledServiceNormalMode.FillColor = Color.Black
                     ledServiceServMode.FillColor = Color.Transparent
@@ -762,6 +765,10 @@ Public Class frmMain
 
                     btnServiceModeChange.Text = IIf(access_level > 0, "Logout", "Change Mode")
                     btnServiceStartLog.Text = "Start Pulse Logging"
+
+                    LabelECBTime.Text = "Linac UTC = --------"
+
+
                 Else
                     ledServiceNormalMode.FillColor = IIf(access_level = 0, Color.Black, Color.Transparent)
                     ledServiceServMode.FillColor = IIf(access_level = 1, Color.Black, Color.Transparent)
@@ -775,6 +782,33 @@ Public Class frmMain
                     btnServiceStartLog.Enabled = True
                     btnServiceRestoreFactoryDefaults.Enabled = access_level > 0
                     btnServiceResetLinacTime.Enabled = access_level > 0
+
+                    Dim time As UInt32
+                    Dim year As Integer
+                    Dim month As Integer
+                    Dim day As Integer
+                    Dim hour As Integer
+                    Dim minute As Integer
+                    Dim second As Integer
+
+                    time = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(2) * 2 ^ 16
+                    time += ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(1)
+
+                    year = CInt(Math.Truncate(time / 31622400))
+                    time = CUInt(time Mod 31622400)
+                    month = CInt(Math.Truncate(time / 2678400))
+                    time = CUInt(time Mod 2678400)
+                    day = CInt(Math.Truncate(time / 86400))
+                    time = CUInt(time Mod 86400)
+                    hour = CInt(Math.Truncate(time / 3600))
+                    time = CUInt(time Mod 3600)
+                    minute = CInt(Math.Truncate(time / 60))
+                    second = CInt(time Mod 60)
+
+                    LabelECBTime.Text = "Linac UTC = 20" & Format(year, "00") & "/" & Format(month, "00") & "/" & Format(day, "00") & " " & Format(hour, "00") & ":" & Format(minute, "00") & ":" & Format(second, "00")
+
+
+
 
                     btnServiceModeChange.Text = IIf(access_level > 0, "Logout", "Change Mode")
 #If DEMO_MODE = False Then
@@ -2236,8 +2270,8 @@ Public Class frmMain
         ' Update the ECB State
         Dim ECBState As String = ""
         Dim ECBMode As String = ""
-        Dim tabButtons() As Button = {btnDispOverview, btnDispSysCPU, btnDispGunDriver, btnDispCoolSF6, btnDispPulseSync, btnDispHV,
-                                        btnDispMagnetron, btnDispAFC, btnDispMagHtr, btnDispIonPump, btnDispService}
+        Dim tabButtons() As Button = {btnDispSysCPU, btnDispGunDriver, btnDispCoolSF6, btnDispPulseSync, btnDispHV,
+                                        btnDispMagnetron, btnDispAFC, btnDispMagHtr, btnDispIonPump}
         Static flash_toggle As Boolean = True
 
         Dim show_reset_button As Boolean = False
@@ -2264,8 +2298,8 @@ Public Class frmMain
                 btn.BackColor = Color.Yellow
             Next
             lblSN.Text = "Serial Number H" & blank_string
-            PanelRadLeft.Visible = flash_toggle
-            PanelRadRight.Visible = flash_toggle
+            PanelRadLeft.Visible = False 'flash_toggle
+            PanelRadRight.Visible = False ' flash_toggle
 
             lblAccessLevel.Text = "Access Level: Normal"
 
