@@ -12,6 +12,16 @@ Public Class frmMain
     Public Const DISP_BUTTON_HEIGHT = 30
     Public Const DISP_BUTTON_HEIGHT_SELECT = 45
 
+    Public Const ETM_CAN_ADDR_ETHERNET_BOARD = 14
+    Public Const ETM_CAN_ADDR_ION_PUMP_BOARD = 1
+    Public Const ETM_CAN_ADDR_MAGNETRON_CURRENT_BOARD = 2
+    Public Const ETM_CAN_ADDR_PULSE_SYNC_BOARD = 3
+    Public Const ETM_CAN_ADDR_HV_LAMBDA_BOARD = 4
+    Public Const ETM_CAN_ADDR_AFC_CONTROL_BOARD = 5
+    Public Const ETM_CAN_ADDR_COOLING_INTERFACE_BOARD = 6
+    Public Const ETM_CAN_ADDR_HEATER_MAGNET_BOARD = 7
+    Public Const ETM_CAN_ADDR_GUN_DRIVER_BOARD = 8
+
     Public Const REGISTER_HEATER_CURRENT_AT_STANDBY As UInt16 = &H0
     Public Const REGISTER_ELECTROMAGNET_CURRENT_HIGH_ENERGY As UInt16 = &H1
     Public Const REGISTER_ELECTROMAGNET_CURRENT_LOW_ENERGY As UInt16 = &HC
@@ -70,34 +80,10 @@ Public Class frmMain
 
 
 
-
-    Public Class ButtonParameters
-        Public max_value As UInt16
-        Public min_value As UInt16
-        Public scale As Double
-        Public offset As UInt16
-        Public button_name As String
-        Public button_index As UInt16
-        Public enabled As Boolean
-        Public button_only As Boolean
-    End Class
-
-
-
-    Public inputbutton1 As New ButtonParameters
-    Public inputbutton2 As New ButtonParameters
-    Public inputbutton3 As New ButtonParameters
-    Public inputbutton4 As New ButtonParameters
-    Public inputbutton5 As New ButtonParameters
-
-
     Public EEProm_index As UInt16
 
-    Public command_count As UInt16
 
     Public board_index As Byte
-
-    Public selected_board_index As UInt16
 
     Public access_level As Byte  ' 0: operator, 1: service, 2: developer mode
     Dim pwScreen As frmPassword
@@ -134,11 +120,7 @@ Public Class frmMain
         pwScreen = New frmPassword
         access_level = 0
 
-        inputbutton1.button_name = "loading"
-        inputbutton2.button_name = "loading"
-        inputbutton3.button_name = "loading"
-        inputbutton4.button_name = "loading"
-        inputbutton5.button_name = "loading"
+
 
         '  Me.BackColor = Color.LightCoral
         '  Splitter1.BackColor = Color.Coral
@@ -209,27 +191,15 @@ Public Class frmMain
 
     Private Sub DisplayBoardCommonElements(ByVal selected_baord As Byte)
         'Convert.ToChar(ServerSettings.ETMEthernetBoardLoggingData(board_index).agile_rev_ascii) 
-        LabelAgileInfo.Text = "A" & ServerSettings.ETMEthernetBoardLoggingData(board_index).agile_number & "-" &
-            Format(ServerSettings.ETMEthernetBoardLoggingData(board_index).agile_dash, "000") & "  Rev-" &
-            Convert.ToChar(ServerSettings.ETMEthernetBoardLoggingData(board_index).agile_rev_ascii) & "  SN-" &
-            ServerSettings.ETMEthernetBoardLoggingData(board_index).serial_number 'Dparker need to add in the first Char
-        LabelFirmwareVerssion.Text = "Firmware Version " &
-            ServerSettings.ETMEthernetBoardLoggingData(board_index).firmware_agile_rev & "." &
-            ServerSettings.ETMEthernetBoardLoggingData(board_index).firmware_branch & "." &
-            ServerSettings.ETMEthernetBoardLoggingData(board_index).firmware_branch_rev
-
-
-        Dim control_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(board_index).control_notice_bits
-        Dim fault_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(board_index).fault_bits
-        Dim logged_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(board_index).logged_bits
-
-
 
 
     End Sub
 
     Private Sub DisplayBoardSpecificData(ByVal bBlank_disp As Boolean)
         Dim uTemp As UShort
+        Dim lTemp As ULong
+
+
         Select Case TabBoards.SelectedIndex
             Case 0 ' overview
                 If (bBlank_disp) Then
@@ -266,27 +236,29 @@ Public Class frmMain
                     lblCpuWarmupGd.Text = blank_string
 
                     ledCpuXrayLogic.FillColor = Color.Red
-                  '  ledCpuDriveup.FillColor = Color.Red
+                    '  ledCpuDriveup.FillColor = Color.Red
                     ledCpuReadyFault.FillColor = Color.Red
                     ledWCpuXrayDisabled.FillColor = Color.Transparent
                     ledWCpuDriveupTimeout.FillColor = Color.Transparent
 
                 Else
-                    lblCpuPwrOnTime.Text = Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(9) * 2 ^ 16 +
-                                                         ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(8), "###,###,###,##0")
-                    lblCpuHvTime.Text = Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(11) * 2 ^ 16 +
-                                                       ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(10), "###,###,###,##0")
-                    lblCpuXrayTime.Text = Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(13) * 2 ^ 16 +
-                                                         ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(12), "###,###,###,##0")
+                    lTemp = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(9) * 2 ^ 16 + ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(8)
+                    lblCpuPwrOnTime.Text = Format(Math.Truncate(lTemp / 3600), "#####0") + " : " + Format(Math.Truncate(lTemp / 60) Mod 60, "00") + " : " + Format(Math.Truncate(lTemp) Mod 60, "00")
+                    lTemp = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(11) * 2 ^ 16 +
+                                                       ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(10)
+                    lblCpuHvTime.Text = Format(Math.Truncate(lTemp / 3600), "#####0") + " : " + Format(Math.Truncate(lTemp / 60) Mod 60, "00") + " : " + Format(Math.Truncate(lTemp) Mod 60, "00")
+                    lTemp = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(13) * 2 ^ 16 +
+                                                         ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(12)
+                    lblCpuXrayTime.Text = Format(Math.Truncate(lTemp / 3600), "#####0") + " : " + Format(Math.Truncate(lTemp / 60) Mod 60, "00") + " : " + Format(Math.Truncate(lTemp) Mod 60, "00")
                     lblCpuMagnetronPwr.Text = Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(14) / 1000, "0.000")
 
                     Dim thyratron_warmup As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(4)
                     Dim magnetron_warmup As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(5)
                     Dim gun_warmup As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(6)
 
-                    lblCpuWarmupThy.Text = Format(Math.Truncate(thyratron_warmup / 60), "00") & ":" & Format((thyratron_warmup Mod 60), "00")
-                    lblCpuWarmupMag.Text = Format(Math.Truncate(magnetron_warmup / 60), "00") & ":" & Format((magnetron_warmup Mod 60), "00")
-                    lblCpuWarmupGd.Text = Format(Math.Truncate(gun_warmup / 60), "00") & ":" & Format((gun_warmup Mod 60), "00")
+                    lblCpuWarmupThy.Text = Format(Math.Truncate(thyratron_warmup / 60), "00") & " : " & Format((thyratron_warmup Mod 60), "00")
+                    lblCpuWarmupMag.Text = Format(Math.Truncate(magnetron_warmup / 60), "00") & " : " & Format((magnetron_warmup Mod 60), "00")
+                    lblCpuWarmupGd.Text = Format(Math.Truncate(gun_warmup / 60), "00") & " : " & Format((gun_warmup Mod 60), "00")
 
                     Dim control_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).control_notice_bits
                     Dim fault_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).fault_bits
@@ -372,6 +344,7 @@ Public Class frmMain
 
                 End If
             Case 3 ' Cooling
+
                 If (bBlank_disp) Then
                     lblCoolMagFlow.Text = blank_string
                     lblCoolLinacFlow.Text = blank_string
@@ -437,6 +410,7 @@ Public Class frmMain
                     ledWSF6RelayClosed.FillColor = IIf(logged_bits And &H1, Color.Black, Color.Transparent)
                 End If
             Case 4 ' pulse sync
+
                 Dim data_offset As Byte
                 If (show_cargo_settings) Then
                     lblModeSettings.Text = "Cargo Mode Settings"
@@ -524,6 +498,8 @@ Public Class frmMain
 
                 End If
             Case 5 ' hv
+
+
                 If (bBlank_disp) Then
                     lblHVprePulseVolt.Text = blank_string
                     lblHVcurrent.Text = blank_string
@@ -570,6 +546,7 @@ Public Class frmMain
                     ledHVDriveup.FillColor = IIf(fault_bits And &H2, Color.Red, Color.LawnGreen)
                 End If
             Case 6 ' Magnetron current
+
                 If (bBlank_disp) Then
                     lblCurrCargoScan.Text = blank_string
                     lblCurrCabScan.Text = blank_string
@@ -607,6 +584,7 @@ Public Class frmMain
 
                 End If
             Case 7 ' AFC
+
                 If (bBlank_disp) Then
                     lblAfcHomePosition.Text = blank_string
                     lblAfcPhaseCtrlV.Text = blank_string
@@ -664,6 +642,7 @@ Public Class frmMain
 
                 End If
             Case 8 ' Magnet & heater
+
                 If (bBlank_disp) Then
                     lblMagIm.Text = blank_string
                     lblMagEm.Text = blank_string
@@ -756,10 +735,12 @@ Public Class frmMain
                     ledServiceDevMode.FillColor = Color.Transparent
 
                     ledServicePulseLogActive.FillColor = Color.Transparent
-                    ledServiceRestoreDefaults.FillColor = Color.Transparent
+                    '           ledServiceRestoreDefaults.FillColor = Color.Transparent
 
                     btnServiceModeChange.Enabled = False
                     btnServiceStartLog.Enabled = False
+                    btnServiceSaveFactoryDefaults.Enabled = False
+                    btnServiceReloadInitialDefaults.Enabled = False
                     btnServiceRestoreFactoryDefaults.Enabled = False
                     btnServiceResetLinacTime.Enabled = False
 
@@ -774,12 +755,14 @@ Public Class frmMain
                     ledServiceServMode.FillColor = IIf(access_level = 1, Color.Black, Color.Transparent)
                     ledServiceDevMode.FillColor = IIf(access_level = 2, Color.Black, Color.Transparent)
 
-                    ledServicePulseLogActive.FillColor = Color.Transparent
-                    ledServiceRestoreDefaults.FillColor = Color.Transparent
+                    '   ledServicePulseLogActive.FillColor = Color.Transparent
+                    '        ledServiceRestoreDefaults.FillColor = Color.Transparent
 
 
                     btnServiceModeChange.Enabled = True
                     btnServiceStartLog.Enabled = True
+                    btnServiceSaveFactoryDefaults.Enabled = access_level > 0
+                    btnServiceReloadInitialDefaults.Enabled = access_level > 0
                     btnServiceRestoreFactoryDefaults.Enabled = access_level > 0
                     btnServiceResetLinacTime.Enabled = access_level > 0
 
@@ -840,1422 +823,26 @@ Public Class frmMain
 
                 End If
             Case Else
-                    ' shouldn't happen
+                ' shouldn't happen
 
         End Select
-#If False Then
-        UpdateButtons()
 
-
-
-        Dim selected_board_connected As Boolean = False
-
-        If (selected_baord = MODBUS_COMMANDS.MODBUS_WR_ETHERNET) Then
-
-            selected_board_connected = True
-
-            CheckBoxFaultBit0.Text = "Drive Up Flt"
-            CheckBoxFaultBit1.Text = "Cool Com"
-            CheckBoxFaultBit2.Text = "Cool !Rdy"
-            CheckBoxFaultBit3.Visible = False
-            CheckBoxFaultBit4.Visible = False
-            CheckBoxFaultBit5.Visible = False
-            CheckBoxFaultBit6.Visible = False
-            CheckBoxFaultBit7.Text = "Gun Htr Off"
-            CheckBoxFaultBit8.Text = "HV Lambda"
-            CheckBoxFaultBit9.Text = "Ion Pimp"
-            CheckBoxFaultBitA.Text = "AFC"
-            CheckBoxFaultBitB.Text = "Cooling"
-            CheckBoxFaultBitC.Text = "Htr/Mag"
-            CheckBoxFaultBitD.Text = "Gun Drv"
-            CheckBoxFaultBitE.Text = "I pulse"
-            CheckBoxFaultBitF.Text = "Pulse Sync"
-
-
-            CheckBoxLoggedBit0.Visible = False
-            CheckBoxLoggedBit1.Visible = False
-            CheckBoxLoggedBit2.Visible = False
-            CheckBoxLoggedBit3.Visible = False
-            CheckBoxLoggedBit4.Visible = False
-            CheckBoxLoggedBit5.Visible = False
-            CheckBoxLoggedBit6.Visible = False
-            CheckBoxLoggedBit7.Visible = False
-            CheckBoxLoggedBit8.Visible = False
-            CheckBoxLoggedBit9.Visible = False
-            CheckBoxLoggedBitA.Visible = False
-            CheckBoxLoggedBitB.Visible = False
-            CheckBoxLoggedBitC.Visible = False
-            CheckBoxLoggedBitD.Visible = False
-            CheckBoxLoggedBitE.Visible = False
-            CheckBoxLoggedBitF.Visible = False
-
-
-            Dim thyratron_warmup As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(4)
-            Dim magnetron_warmup As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(5)
-            Dim gun_warmup As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(6)
-
-
-            LabelValue1.Text = "Sec Powered = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(9) * 2 ^ 16 +
-                                                         ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(8), "###,###,###,##0")
-            LabelValue2.Text = "Sec HV On = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(11) * 2 ^ 16 +
-                                                       ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(10), "###,###,###,##0")
-            LabelValue3.Text = "Sec Xray On = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(13) * 2 ^ 16 +
-                                                         ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(12), "###,###,###,##0")
-            LabelValue4.Text = "Magnetron Pwr = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(14) / 1000, "0.000") & " kW"
-            LabelValue5.Text = "Thyratron Warmup = " & Math.Truncate(thyratron_warmup / 60) & ":" & Format((thyratron_warmup Mod 60), "00")
-            LabelValue6.Text = "Magnetron Warmup = " & Math.Truncate(magnetron_warmup / 60) & ":" & Format((magnetron_warmup Mod 60), "00")
-            LabelValue7.Text = "Gun Driver Warmup = " & Math.Truncate(gun_warmup / 60) & ":" & Format((gun_warmup Mod 60), "00")
-            LabelValue8.Text = ""
-            LabelValue9.Text = ""
-            LabelValue10.Text = ""
-            LabelValue11.Text = ""
-            LabelValue12.Text = ""
-            LabelValue13.Text = ""
-            LabelValue14.Text = ""
-            LabelValue15.Text = "Personality = " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(15)
-
-
-            inputbutton1.enabled = False
-            inputbutton2.enabled = False
-            inputbutton3.enabled = False
-            inputbutton4.enabled = False
-            inputbutton5.enabled = False
-
-
-
-        ElseIf (board_index = MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA) Then
-            selected_board_connected = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(16) And &H10
-
-
-
-
-            CheckBoxFaultBit0.Text = "Can FLT"
-            CheckBoxFaultBit1.Text = "SUM FLT"
-            CheckBoxFaultBit2.Text = "Power OFF"
-            CheckBoxFaultBit3.Text = "PWR UP"
-            CheckBoxFaultBit4.Text = "False Trigger"
-            CheckBoxFaultBit5.Visible = False
-            CheckBoxFaultBit6.Visible = False
-            CheckBoxFaultBit7.Visible = False
-            CheckBoxFaultBit8.Visible = False
-            CheckBoxFaultBit9.Visible = False
-            CheckBoxFaultBitA.Visible = False
-            CheckBoxFaultBitB.Visible = False
-            CheckBoxFaultBitC.Visible = False
-            CheckBoxFaultBitD.Visible = False
-            CheckBoxFaultBitE.Visible = False
-            CheckBoxFaultBitF.Visible = False
-
-            CheckBoxLoggedBit0.Text = "Power OFF"
-            CheckBoxLoggedBit1.Text = "HV OFF"
-            CheckBoxLoggedBit2.Text = "Phase Loss"
-            CheckBoxLoggedBit3.Text = "Over Temp"
-            CheckBoxLoggedBit4.Text = "Interlock"
-            CheckBoxLoggedBit5.Text = "Load FLT"
-            CheckBoxLoggedBit6.Visible = False
-            CheckBoxLoggedBit7.Visible = False
-            CheckBoxLoggedBit8.Visible = False
-            CheckBoxLoggedBit9.Visible = False
-            CheckBoxLoggedBitA.Visible = False
-            CheckBoxLoggedBitB.Visible = False
-            CheckBoxLoggedBitC.Visible = False
-            CheckBoxLoggedBitD.Visible = False
-            CheckBoxLoggedBitE.Visible = False
-            CheckBoxLoggedBitF.Visible = False
-
-
-
-            LabelValue1.Text = "High Mode Set = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA).log_data(2) / 1000, "0.000") & " kV"
-            LabelValue2.Text = "Low Mode Set = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA).log_data(1) / 1000, "0.000") & " kV"
-            LabelValue3.Text = "EOC Error Count = " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA).log_data(7)
-            LabelValue4.Text = "Vmon = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA).log_data(6) / 1000, "0.000") & " kV"
-            LabelValue5.Text = "Imon = " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA).log_data(5) / 1000 & " A"
-            LabelValue6.Text = ""
-            LabelValue7.Text = ""
-            LabelValue8.Text = ""
-            LabelValue9.Text = "Vmon Pre-Pulse = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA).log_data(0) / 1000, "0.000") & " kV"
-            LabelValue10.Text = ""
-            LabelValue11.Text = ""
-            LabelValue12.Text = ""
-            LabelValue13.Text = ""
-            LabelValue14.Text = ""
-            LabelValue15.Text = ""
-
-            inputbutton1.enabled = True
-            inputbutton1.button_only = False
-            inputbutton1.button_name = "Set HV"
-            inputbutton1.max_value = 17000
-            inputbutton1.min_value = 6000
-            inputbutton1.scale = 1000
-            inputbutton1.offset = 0
-            inputbutton1.button_index = REGISTER_SPECIAL_2_5_SET_HV_LAMBDA_VOLTAGE
-
-            inputbutton2.enabled = False
-            inputbutton3.enabled = False
-            inputbutton4.enabled = False
-            inputbutton5.enabled = False
-
-        ElseIf (selected_baord = MODBUS_COMMANDS.MODBUS_WR_HTR_MAGNET) Then
-            selected_board_connected = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(16) And &H80
-
-            CheckBoxFaultBit0.Text = "HTR OC ABS"
-            CheckBoxFaultBit1.Text = "HTR UC ABS"
-            CheckBoxFaultBit2.Text = "HTR OC REL"
-            CheckBoxFaultBit3.Text = "HTR UC REL"
-            CheckBoxFaultBit4.Text = "HTR OV ABS"
-            CheckBoxFaultBit5.Text = "HTR UV REL"
-            CheckBoxFaultBit6.Text = "MAG OC ABS"
-            CheckBoxFaultBit7.Text = "MAG UC ABS"
-            CheckBoxFaultBit8.Text = "MAG OC REL"
-            CheckBoxFaultBit9.Text = "MAG UC REL"
-            CheckBoxFaultBitA.Text = "MAG OV ABS"
-            CheckBoxFaultBitB.Text = "MAG UV REL"
-            CheckBoxFaultBitC.Text = "HW HTR OV"
-            CheckBoxFaultBitD.Text = "HW TEMP SW"
-            CheckBoxFaultBitE.Text = "COOLANT FLT"
-            CheckBoxFaultBitF.Text = "CAN FLT"
-
-            CheckBoxLoggedBit0.Visible = False
-            CheckBoxLoggedBit1.Visible = False
-            CheckBoxLoggedBit2.Visible = False
-            CheckBoxLoggedBit3.Visible = False
-            CheckBoxLoggedBit4.Visible = False
-            CheckBoxLoggedBit5.Visible = False
-            CheckBoxLoggedBit6.Visible = False
-            CheckBoxLoggedBit7.Visible = False
-            CheckBoxLoggedBit8.Visible = False
-            CheckBoxLoggedBit9.Visible = False
-            CheckBoxLoggedBitA.Visible = False
-            CheckBoxLoggedBitB.Visible = False
-            CheckBoxLoggedBitC.Visible = False
-            CheckBoxLoggedBitD.Visible = False
-            CheckBoxLoggedBitE.Visible = False
-            CheckBoxLoggedBitF.Visible = False
-
-
-            LabelValue1.Text = "Magnet Set = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HTR_MAGNET).ecb_local_data(2) / 1000, ".000") & " A"
-            LabelValue2.Text = "Heater Set = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HTR_MAGNET).ecb_local_data(0) / 1000, ".000") & " A"
-            LabelValue3.Text = ""
-            LabelValue4.Text = "Magnet Set Rdbck= " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HTR_MAGNET).log_data(5) / 1000, ".000") & " A"
-            LabelValue5.Text = "Mag Imon = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HTR_MAGNET).log_data(1) / 1000, ".000") & " A"
-            LabelValue6.Text = "Mag Vmon = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HTR_MAGNET).log_data(0) / 1000, ".000") & " V"
-            LabelValue7.Text = ""
-            LabelValue8.Text = "Heater Scaled Set = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HTR_MAGNET).ecb_local_data(1) / 1000, ".000") & " A"
-            LabelValue9.Text = "Heater Set Rdbck = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HTR_MAGNET).log_data(7) / 1000, ".000") & " A"
-            LabelValue10.Text = "Htr Imon = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HTR_MAGNET).log_data(3) / 1000, ".000") & " A"
-            LabelValue11.Text = "Htr Vmon = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HTR_MAGNET).log_data(2) / 1000, ".000") & " V"
-            LabelValue12.Text = ""
-            LabelValue13.Text = ""
-            LabelValue14.Text = ""
-            LabelValue15.Text = ""
-
-            inputbutton1.enabled = True
-            inputbutton1.button_only = False
-            inputbutton1.button_name = "Set Magnet"
-            inputbutton1.max_value = 21000
-            inputbutton1.min_value = 8000
-            inputbutton1.scale = 1000
-            inputbutton1.offset = 0
-            inputbutton1.button_index = REGISTER_ELECTROMAGNET_CURRENT
-
-            inputbutton2.enabled = True
-            inputbutton1.button_only = False
-            inputbutton2.button_name = "Set Heater"
-            inputbutton2.max_value = 10000
-            inputbutton2.min_value = 0
-            inputbutton2.scale = 1000
-            inputbutton2.offset = 0
-            inputbutton2.button_index = REGISTER_HEATER_CURRENT_AT_STANDBY
-
-            inputbutton3.enabled = False
-            inputbutton4.enabled = False
-            inputbutton5.enabled = False
-
-
-        ElseIf (selected_baord = MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT) Then
-            selected_board_connected = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(16) And &H4
-
-            CheckBoxFaultBit0.Text = "Can FLT"
-            CheckBoxFaultBit1.Text = "Arc Slow"
-            CheckBoxFaultBit2.Text = "Arc Fast"
-            CheckBoxFaultBit3.Text = "Arc Cont"
-            CheckBoxFaultBit4.Text = "False Trig"
-            CheckBoxFaultBit5.Visible = False
-            CheckBoxFaultBit6.Visible = False
-            CheckBoxFaultBit7.Visible = False
-            CheckBoxFaultBit8.Visible = False
-            CheckBoxFaultBit9.Visible = False
-            CheckBoxFaultBitA.Visible = False
-            CheckBoxFaultBitB.Visible = False
-            CheckBoxFaultBitC.Visible = False
-            CheckBoxFaultBitD.Visible = False
-            CheckBoxFaultBitE.Visible = False
-            CheckBoxFaultBitF.Visible = False
-
-            CheckBoxLoggedBit0.Visible = False
-            CheckBoxLoggedBit1.Visible = False
-            CheckBoxLoggedBit2.Visible = False
-            CheckBoxLoggedBit3.Visible = False
-            CheckBoxLoggedBit4.Visible = False
-            CheckBoxLoggedBit5.Visible = False
-            CheckBoxLoggedBit6.Visible = False
-            CheckBoxLoggedBit7.Visible = False
-            CheckBoxLoggedBit8.Visible = False
-            CheckBoxLoggedBit9.Visible = False
-            CheckBoxLoggedBitA.Visible = False
-            CheckBoxLoggedBitB.Visible = False
-            CheckBoxLoggedBitC.Visible = False
-            CheckBoxLoggedBitD.Visible = False
-            CheckBoxLoggedBitE.Visible = False
-            CheckBoxLoggedBitF.Visible = False
-
-            LabelValue1.Text = "Pulses Today = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).log_data(5) * 2 ^ 16 + ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).log_data(4), "###,###,###,##0")
-            LabelValue2.Text = "Arcs Today = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).log_data(12), "###,###,###,##0")
-            LabelValue3.Text = "Pulse Total = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).log_data(11) * 2 ^ 48 + ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).log_data(10) * 2 ^ 32 + ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).log_data(9) * 2 ^ 16 + ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).log_data(8), "###,###,###,##0")
-            LabelValue4.Text = "Arcs Total = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).log_data(7) * 2 ^ 16 + ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).log_data(6), "###,###,###,##0")
-            LabelValue5.Text = "Imon High Energy = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).log_data(0) / 100, "0.00") & " A"
-            LabelValue6.Text = "Imon Low Energy = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).log_data(2) / 100, "0.00") & " A"
-            LabelValue7.Text = ""
-            LabelValue8.Text = ""
-            LabelValue9.Text = ""
-            LabelValue10.Text = ""
-            LabelValue11.Text = ""
-            LabelValue12.Text = ""
-            LabelValue13.Text = ""
-            LabelValue14.Text = ""
-            LabelValue15.Text = ""
-
-            inputbutton1.enabled = False
-            inputbutton2.enabled = False
-            inputbutton3.enabled = False
-            inputbutton4.enabled = False
-            inputbutton5.enabled = False
-
-
-
-        ElseIf (selected_baord = MODBUS_COMMANDS.MODBUS_WR_ION_PUMP) Then
-            selected_board_connected = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(16) And &H2
-
-            CheckBoxFaultBit1.Text = "Can Fault"
-            CheckBoxFaultBit1.Text = "Ion Over Current"
-            CheckBoxFaultBit2.Text = "Ion Over Voltage"
-            CheckBoxFaultBit3.Text = "Ion Under Voltage"
-            CheckBoxFaultBit4.Visible = False
-            CheckBoxFaultBit5.Visible = False
-            CheckBoxFaultBit6.Visible = False
-            CheckBoxFaultBit7.Visible = False
-            CheckBoxFaultBit8.Visible = False
-            CheckBoxFaultBit9.Visible = False
-            CheckBoxFaultBitA.Visible = False
-            CheckBoxFaultBitB.Visible = False
-            CheckBoxFaultBitC.Visible = False
-            CheckBoxFaultBitD.Visible = False
-            CheckBoxFaultBitE.Visible = False
-            CheckBoxFaultBitF.Visible = False
-
-            CheckBoxLoggedBit0.Visible = False
-            CheckBoxLoggedBit1.Visible = False
-            CheckBoxLoggedBit2.Visible = False
-            CheckBoxLoggedBit3.Visible = False
-            CheckBoxLoggedBit4.Visible = False
-            CheckBoxLoggedBit5.Visible = False
-            CheckBoxLoggedBit6.Visible = False
-            CheckBoxLoggedBit7.Visible = False
-            CheckBoxLoggedBit8.Visible = False
-            CheckBoxLoggedBit9.Visible = False
-            CheckBoxLoggedBitA.Visible = False
-            CheckBoxLoggedBitB.Visible = False
-            CheckBoxLoggedBitC.Visible = False
-            CheckBoxLoggedBitD.Visible = False
-            CheckBoxLoggedBitE.Visible = False
-            CheckBoxLoggedBitF.Visible = False
-
-
-
-            LabelValue1.Text = "Ion Voltage = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ION_PUMP).log_data(2) / 1000, "0.000") & " kV"
-            LabelValue2.Text = "Ion Current = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ION_PUMP).log_data(3) / 1000, "0.000") & " uA"
-            LabelValue3.Text = ""
-            LabelValue4.Text = ""
-            LabelValue5.Text = ""
-            LabelValue6.Text = ""
-            LabelValue7.Text = ""
-            LabelValue8.Text = ""
-            LabelValue9.Text = ""
-            LabelValue10.Text = ""
-            LabelValue11.Text = ""
-            LabelValue12.Text = ""
-            LabelValue13.Text = ""
-            LabelValue14.Text = ""
-            LabelValue15.Text = ""
-
-            inputbutton1.enabled = False
-            inputbutton2.enabled = False
-            inputbutton3.enabled = False
-            inputbutton4.enabled = False
-            inputbutton5.enabled = False
-
-        ElseIf (selected_baord = MODBUS_COMMANDS.MODBUS_WR_AFC) Then
-            selected_board_connected = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(16) And &H20
-
-            Dim afc_manual_mode As Boolean = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).logged_bits And &H1
-
-            CheckBoxFaultBit0.Text = "Can FLT"
-            CheckBoxFaultBit1.Visible = False
-            CheckBoxFaultBit2.Visible = False
-            CheckBoxFaultBit3.Visible = False
-            CheckBoxFaultBit4.Visible = False
-            CheckBoxFaultBit5.Visible = False
-            CheckBoxFaultBit6.Visible = False
-            CheckBoxFaultBit7.Visible = False
-            CheckBoxFaultBit8.Visible = False
-            CheckBoxFaultBit9.Visible = False
-            CheckBoxFaultBitA.Visible = False
-            CheckBoxFaultBitB.Visible = False
-            CheckBoxFaultBitC.Visible = False
-            CheckBoxFaultBitD.Visible = False
-            CheckBoxFaultBitE.Visible = False
-            CheckBoxFaultBitF.Visible = False
-
-            CheckBoxLoggedBit0.Text = "Manual"
-            CheckBoxLoggedBit1.Visible = False
-            CheckBoxLoggedBit2.Visible = False
-            CheckBoxLoggedBit3.Visible = False
-            CheckBoxLoggedBit4.Visible = False
-            CheckBoxLoggedBit5.Visible = False
-            CheckBoxLoggedBit6.Visible = False
-            CheckBoxLoggedBit7.Visible = False
-            CheckBoxLoggedBit8.Visible = False
-            CheckBoxLoggedBit9.Visible = False
-            CheckBoxLoggedBitA.Visible = False
-            CheckBoxLoggedBitB.Visible = False
-            CheckBoxLoggedBitC.Visible = False
-            CheckBoxLoggedBitD.Visible = False
-            CheckBoxLoggedBitE.Visible = False
-            CheckBoxLoggedBitF.Visible = False
-
-
-
-            Dim filtered_error As Long = CLng(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).log_data(4))
-
-            If filtered_error > 2 ^ 15 Then
-                filtered_error -= 2 ^ 15
-                filtered_error = -filtered_error
-            End If
-
-            LabelValue1.Text = "Home Position = " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).ecb_local_data(0)
-            LabelValue2.Text = "AFT Ctrl V = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).ecb_local_data(1) / 1000, "0.000") & " V"
-            LabelValue3.Text = "Readback Position = " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).log_data(2)
-            LabelValue4.Text = ""
-            LabelValue5.Text = "Rback Home Pos = " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).log_data(11)
-            LabelValue6.Text = "Filtered Error = " & filtered_error
-            LabelValue7.Text = "Previous A Sample = " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).log_data(6)
-            LabelValue8.Text = "Previous B Sample = " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).log_data(5)
-            LabelValue9.Text = ""
-            LabelValue10.Text = "Rback AFT Ctrl V = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).log_data(8) / 1000, "0.000") & " V"
-            LabelValue11.Text = ""
-            LabelValue12.Text = ""
-            LabelValue13.Text = ""
-            LabelValue14.Text = ""
-            LabelValue15.Text = ""
-
-            inputbutton1.enabled = True
-            inputbutton1.button_only = False
-            inputbutton1.button_name = "Home Position"
-            inputbutton1.max_value = 51200
-            inputbutton1.min_value = 6400
-            inputbutton1.scale = 1
-            inputbutton1.offset = 0
-            inputbutton1.button_index = REGISTER_HOME_POSITION
-
-            inputbutton2.enabled = True
-            inputbutton2.button_only = False
-            inputbutton2.button_name = "AFT Control Voltage"
-            inputbutton2.max_value = 10000
-            inputbutton2.min_value = 1000
-            inputbutton2.scale = 1000
-            inputbutton2.offset = 0
-            inputbutton2.button_index = REGISTER_AFC_AFT_CONTROL_VOLTAGE
-
-
-            If afc_manual_mode Then
-                inputbutton3.enabled = True
-            Else
-                inputbutton3.enabled = False
-
-            End If
-
-            inputbutton3.button_only = False
-            inputbutton3.button_name = "Manual Position"
-            inputbutton3.max_value = 64000
-            inputbutton3.min_value = 0
-            inputbutton3.scale = 1
-            inputbutton3.offset = 0
-            inputbutton3.button_index = REGISTER_CMD_AFC_MANUAL_TARGET_POSITION
-
-            If afc_manual_mode Then
-                inputbutton4.button_name = "AFC Mode"
-                inputbutton4.button_index = REGISTER_CMD_AFC_SELECT_AFC_MODE
-            Else
-                inputbutton4.button_name = "Manual Mode"
-                inputbutton4.button_index = REGISTER_CMD_AFC_SELECT_MANUAL_MODE
-            End If
-
-            inputbutton4.enabled = True
-            inputbutton4.button_only = True
-            inputbutton4.max_value = 64000
-            inputbutton4.min_value = 0
-            inputbutton4.scale = 1
-            inputbutton4.offset = 0
-
-            inputbutton5.enabled = False
-
-
-        ElseIf (board_index = MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC) Then
-            selected_board_connected = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(16) And &H8
-
-            CheckBoxFaultBit0.Text = "Panel Open"
-            CheckBoxFaultBit1.Text = "Keylock"
-            CheckBoxFaultBit2.Text = "X-Ray Timing"
-            CheckBoxFaultBit3.Text = "Trigger ON"
-            CheckBoxFaultBit4.Text = "X-Ray/No HV"
-            CheckBoxFaultBit5.Text = "Sync Timeout"
-            CheckBoxFaultBit6.Text = "PFN Fan"
-            CheckBoxFaultBit7.Text = "RF Arc"
-            CheckBoxFaultBit8.Visible = False
-            CheckBoxFaultBit9.Visible = False
-            CheckBoxFaultBitA.Visible = False
-            CheckBoxFaultBitB.Visible = False
-            CheckBoxFaultBitC.Visible = False
-            CheckBoxFaultBitD.Visible = False
-            CheckBoxFaultBitE.Visible = False
-            CheckBoxFaultBitF.Visible = False
-
-            CheckBoxLoggedBit0.Text = "Cust HV OFF"
-            CheckBoxLoggedBit1.Text = "Cust X-Ray OFF"
-            CheckBoxLoggedBit2.Text = "Low Override"
-            CheckBoxLoggedBit3.Text = "High Override"
-            CheckBoxLoggedBit4.Text = "Personality Read"
-            CheckBoxLoggedBit5.Visible = False
-            CheckBoxLoggedBit6.Visible = False
-            CheckBoxLoggedBit7.Visible = False
-            CheckBoxLoggedBit8.Visible = False
-            CheckBoxLoggedBit9.Visible = False
-            CheckBoxLoggedBitA.Visible = False
-            CheckBoxLoggedBitB.Visible = False
-            CheckBoxLoggedBitC.Visible = False
-            CheckBoxLoggedBitD.Visible = False
-            CheckBoxLoggedBitE.Visible = False
-            CheckBoxLoggedBitF.Visible = False
-
-
-            LabelValue1.Text = "Grid Start H = " &
-                (ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(0) And &HFF) &
-                ", " & Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(0) / 256) &
-                ", " & (ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(1) And &HFF) &
-                ", " & Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(1) / 256)
-
-
-            LabelValue2.Text = "Grid Stop L = " &
-                (ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(4) And &HFF) &
-                ", " & Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(4) / 256) &
-                ", " & (ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(5) And &HFF) &
-                ", " & Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(5) / 256)
-
-            LabelValue3.Text = "PFN Trigger Delay = " &
-                Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(2) / 256) &
-                ", " & Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(10) / 256)
-
-
-            LabelValue4.Text = "AFC Sample Delay = " &
-                Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(6) / 256) &
-                ", " & Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(14) / 256)
-
-            LabelValue5.Text = "Mag Samp Delay = " &
-                (ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(6) And &HFF) &
-                ", " & (ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(14) And &HFF)
-
-            LabelValue6.Text = ""
-
-            LabelValue7.Text = "Grid Start H = " &
-                (ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).log_data(0) And &HFF) &
-                ", " & Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).log_data(0) / 256) &
-                ", " & (ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).log_data(1) And &HFF) &
-                ", " & Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).log_data(1) / 256)
-
-
-            LabelValue8.Text = "Grid Stop L = " &
-                (ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).log_data(4) And &HFF) &
-                ", " & Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).log_data(4) / 256) &
-                ", " & (ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).log_data(5) And &HFF) &
-                ", " & Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).log_data(5) / 256)
-
-            LabelValue9.Text = "PFN Trigger Delay = " &
-                Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).log_data(2) / 256) &
-                ", " & Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).log_data(10) / 256)
-
-            LabelValue10.Text = "AFC Sample Delay = " &
-                Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).log_data(6) / 256) &
-                ", " & Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).log_data(14) / 256)
-
-            LabelValue11.Text = "Mag Samp Delay = " &
-                (ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).log_data(6) And &HFF) &
-                ", " & (ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).log_data(14) And &HFF)
-
-            LabelValue12.Text = ""
-            LabelValue13.Text = ""
-            LabelValue14.Text = ""
-            LabelValue15.Text = "Personality = " & (ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).not_logged_bits And &HF)
-
-            'LabelValue7.Text = "Grid Start L = " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_DELAY_LOW_INTENSITY_32) / 256) & ", " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_DELAY_LOW_INTENSITY_32) And &HFF) & ", " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_DELAY_LOW_INTENSITY_10) / 256) & ", " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_DELAY_LOW_INTENSITY_10) And &HFF)
-            'LabelValue8.Text = "Grid Stop L = " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_WIDTH_LOW_INTENSITY_32) / 256) & ", " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_WIDTH_LOW_INTENSITY_32) And &HFF) & ", " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_WIDTH_LOW_INTENSITY_10) / 256) & ", " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_WIDTH_LOW_INTENSITY_10) And &HFF)
-
-            'LabelValue3.Text = "PFN Trigger Delay = " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.PFN_DELAY_HIGH_AND_DOSE_SAMPLE_DELAY_HIGH) / 256)
-            'LabelValue4.Text = "AFC Sample Delay = " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.AFC_DELAY_HIGH_AND_MAGNETRON_CURRENT_SAMPLE_DELAY_HIGH) / 256)
-            ' LabelValue5.Text = "Mag Samp Delay = " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.AFC_DELAY_HIGH_AND_MAGNETRON_CURRENT_SAMPLE_DELAY_HIGH) And &HFF)
-            'LabelValue6.Text = ""
-
-
-
-            inputbutton1.enabled = True
-            inputbutton1.button_only = False
-            inputbutton1.button_name = "Grid Start"
-            inputbutton1.max_value = 255
-            inputbutton1.min_value = 0
-            inputbutton1.scale = 1
-            inputbutton1.offset = 0
-            inputbutton1.button_index = REGISTER_SPECIAL_2_5_SET_DOSE_DYNAMIC_START
-
-            inputbutton2.enabled = True
-            inputbutton2.button_only = False
-            inputbutton2.button_name = "Grid Stop"
-            inputbutton2.max_value = 255
-            inputbutton2.min_value = 0
-            inputbutton2.scale = 1
-            inputbutton2.offset = 0
-            inputbutton2.button_index = REGISTER_SPECIAL_2_5_SET_DOSE_DYNAMIC_STOP
-
-            inputbutton3.enabled = True
-            inputbutton3.button_only = False
-            inputbutton3.button_name = "PFN Delay"
-            inputbutton3.max_value = 255
-            inputbutton3.min_value = 0
-            inputbutton3.scale = 1
-            inputbutton3.offset = 0
-            inputbutton3.button_index = REGISTER_SPECIAL_2_5_SET_PFN_DELAY
-
-            inputbutton4.enabled = True
-            inputbutton4.button_only = False
-            inputbutton4.button_name = "AFC Delay"
-            inputbutton4.max_value = 255
-            inputbutton4.min_value = 0
-            inputbutton4.scale = 1
-            inputbutton4.offset = 0
-            inputbutton4.button_index = REGISTER_SPECIAL_2_5_SET_AFC_SAMPLE_DELAY
-
-            inputbutton5.enabled = True
-            inputbutton5.button_only = False
-            inputbutton5.button_name = "I Samp Delay"
-            inputbutton5.max_value = 255
-            inputbutton5.min_value = 0
-            inputbutton5.scale = 1
-            inputbutton5.offset = 0
-            inputbutton5.button_index = REGISTER_SPECIAL_2_5_SET_MAGNETRON_CURRENT_SAMPLE_DELAY
-
-
-        ElseIf (board_index = MODBUS_COMMANDS.MODBUS_WR_COOLING) Then
-            selected_board_connected = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(16) And &H40
-
-            CheckBoxFaultBit0.Text = "CAN Flt"
-            CheckBoxFaultBit1.Text = "Magnetron Flow"
-            CheckBoxFaultBit2.Text = "Linac FLow"
-            CheckBoxFaultBit3.Text = "HV Tank FLow"
-            CheckBoxFaultBit4.Text = "Flow 4"
-            CheckBoxFaultBit5.Text = "Flow 5"
-            CheckBoxFaultBit6.Text = "Flow 6"
-            CheckBoxFaultBit7.Text = "Cabinet SW"
-            CheckBoxFaultBit8.Text = "Coolant SW"
-            CheckBoxFaultBit9.Text = "Cabient Ovr Temp"
-            CheckBoxFaultBitA.Text = "Coolant Ovr Temp"
-            CheckBoxFaultBitB.Text = "Thermistor 3 over temp"
-            CheckBoxFaultBitC.Text = "SF6 Pressure"
-            CheckBoxFaultBitD.Text = "SF6 SW"
-            CheckBoxFaultBitE.Visible = False
-            CheckBoxFaultBitF.Visible = False
-
-            CheckBoxLoggedBit0.Text = "SF6 Relay Closed"
-            CheckBoxLoggedBit1.Text = "Coolant Too Cold"
-            CheckBoxLoggedBit2.Text = "SF6 To Low To Fill"
-            CheckBoxLoggedBit3.Text = "SF6 Fill Required"
-            CheckBoxLoggedBit4.Text = "No SF6 Pulses Available"
-            CheckBoxLoggedBit5.Text = "SF6 Filling"
-            CheckBoxLoggedBit6.Visible = False
-            CheckBoxLoggedBit7.Visible = False
-            CheckBoxLoggedBit8.Visible = False
-            CheckBoxLoggedBit9.Visible = False
-            CheckBoxLoggedBitA.Visible = False
-            CheckBoxLoggedBitB.Visible = False
-            CheckBoxLoggedBitC.Visible = False
-            CheckBoxLoggedBitD.Visible = False
-            CheckBoxLoggedBitE.Visible = False
-            CheckBoxLoggedBitF.Visible = False
-
-            LabelValue1.Text = "Pulses Allowed = " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_COOLING).log_data(12)
-            LabelValue2.Text = "Override Pulses = " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_COOLING).log_data(13)
-            LabelValue3.Text = "Bottle Pulses = " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_COOLING).log_data(14)
-            LabelValue4.Text = "Magnetron Flow = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_COOLING).log_data(0) / 1000, "0.000") & " LPM"
-            LabelValue5.Text = "Linac Flow = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_COOLING).log_data(1) / 1000, "0.000") & " LPM"
-            LabelValue6.Text = "HX Flow = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_COOLING).log_data(2) / 1000, "0.000") & " LPM"
-            LabelValue7.Text = "HVPS Flow = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_COOLING).log_data(3) / 1000, "0.000") & " LPM"
-            LabelValue8.Text = "Circulator Flow = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_COOLING).log_data(4) / 1000, "0.000") & " LPM"
-            LabelValue9.Text = "Spare Flow = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_COOLING).log_data(5) / 1000, "0.000") & " LPM"
-            LabelValue10.Text = "SF6 Pressure = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_COOLING).log_data(11) / 100, "00.00") & " PSI"
-            LabelValue11.Text = "Coolant Temp = " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_COOLING).log_data(9) / 10 - 272 & " C"
-            LabelValue12.Text = "Cabinent Temp = " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_COOLING).log_data(10) / 10 - 272 & " C"
-            LabelValue13.Text = "Linac Temp = " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_COOLING).log_data(8) / 10 - 272 & " C"
-            LabelValue14.Text = ""
-            LabelValue15.Text = ""
-
-
-            inputbutton1.enabled = True
-            inputbutton1.button_only = True
-            inputbutton1.button_name = "25 SF6 Pulses"
-            inputbutton1.max_value = 255
-            inputbutton1.min_value = 0
-            inputbutton1.scale = 1
-            inputbutton1.offset = 0
-            inputbutton1.button_index = REGISTER_CMD_COOLANT_INTERFACE_ALLOW_25_MORE_SF6_PULSES
-
-            inputbutton2.enabled = True
-            inputbutton2.button_only = False
-            inputbutton2.button_name = "Override Pulses"
-            inputbutton2.max_value = 5
-            inputbutton2.min_value = 0
-            inputbutton2.scale = 1
-            inputbutton2.offset = 0
-            inputbutton2.button_index = REGISTER_CMD_COOLANT_INTERFACE_ALLOW_SF6_PULSES_WHEN_PRESSURE_BELOW_LIMIT
-
-            inputbutton3.enabled = True
-            inputbutton3.button_only = False
-            inputbutton3.button_name = "Set Bottle Pulses"
-            inputbutton3.max_value = 1000
-            inputbutton3.min_value = 0
-            inputbutton3.scale = 1
-            inputbutton3.offset = 0
-            inputbutton3.button_index = REGISTER_CMD_COOLANT_INTERFACE_SET_SF6_PULSES_IN_BOTTLE
-
-            inputbutton4.enabled = False
-            inputbutton5.enabled = False
-
-
-
-        ElseIf (selected_baord = MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER) Then
-            selected_board_connected = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(16) And &H100
-
-#Const THEA_MODULATOR = 0
-
-#If THEA_MODULATOR Then
-
-
-
-            CheckBoxFaultBit0.Text = "Can Fault"
-            CheckBoxFaultBit1.Text = "Bias OV"
-            CheckBoxFaultBit2.Text = "Bias UV"
-            CheckBoxFaultBit3.Text = "Comm Flt"
-            CheckBoxFaultBit4.Text = "Top 1 OV"
-            CheckBoxFaultBit5.Text = "Top 1 UV"
-            CheckBoxFaultBit6.Text = "Top 2 OV"
-            CheckBoxFaultBit7.Text = "Top 2 UV"
-            CheckBoxFaultBit8.Visible = False
-            CheckBoxFaultBit9.Visible = False
-            CheckBoxFaultBitA.Visible = False
-            CheckBoxFaultBitB.Visible = False
-            CheckBoxFaultBitC.Visible = False
-            CheckBoxFaultBitD.Visible = False
-            CheckBoxFaultBitE.Visible = False
-            CheckBoxFaultBitF.Visible = False
-
-            CheckBoxLoggedBit0.Visible = False
-            CheckBoxLoggedBit1.Visible = False
-            CheckBoxLoggedBit2.Visible = False
-            CheckBoxLoggedBit3.Visible = False
-            CheckBoxLoggedBit4.Visible = False
-            CheckBoxLoggedBit5.Visible = False
-            CheckBoxLoggedBit6.Visible = False
-            CheckBoxLoggedBit7.Visible = False
-            CheckBoxLoggedBit8.Visible = False
-            CheckBoxLoggedBit9.Visible = False
-            CheckBoxLoggedBitA.Visible = False
-            CheckBoxLoggedBitB.Visible = False
-            CheckBoxLoggedBitC.Visible = False
-            CheckBoxLoggedBitD.Visible = False
-            CheckBoxLoggedBitE.Visible = False
-            CheckBoxLoggedBitF.Visible = False
-
-
-
-            LabelValue1.Text = "Top 1 Set = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).ecb_local_data(0) / 100, ".00") & " V"
-            LabelValue2.Text = "Top 2 Set = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).ecb_local_data(1) / 100, ".00") & " V"
-            LabelValue3.Text = "Heater Set = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).ecb_local_data(2) / 1000, ".000") & " V"
-            LabelValue4.Text = "Top 1 Set Rdbck= " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(3) / 100, ".00") & " V"
-            LabelValue5.Text = "Top 1 Vmon = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(2) / 100, ".00") & " V"
-            LabelValue6.Text = "Raw 1 Vmon = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(1) / 100, ".00") & " V"
-            LabelValue7.Text = "Top 2 Set Rdbck= " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(7) / 100, ".00") & " V"
-            LabelValue8.Text = "Top 2 Vmon = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(6) / 100, ".00") & " V"
-            LabelValue9.Text = "Raw 2 Vmon = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(5) / 100, ".00") & " V"
-            LabelValue10.Text = "Heater Set Rdbck = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(11) / 1000, ".000") & " V"
-            LabelValue11.Text = "Heater Vmon = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(10) / 1000, ".000") & " V"
-            LabelValue12.Text = "Heater 1 Imon = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(9) / 1000, ".000") & " A"
-            LabelValue13.Text = "Heater 2 Imon = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(8) / 1000, ".000") & " A"
-            LabelValue14.Text = "Bias Vmon = " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(4) / 100, ".00") & " V"
-            LabelValue15.Text = ""
-
-            inputbutton1.enabled = True
-            inputbutton1.button_only = False
-            inputbutton1.button_name = "Set Top 1"
-            inputbutton1.max_value = 20000
-            inputbutton1.min_value = 0
-            inputbutton1.scale = 100
-            inputbutton1.offset = 0
-            inputbutton1.button_index = REGISTER_GUN_DRIVER_HIGH_ENERGY_PULSE_TOP_VOLTAGE
-
-            inputbutton2.enabled = True
-            inputbutton2.button_only = False
-            inputbutton2.button_name = "Set Top 2"
-            inputbutton2.max_value = 20000
-            inputbutton2.min_value = 0
-            inputbutton2.scale = 100
-            inputbutton2.offset = 0
-            inputbutton2.button_index = REGISTER_GUN_DRIVER_LOW_ENERGY_PULSE_TOP_VOLTAGE
-
-            inputbutton3.enabled = True
-            inputbutton3.button_only = False
-            inputbutton3.button_name = "Set Htr V"
-            inputbutton3.max_value = 10000
-            inputbutton3.min_value = 0
-            inputbutton3.scale = 1000
-            inputbutton3.offset = 0
-            inputbutton3.button_index = REGISTER_GUN_DRIVER_HEATER_VOLTAGE
-
-
-            inputbutton4.enabled = False
-            inputbutton5.enabled = False
-#Else
-
-            selected_board_connected = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(16) And &H100
-
-            CheckBoxFaultBit0.Text = "FPGA FW Rev Mismatch"
-            CheckBoxFaultBit1.Text = "HV Vmon Error"
-            CheckBoxFaultBit2.Text = "Heater Vmon Error"
-            CheckBoxFaultBit3.Text = "Heater Current Limit"
-            CheckBoxFaultBit4.Text = "Heater Imon Error"
-            CheckBoxFaultBit5.Text = "Top Vmon Error"
-            CheckBoxFaultBit6.Text = "Bias Vmon Error"
-            CheckBoxFaultBit7.Text = "Can Comm Error"
-            CheckBoxFaultBit8.Text = "Watchdog Fault"
-            CheckBoxFaultBit9.Text = "ARC Fault"
-            CheckBoxFaultBitA.Text = "Over Temp"
-            CheckBoxFaultBitB.Text = "PW/Duty Fault"
-            CheckBoxFaultBitC.Text = "Grid Fault - FPGA"
-            CheckBoxFaultBitD.Text = "ADC Read Fail"
-            CheckBoxFaultBitE.Text = "Htr Ramp Timeout"
-            CheckBoxFaultBitF.Text = "Htr Startup Fail"
-
-            CheckBoxLoggedBit0.Visible = False
-            CheckBoxLoggedBit1.Visible = False
-            CheckBoxLoggedBit2.Visible = False
-            CheckBoxLoggedBit3.Visible = False
-            CheckBoxLoggedBit4.Visible = False
-            CheckBoxLoggedBit5.Visible = False
-            CheckBoxLoggedBit6.Visible = False
-            CheckBoxLoggedBit7.Visible = False
-            CheckBoxLoggedBit8.Visible = False
-            CheckBoxLoggedBit9.Visible = False
-            CheckBoxLoggedBitA.Visible = False
-            CheckBoxLoggedBitB.Visible = False
-            CheckBoxLoggedBitC.Visible = False
-            CheckBoxLoggedBitD.Visible = False
-            CheckBoxLoggedBitE.Visible = False
-            CheckBoxLoggedBitF.Visible = False
-
-
-            LabelValue1.Text = "Ek Set = " & Format(Convert.ToUInt16(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(8)) * (-0.001), "0.00kV") 'ekset
-            LabelValue2.Text = "Ef Set = " & Format(Convert.ToUInt16(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(9)) * (-0.001), "0.00V") 'efset
-            LabelValue3.Text = "Eg Set = " & Format(Convert.ToUInt16(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(11)) * 0.01 - 80, "0.0V")  ' egset
-            LabelValue4.Text = "Ek = " & Format(Convert.ToUInt16(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(1)) * (-0.001), "0.00kV") ' GUN_DRIVER_EK_RD_CAL
-            LabelValue5.Text = "Ikp = " & Format(Convert.ToUInt16(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(0)) * 0.1, "0.0mA") ' GUN_DRIVER_IKP_RD_CAL
-            LabelValue6.Text = "Ef = " & Format(Convert.ToUInt16(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(7)) * (-0.001), "0.00V") 'GUN_DRIVER_EF_RD_CAL
-            LabelValue7.Text = "If = " & Format(Convert.ToUInt16(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(6)) * 0.001, "0.00A") 'GUN_DRIVER_IF_RD_CAL
-            LabelValue8.Text = "Eg = " & Format(Convert.ToInt16(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(3)) * 0.01 - 80, "0.0V") ' eg rd
-
-            LabelValue9.Text = "Ec = " & Format(Convert.ToUInt16(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(12)) * -0.01, "0.0V") ' GUN_DRIVER_EC_RD_CAL
-            'LabelValue10.Text = "Temp = " & Format(Convert.ToInt16(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).custom_data(CS_GD.READBACK_DRIVER_TEMPERATURE)) * 0.01, "0.0C") 'GUN_DRIVER_TEMP_RD_CAL
-            LabelValue10.Text = ""
-            LabelValue11.Text = "Ek SetRd = " & Format(Convert.ToUInt16(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).ecb_local_data(3)) * (-0.001), "0.00kV") 'GUN_DRIVER_EK_SET_CAL
-            LabelValue12.Text = "Ef SetRd = " & Format(Convert.ToUInt16(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).ecb_local_data(2)) * (-0.001), "0.00V") 'GUN_DRIVER_EF_SET_CAL
-            LabelValue13.Text = "Eg SetRd = " & Format(Convert.ToInt16(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).ecb_local_data(0)) * 0.01 - 80, "0.0V") 'GUN_DRIVER_EG_SET_CAL
-
-            LabelValue14.Text = "Ana Flt = " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(14) & _
-                 ", state = " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(13)
-
-            If Convert.ToUInt16(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(15)) = 0 Then
-                LabelValue15.Text = "Gun Driver Load: Linac Gun"
-            ElseIf Convert.ToUInt16(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(15)) = 1 Then
-                LabelValue15.Text = "Gun Driver Load: Resistive"
-            Else
-                LabelValue15.Text = "Gun Driver Load: Test Gun"
-            End If
-
-            'LabelValue15.Text = "FPGA ASDR = " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(15).ToString("x")
-
-
-
-            inputbutton1.enabled = True
-            inputbutton1.button_only = False
-            inputbutton1.button_name = "Set Ek"
-            inputbutton1.max_value = 20000
-            inputbutton1.min_value = 6000
-            inputbutton1.scale = -1000
-            inputbutton1.offset = 0
-            inputbutton1.button_index = REGISTER_GUN_DRIVER_CATHODE_VOLTAGE
-
-            inputbutton2.enabled = True
-            inputbutton2.button_only = False
-            inputbutton2.button_name = "Set Ef"
-            inputbutton2.max_value = 6200
-            inputbutton2.min_value = 0
-            inputbutton2.scale = -1000
-            inputbutton2.offset = 0
-            inputbutton2.button_index = REGISTER_GUN_DRIVER_HEATER_VOLTAGE
-
-            inputbutton3.enabled = True
-
-            inputbutton3.button_only = False
-            inputbutton3.button_name = "Set Eg"
-            inputbutton3.max_value = 22000
-            inputbutton3.min_value = 0
-            inputbutton3.scale = 100
-            inputbutton3.offset = 8000
-            inputbutton3.button_index = REGISTER_GUN_DRIVER_HIGH_ENERGY_PULSE_TOP_VOLTAGE
-
-
-            inputbutton4.enabled = False
-            inputbutton5.enabled = False
-#End If
-
-
-
-
-        End If
-
-
-        If selected_board_connected Then
-            LabelBoardStatus.Text = ""
-            Me.BackColor = SystemColors.Control
+        If (TabBoards.SelectedIndex >= 1 And TabBoards.SelectedIndex <= 9) Then
+            LabelAgileInfo.Text = "A" & ServerSettings.ETMEthernetBoardLoggingData(board_index).agile_number & "-" &
+                Format(ServerSettings.ETMEthernetBoardLoggingData(board_index).agile_dash, "000") & "  Rev-" &
+                Convert.ToChar(ServerSettings.ETMEthernetBoardLoggingData(board_index).agile_rev_ascii) & "  SN-" &
+                ServerSettings.ETMEthernetBoardLoggingData(board_index).serial_number 'Dparker need to add in the first Char
+            LabelFirmwareVerssion.Text = "Firmware Version " &
+                ServerSettings.ETMEthernetBoardLoggingData(board_index).firmware_agile_rev & "." &
+                ServerSettings.ETMEthernetBoardLoggingData(board_index).firmware_branch & "." &
+                ServerSettings.ETMEthernetBoardLoggingData(board_index).firmware_branch_rev
+            LabelAgileInfo.Visible = True
+            LabelFirmwareVerssion.Visible = True
         Else
-            LabelBoardStatus.Text = "NOT CONNECTED!!!"
-            Me.BackColor = Color.LightCoral
+            LabelAgileInfo.Visible = False
+            LabelFirmwareVerssion.Visible = False
         End If
 
-
-
-
-
-
-
-#If (0) Then
-
-
-
-
-            ElseIf (board_index = MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA) Then
-                If (ConnectedBoards And &H10) Then
-                    LabelBoardStatus.Text = "NOT CONNECTED!!!"
-                    bgcolor = Color.LightCoral
-                End If
-
-                CheckBoxStatusBit0.Text = "AT EOC"
-                CheckBoxStatusBit1.Text = "HIGH MODE"
-                CheckBoxStatusBit2.Text = "HV OFF"
-                CheckBoxStatusBit3.Text = "STATE FLT"
-                CheckBoxStatusBit4.Text = "PWR OFF"
-                CheckBoxStatusBit5.Visible = False
-                CheckBoxStatusBit6.Visible = False
-                CheckBoxStatusBit7.Visible = False
-
-                CheckBoxFaultBit0.Text = "SUM FLT"
-                CheckBoxFaultBit1.Text = "Power OFF"
-                CheckBoxFaultBit2.Text = "HV OFF"
-                CheckBoxFaultBit3.Text = "Phase Loss"
-                CheckBoxFaultBit4.Text = "Over Temp"
-                CheckBoxFaultBit5.Text = "Interlock"
-                CheckBoxFaultBit6.Text = "Load FLT"
-                CheckBoxFaultBit7.Text = "PWR UP"
-                CheckBoxFaultBit8.Text = "Can FLT"
-                CheckBoxFaultBit9.Visible = False
-                CheckBoxFaultBitA.Visible = False
-                CheckBoxFaultBitB.Visible = False
-                CheckBoxFaultBitC.Visible = False
-                CheckBoxFaultBitD.Visible = False
-                CheckBoxFaultBitE.Visible = False
-                CheckBoxFaultBitF.Visible = False
-
-                LabelDebug0.Text = "Debug 0 = "
-                LabelDebug1.Text = "Debug 1 = "
-                LabelDebug2.Text = "Debug 2 = "
-                LabelDebug3.Text = "Debug 3 = "
-                LabelDebug4.Text = "Debug 4 = "
-                LabelDebug5.Text = "Debug 5 = "
-                LabelDebug6.Text = "Debug 6 = "
-                LabelDebug7.Text = "Debug 7 = "
-                LabelDebug8.Text = "Debug 8 = "
-                LabelDebug9.Text = "Debug 9 = "
-                LabelDebugA.Text = "Debug A = "
-                LabelDebugB.Text = "Debug B = "
-                LabelDebugC.Text = "Debug C = "
-                LabelDebugD.Text = "Debug D = "
-                LabelDebugE.Text = "Debug E = "
-                LabelDebugF.Text = "Debug F = "
-
-
-                LabelValue1.Text = "High Mode Set = " & Format(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA).custom_data(CS_HVLAMBDA.ECB_HIGH_SET_POINT) / 1000, "0.000") & " kV"
-                LabelValue2.Text = "Low Mode Set = " & Format(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA).custom_data(CS_HVLAMBDA.ECB_LOW_SET_POINT) / 1000, "0.000") & " kV"
-                LabelValue3.Text = "EOC Error Count = " & ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA).custom_data(CS_HVLAMBDA.EOC_NOT_REACHED_COUNT)
-                LabelValue4.Text = "Vmon = " & Format(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA).custom_data(CS_HVLAMBDA.READBACK_VMON) / 1000, "0.000") & " kV"
-                LabelValue5.Text = "Imon = " & ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA).custom_data(CS_HVLAMBDA.READBACK_IMON) / 1000 & " A"
-                'LabelValue6.Text = "Lambda Temperature = " & Format(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA).custom_data(CS_HVLAMBDA.READBACK_BASE_PLATE_TEMP) / 100, ".0")
-                'LabelValue7.Text = "High Mode Rdbck = " & Format(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA).custom_data(CS_HVLAMBDA.READBACK_HIGH_VPROG) / 1000, "0.000") & " kV"
-                'LabelValue8.Text = "Low Mode Rdbck = " & Format(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA).custom_data(CS_HVLAMBDA.READBACK_LOW_VPROG) / 1000, "0.000") & " kV"
-                LabelValue6.Text = ""
-                LabelValue7.Text = ""
-                LabelValue8.Text = ""
-                LabelValue9.Text = "Vmon Pre-Pulse = " & Format(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA).custom_data(CS_HVLAMBDA.READBACK_PEAK_LAMBDA_VOLTAGE) / 1000, "0.000") & " kV"
-                LabelValue10.Text = ""
-                LabelValue11.Text = ""
-                LabelValue12.Text = ""
-                LabelValue13.Text = ""
-                LabelValue14.Text = ""
-                LabelValue15.Text = ""
-
-
-                'inputbutton1.enabled = True
-                'inputbutton1.button_only = False
-                'inputbutton1.button_name = "Set High"
-                'inputbutton1.max_value = 20000
-                'inputbutton1.min_value = 5000
-                'inputbutton1.scale = 1000
-                'inputbutton1.offset = 0
-                'inputbutton1.button_index = REGISTER_HIGH_ENERGY_SET_POINT
-
-
-                'inputbutton2.enabled = True
-                'inputbutton2.button_only = False
-                'inputbutton2.button_name = "Set Low"
-                'inputbutton2.max_value = 20000
-                'inputbutton2.min_value = 5000
-                'inputbutton2.scale = 1000
-                'inputbutton2.offset = 0
-                'inputbutton2.button_index = REGISTER_LOW_ENERGY_SET_POINT
-
-
-                inputbutton1.enabled = True
-                inputbutton1.button_only = False
-                inputbutton1.button_name = "Set HV"
-                inputbutton1.max_value = 17000
-                inputbutton1.min_value = 6000
-                inputbutton1.scale = 1000
-                inputbutton1.offset = 0
-                inputbutton1.button_index = REGISTER_SPECIAL_2_5_SET_HV_LAMBDA_VOLTAGE
-
-                inputbutton2.enabled = False
-
-
-
-                inputbutton3.enabled = False
-                inputbutton4.enabled = False
-                inputbutton5.enabled = False
-
-
-
-            ElseIf (board_index = MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC) Then
-                If (ConnectedBoards And &H8) Then
-                    LabelBoardStatus.Text = "NOT CONNECTED!!!"
-                    bgcolor = Color.LightCoral
-                End If
-
-                CheckBoxStatusBit0.Text = "Cust HV OFF"
-                CheckBoxStatusBit1.Text = "Cust X-Ray OFF"
-                CheckBoxStatusBit2.Visible = False
-                CheckBoxStatusBit3.Visible = False
-                CheckBoxStatusBit4.Text = "Over PRF"
-                CheckBoxStatusBit5.Text = "Only Low"
-                CheckBoxStatusBit6.Text = "Only High"
-                CheckBoxStatusBit7.Visible = False
-
-                CheckBoxFaultBit0.Text = "Panel Open"
-                CheckBoxFaultBit1.Text = "Keylock"
-                CheckBoxFaultBit2.Text = "X-Ray Timing"
-                CheckBoxFaultBit3.Text = "Trigger ON"
-                CheckBoxFaultBit4.Text = "X-Ray/No HV"
-                CheckBoxFaultBit5.Text = "Sync Timeout"
-                CheckBoxFaultBit6.Text = "PFN Fan"
-                CheckBoxFaultBit7.Text = "RF Arc"
-                CheckBoxFaultBit8.Visible = False
-                CheckBoxFaultBit9.Visible = False
-                CheckBoxFaultBitA.Visible = False
-                CheckBoxFaultBitB.Visible = False
-                CheckBoxFaultBitC.Visible = False
-                CheckBoxFaultBitD.Visible = False
-                CheckBoxFaultBitE.Visible = False
-                CheckBoxFaultBitF.Visible = False
-
-                LabelDebug0.Text = "Debug 0 = "
-                LabelDebug1.Text = "Debug 1 = "
-                LabelDebug2.Text = "Debug 2 = "
-                LabelDebug3.Text = "Debug 3 = "
-                LabelDebug4.Text = "Debug 4 = "
-                LabelDebug5.Text = "Debug 5 = "
-                LabelDebug6.Text = "Debug 6 = "
-                LabelDebug7.Text = "Debug 7 = "
-                LabelDebug8.Text = "Debug 8 = "
-                LabelDebug9.Text = "Debug 9 = "
-                LabelDebugA.Text = "Debug A = "
-                LabelDebugB.Text = "Debug B = "
-                LabelDebugC.Text = "Debug C = "
-                LabelDebugD.Text = "Debug D = "
-                LabelDebugE.Text = "Debug E = "
-                LabelDebugF.Text = "Debug F = "
-
-                'LabelValue1.Text = "Grid Start H = " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_DELAY_HIGH_INTENSITY_32) And &HFF) & ", " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_DELAY_HIGH_INTENSITY_32) / 256) & ", " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_DELAY_HIGH_INTENSITY_10) And &HFF) & ", " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_DELAY_HIGH_INTENSITY_10) / 256)
-                'LabelValue2.Text = "Grid Stop H = " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_WIDTH_HIGH_INTENSITY_32) And &HFF) & ", " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_WIDTH_HIGH_INTENSITY_32) / 256) & ", " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_WIDTH_HIGH_INTENSITY_10) And &HFF) & ", " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_WIDTH_HIGH_INTENSITY_10) / 256)
-
-                LabelValue1.Text = "Grid Start H = " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_DELAY_HIGH_INTENSITY_32) / 256) & ", " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_DELAY_HIGH_INTENSITY_32) And &HFF) & ", " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_DELAY_HIGH_INTENSITY_10) / 256) & ", " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_DELAY_HIGH_INTENSITY_10) And &HFF)
-                LabelValue2.Text = "Grid Stop H = " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_WIDTH_HIGH_INTENSITY_32) / 256) & ", " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_WIDTH_HIGH_INTENSITY_32) And &HFF) & ", " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_WIDTH_HIGH_INTENSITY_10) / 256) & ", " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_WIDTH_HIGH_INTENSITY_10) And &HFF)
-
-                'LabelValue3.Text = "PFN Trigger Delay High = " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.PFN_DELAY_HIGH_AND_DOSE_SAMPLE_DELAY_HIGH) / 256)
-                'LabelValue4.Text = "AFC Sample Delay High = " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.AFC_DELAY_HIGH_AND_MAGNETRON_CURRENT_SAMPLE_DELAY_HIGH) / 256)
-                'LabelValue5.Text = "Mag Samp Delay High = " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.AFC_DELAY_HIGH_AND_MAGNETRON_CURRENT_SAMPLE_DELAY_HIGH) And &HFF)
-                'LabelValue6.Text = "Dose Sample Delay High = " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.PFN_DELAY_HIGH_AND_DOSE_SAMPLE_DELAY_HIGH) And &HFF)
-
-                'LabelValue7.Text = "Grid Start L = " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_DELAY_LOW_INTENSITY_32) And &HFF) & ", " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_DELAY_LOW_INTENSITY_32) / 256) & ", " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_DELAY_LOW_INTENSITY_10) And &HFF) & ", " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_DELAY_LOW_INTENSITY_10) / 256)
-                'LabelValue8.Text = "Grid Stop L = " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_WIDTH_LOW_INTENSITY_32) And &HFF) & ", " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_WIDTH_LOW_INTENSITY_32) / 256) & ", " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_WIDTH_LOW_INTENSITY_10) And &HFF) & ", " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_WIDTH_LOW_INTENSITY_10) / 256)
-                LabelValue7.Text = "Grid Start L = " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_DELAY_LOW_INTENSITY_32) / 256) & ", " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_DELAY_LOW_INTENSITY_32) And &HFF) & ", " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_DELAY_LOW_INTENSITY_10) / 256) & ", " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_DELAY_LOW_INTENSITY_10) And &HFF)
-                LabelValue8.Text = "Grid Stop L = " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_WIDTH_LOW_INTENSITY_32) / 256) & ", " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_WIDTH_LOW_INTENSITY_32) And &HFF) & ", " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_WIDTH_LOW_INTENSITY_10) / 256) & ", " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_WIDTH_LOW_INTENSITY_10) And &HFF)
-
-
-                'LabelValue9.Text = "PFN Trigger Delay Low = " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(8) / 256)
-                'LabelValue10.Text = "AFC Sample Delay Low = " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(11) / 256)
-                'LabelValue11.Text = "Mag Samp Delay Low = " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(11) And &HFF)
-                'LabelValue12.Text = "Dose Sample Delay Low = " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(8) And &HFF)
-
-                'LabelValue1.Text = "Grid Start = " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_DELAY_HIGH_INTENSITY_32) / 256)
-                ' LabelValue2.Text = "Grid Stop = " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.GRID_WIDTH_HIGH_INTENSITY_32) / 256)
-                LabelValue3.Text = "PFN Trigger Delay = " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.PFN_DELAY_HIGH_AND_DOSE_SAMPLE_DELAY_HIGH) / 256)
-                LabelValue4.Text = "AFC Sample Delay = " & Math.Truncate(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.AFC_DELAY_HIGH_AND_MAGNETRON_CURRENT_SAMPLE_DELAY_HIGH) / 256)
-                LabelValue5.Text = "Mag Samp Delay = " & (ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).custom_data(CS_PULSESYNC.AFC_DELAY_HIGH_AND_MAGNETRON_CURRENT_SAMPLE_DELAY_HIGH) And &HFF)
-                LabelValue6.Text = ""
-                ' LabelValue7.Text = ""
-                ' LabelValue8.Text = ""
-                LabelValue9.Text = ""
-                LabelValue10.Text = ""
-                LabelValue11.Text = ""
-                LabelValue12.Text = ""
-                LabelValue13.Text = ""
-                LabelValue14.Text = ""
-                LabelValue15.Text = ""
-
-                inputbutton1.enabled = True
-                inputbutton1.button_only = False
-                inputbutton1.button_name = "Grid Start"
-                inputbutton1.max_value = 255
-                inputbutton1.min_value = 0
-                inputbutton1.scale = 1
-                inputbutton1.offset = 0
-                inputbutton1.button_index = REGISTER_SPECIAL_2_5_SET_DOSE_DYNAMIC_START
-
-                inputbutton2.enabled = True
-                inputbutton2.button_only = False
-                inputbutton2.button_name = "Grid Stop"
-                inputbutton2.max_value = 255
-                inputbutton2.min_value = 0
-                inputbutton2.scale = 1
-                inputbutton2.offset = 0
-                inputbutton2.button_index = REGISTER_SPECIAL_2_5_SET_DOSE_DYNAMIC_STOP
-
-                inputbutton3.enabled = True
-                inputbutton3.button_only = False
-                inputbutton3.button_name = "PFN Delay"
-                inputbutton3.max_value = 255
-                inputbutton3.min_value = 0
-                inputbutton3.scale = 1
-                inputbutton3.offset = 0
-                inputbutton3.button_index = REGISTER_SPECIAL_2_5_SET_PFN_DELAY
-
-                inputbutton4.enabled = True
-                inputbutton4.button_only = False
-                inputbutton4.button_name = "AFC Delay"
-                inputbutton4.max_value = 255
-                inputbutton4.min_value = 0
-                inputbutton4.scale = 1
-                inputbutton4.offset = 0
-                inputbutton4.button_index = REGISTER_SPECIAL_2_5_SET_AFC_SAMPLE_DELAY
-
-                inputbutton5.enabled = True
-                inputbutton5.button_only = False
-                inputbutton5.button_name = "I Samp Delay"
-                inputbutton5.max_value = 255
-                inputbutton5.min_value = 0
-                inputbutton5.scale = 1
-                inputbutton5.offset = 0
-                inputbutton5.button_index = REGISTER_SPECIAL_2_5_SET_MAGNETRON_CURRENT_SAMPLE_DELAY
-
-
-            ElseIf (board_index = MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT) Then
-                If (ConnectedBoards And &H4) Then
-                    LabelBoardStatus.Text = "NOT CONNECTED!!!"
-                    bgcolor = Color.LightCoral
-                End If
-
-                CheckBoxStatusBit0.Text = "HIGH MODE"
-                CheckBoxStatusBit1.Text = "Arc"
-                CheckBoxStatusBit2.Visible = False
-                CheckBoxStatusBit3.Visible = False
-                CheckBoxStatusBit4.Visible = False
-                CheckBoxStatusBit5.Visible = False
-                CheckBoxStatusBit6.Visible = False
-                CheckBoxStatusBit7.Visible = False
-
-                CheckBoxFaultBit0.Text = "Arc Slow"
-                CheckBoxFaultBit1.Text = "Arc Fast"
-                CheckBoxFaultBit2.Text = "Arc Cont"
-                CheckBoxFaultBit3.Text = "Can FLT"
-                CheckBoxFaultBit4.Text = "False Trig"
-                CheckBoxFaultBit5.Visible = False
-                CheckBoxFaultBit6.Visible = False
-                CheckBoxFaultBit7.Visible = False
-                CheckBoxFaultBit8.Visible = False
-                CheckBoxFaultBit9.Visible = False
-                CheckBoxFaultBitA.Visible = False
-                CheckBoxFaultBitB.Visible = False
-                CheckBoxFaultBitC.Visible = False
-                CheckBoxFaultBitD.Visible = False
-                CheckBoxFaultBitE.Visible = False
-                CheckBoxFaultBitF.Visible = False
-
-                LabelDebug0.Text = "Debug 0 = "
-                LabelDebug1.Text = "Debug 1 = "
-                LabelDebug2.Text = "Debug 2 = "
-                LabelDebug3.Text = "Debug 3 = "
-                LabelDebug4.Text = "Debug 4 = "
-                LabelDebug5.Text = "Debug 5 = "
-                LabelDebug6.Text = "Debug 6 = "
-                LabelDebug7.Text = "Debug 7 = "
-                LabelDebug8.Text = "Debug 8 = "
-                LabelDebug9.Text = "Debug 9 = "
-                LabelDebugA.Text = "Debug A = "
-                LabelDebugB.Text = "Debug B = "
-                LabelDebugC.Text = "Debug C = "
-                LabelDebugD.Text = "Debug D = "
-                LabelDebugE.Text = "Debug E = "
-                LabelDebugF.Text = "Debug F = "
-
-                LabelValue1.Text = "Pulses Today = " & Format(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).custom_data(CS_MAGNETRON.PULSES_THIS_HV_ON_W2) * 2 ^ 16 + ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).custom_data(CS_MAGNETRON.PULSES_THIS_HV_ON_W1), "###,###,###,##0")
-                LabelValue2.Text = "Arcs Today = " & Format(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).custom_data(CS_MAGNETRON.READBACK_ARCS_THIS_HV_ON), "###,###,###,##0")
-                LabelValue3.Text = "Pulse Total = " & Format(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).custom_data(CS_MAGNETRON.PULSES_LIFETIME_W4) * 2 ^ 48 + ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).custom_data(CS_MAGNETRON.PULSES_LIFETIME_W3) * 2 ^ 32 + ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).custom_data(CS_MAGNETRON.PULSES_LIFETIME_W2) * 2 ^ 16 + ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).custom_data(CS_MAGNETRON.PULSES_LIFETIME_W1), "###,###,###,##0")
-                LabelValue4.Text = "Arcs Total = " & Format(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).custom_data(CS_MAGNETRON.ARCS_LIFETIME_W2) * 2 ^ 16 + ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).custom_data(CS_MAGNETRON.ARCS_LIFETIME_W1), "###,###,###,##0")
-                LabelValue5.Text = "Imon High Energy = " & Format(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).custom_data(CS_MAGNETRON.FILTERED_HIGH_ENERGY_PULSE_CURRENT) / 100, "0.00") & " A"
-                LabelValue6.Text = "Imon Low Energy = " & Format(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).custom_data(CS_MAGNETRON.FILTERED_LOW_ENERGY_PULSE_CURRENT) / 100, "0.00") & " A"
-                LabelValue7.Text = ""
-                LabelValue8.Text = ""
-                LabelValue9.Text = ""
-                LabelValue10.Text = ""
-                LabelValue11.Text = ""
-                LabelValue12.Text = ""
-                LabelValue13.Text = ""
-                LabelValue14.Text = ""
-                LabelValue15.Text = ""
-
-                inputbutton1.enabled = False
-                inputbutton2.enabled = False
-                inputbutton3.enabled = False
-                inputbutton4.enabled = False
-                inputbutton5.enabled = False
-
-            ElseIf (board_index = MODBUS_COMMANDS.MODBUS_WR_COOLING) Then
-                If (ConnectedBoards And &H40) Then
-                    LabelBoardStatus.Text = "NOT CONNECTED!!!"
-                    bgcolor = Color.LightCoral
-                End If
-
-                CheckBoxStatusBit0.Text = "SF6 Relay Closed"
-                CheckBoxStatusBit1.Text = "SF6 too Cold"
-                CheckBoxStatusBit2.Text = "SF6 too Low"
-                CheckBoxStatusBit3.Text = "SF6 Need Fill"
-                CheckBoxStatusBit4.Text = "SF6 Limit"
-                CheckBoxStatusBit5.Text = "SF6 Filling"
-                CheckBoxStatusBit6.Visible = False
-                CheckBoxStatusBit7.Visible = False
-
-                CheckBoxFaultBit0.Visible = False
-                CheckBoxFaultBit1.Text = "Magnetron Flow"
-                CheckBoxFaultBit2.Text = "HVPS Flow"
-                CheckBoxFaultBit3.Text = "Circulator Flow"
-                CheckBoxFaultBit4.Text = "Linac FLow"
-                CheckBoxFaultBit5.Text = "HX Flow"
-                CheckBoxFaultBit6.Text = "Cabinet SW"
-                CheckBoxFaultBit7.Text = "Cabient Temp"
-                CheckBoxFaultBit8.Text = "Coolant Ovr Temp"
-                CheckBoxFaultBit9.Text = "Coolant Under Temp"
-                CheckBoxFaultBitA.Text = "Linac Temp"
-                CheckBoxFaultBitB.Text = "SF6 SW"
-                CheckBoxFaultBitC.Text = "SF6 Pressure"
-                CheckBoxFaultBitD.Visible = False
-                CheckBoxFaultBitE.Visible = False
-                CheckBoxFaultBitF.Visible = False
-
-                LabelDebug0.Text = "Debug 0 = "
-                LabelDebug1.Text = "Debug 1 = "
-                LabelDebug2.Text = "Debug 2 = "
-                LabelDebug3.Text = "Debug 3 = "
-                LabelDebug4.Text = "Debug 4 = "
-                LabelDebug5.Text = "Debug 5 = "
-                LabelDebug6.Text = "Debug 6 = "
-                LabelDebug7.Text = "Debug 7 = "
-                LabelDebug8.Text = "Debug 8 = "
-                LabelDebug9.Text = "Debug 9 = "
-                LabelDebugA.Text = "Debug A = "
-                LabelDebugB.Text = "Debug B = "
-                LabelDebugC.Text = "Debug C = "
-                LabelDebugD.Text = "Debug D = "
-                LabelDebugE.Text = "Debug E = "
-                LabelDebugF.Text = "Debug F = "
-
-                LabelValue1.Text = "Pulses Allowed = " & ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_COOLING).custom_data(CS_COOLING.PULSES_AVAILABLE)
-                LabelValue2.Text = "Override Pulses = " & ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_COOLING).custom_data(CS_COOLING.LOW_PRESSURE_OVERRIDE_AVAILABLE)
-                LabelValue3.Text = "Bottle Pulses = " & ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_COOLING).custom_data(CS_COOLING.BOTTLE_COUNT)
-                LabelValue4.Text = "Magnetron Flow = " & Format(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_COOLING).custom_data(CS_COOLING.MAGNETRON_COOLANT_FLOW) / 1000, "0.000") & " LPM"
-                LabelValue5.Text = "Linac Flow = " & Format(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_COOLING).custom_data(CS_COOLING.LINAC_COOLANT_FLOW) / 1000, "0.000") & " LPM"
-                LabelValue6.Text = "HX Flow = " & Format(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_COOLING).custom_data(CS_COOLING.HX_COOLANT_FLOW) / 1000, "0.000") & " LPM"
-                'LabelValue7.Text = "HVPS Flow = " & Format(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_COOLING).custom_data(CS_COOLING.HVPS_COOLANT_FLOW) / 1000, "0.000") & " LPM"
-                LabelValue7.Text = "HVPS Flow = N/A"
-                'LabelValue8.Text = "Circulator Flow = " & Format(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_COOLING).custom_data(CS_COOLING.CIRCULATOR_COOLANT_FLOW) / 1000, "0.000") & " LPM"
-                LabelValue8.Text = "Circulator Flow = N/A"
-                'LabelValue9.Text = "Spare Flow = " & Format(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_COOLING).custom_data(CS_COOLING.SPARE_COOLANT_FLOW) / 1000, "0.000") & " LPM"
-                LabelValue9.Text = "Spare Flow = N/A"
-                LabelValue10.Text = "SF6 Pressure = " & Format(ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_COOLING).custom_data(CS_COOLING.SF6_PRESSURE) / 100, "00.00") & " PSI"
-                LabelValue11.Text = "Coolant Temp = " & ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_COOLING).custom_data(CS_COOLING.COOLANT_TEMPERATURE) - 272 & " C"
-                LabelValue12.Text = "Cabinent Temp = " & ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_COOLING).custom_data(CS_COOLING.CABINET_TEMPERATURE) - 272 & " C"
-                'LabelValue13.Text = "Linac Temp = " & ServerSettings.ETMEthernetTXDataStructure(MODBUS_COMMANDS.MODBUS_WR_COOLING).custom_data(CS_COOLING.LINAC_TEMPERATURE) - 272 & " C"
-                LabelValue13.Text = "Linac Temp = N/A"
-                LabelValue14.Text = ""
-                LabelValue15.Text = ""
-
-
-                inputbutton1.enabled = True
-                inputbutton1.button_only = True
-                inputbutton1.button_name = "25 SF6 Pulses"
-                inputbutton1.max_value = 255
-                inputbutton1.min_value = 0
-                inputbutton1.scale = 1
-                inputbutton1.offset = 0
-                inputbutton1.button_index = REGISTER_CMD_COOLANT_INTERFACE_ALLOW_25_MORE_SF6_PULSES
-
-                inputbutton2.enabled = True
-                inputbutton2.button_only = False
-                inputbutton2.button_name = "Override Pulses"
-                inputbutton2.max_value = 5
-                inputbutton2.min_value = 0
-                inputbutton2.scale = 1
-                inputbutton2.offset = 0
-                inputbutton2.button_index = REGISTER_CMD_COOLANT_INTERFACE_ALLOW_SF6_PULSES_WHEN_PRESSURE_BELOW_LIMIT
-
-                inputbutton3.enabled = True
-                inputbutton3.button_only = False
-                inputbutton3.button_name = "Set Bottle Pulses"
-                inputbutton3.max_value = 1000
-                inputbutton3.min_value = 0
-                inputbutton3.scale = 1
-                inputbutton3.offset = 0
-                inputbutton3.button_index = REGISTER_CMD_COOLANT_INTERFACE_SET_SF6_PULSES_IN_BOTTLE
-
-
-
-                inputbutton4.enabled = False
-                inputbutton5.enabled = False
-
-
-
-
-
-            Else
-                CheckBoxStatusBit0.Text = "Status 0"
-                CheckBoxStatusBit1.Text = "Status 1"
-                CheckBoxStatusBit2.Text = "Status 2"
-                CheckBoxStatusBit3.Text = "Status 3"
-                CheckBoxStatusBit4.Text = "Status 4"
-                CheckBoxStatusBit5.Text = "Status 5"
-                CheckBoxStatusBit6.Text = "Status 6"
-                CheckBoxStatusBit7.Text = "Status 7"
-
-                CheckBoxFaultBit0.Text = "Fault 0"
-                CheckBoxFaultBit1.Text = "Fault 1"
-                CheckBoxFaultBit2.Text = "Fault 2"
-                CheckBoxFaultBit3.Text = "Fault 3"
-                CheckBoxFaultBit4.Text = "Fault 4"
-                CheckBoxFaultBit5.Text = "Fault 5"
-                CheckBoxFaultBit6.Text = "Fault 6"
-                CheckBoxFaultBit7.Text = "Fault 7"
-                CheckBoxFaultBit8.Text = "Fault 8"
-                CheckBoxFaultBit9.Text = "Fault 9"
-                CheckBoxFaultBitA.Text = "Fault A"
-                CheckBoxFaultBitB.Text = "Fault B"
-                CheckBoxFaultBitC.Text = "Fault C"
-                CheckBoxFaultBitD.Text = "Fault D"
-                CheckBoxFaultBitE.Text = "Fault E"
-                CheckBoxFaultBitF.Text = "Fault F"
-
-                LabelDebug0.Text = "Debug 0 = "
-                LabelDebug1.Text = "Debug 1 = "
-                LabelDebug2.Text = "Debug 2 = "
-                LabelDebug3.Text = "Debug 3 = "
-                LabelDebug4.Text = "Debug 4 = "
-                LabelDebug5.Text = "Debug 5 = "
-                LabelDebug6.Text = "Debug 6 = "
-                LabelDebug7.Text = "Debug 7 = "
-                LabelDebug8.Text = "Debug 8 = "
-                LabelDebug9.Text = "Debug 9 = "
-                LabelDebugA.Text = "Debug A = "
-                LabelDebugB.Text = "Debug B = "
-                LabelDebugC.Text = "Debug C = "
-                LabelDebugD.Text = "Debug D = "
-                LabelDebugE.Text = "Debug E = "
-                LabelDebugF.Text = "Debug F = "
-
-                LabelValue1.Text = ""
-                LabelValue2.Text = ""
-                LabelValue3.Text = ""
-                LabelValue4.Text = ""
-                LabelValue5.Text = ""
-                LabelValue6.Text = ""
-                LabelValue7.Text = ""
-                LabelValue8.Text = ""
-                LabelValue9.Text = ""
-                LabelValue10.Text = ""
-                LabelValue11.Text = ""
-                LabelValue12.Text = ""
-                LabelValue13.Text = ""
-                LabelValue14.Text = ""
-                LabelValue15.Text = ""
-
-                inputbutton1.enabled = False
-                inputbutton2.enabled = False
-                inputbutton3.enabled = False
-                inputbutton4.enabled = False
-                inputbutton5.enabled = False
-
-            End If
-
-#End If
-#End If
 
     End Sub
 
@@ -2297,7 +884,7 @@ Public Class frmMain
             For Each btn In tabButtons
                 btn.BackColor = Color.Yellow
             Next
-            lblSN.Text = "Serial Number H" & blank_string
+            lblSN.Text = "System SN  H" & blank_string
             PanelRadLeft.Visible = False 'flash_toggle
             PanelRadRight.Visible = False ' flash_toggle
 
@@ -2442,7 +1029,7 @@ Public Class frmMain
             btnDispMagHtr.BackColor = IIf((ConnectedBoards And &H80) > 0, IIf(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HTR_MAGNET).fault_bits > 0, Color.Red, Color.White), Color.Yellow)
             btnDispIonPump.BackColor = IIf((ConnectedBoards And &H2) > 0, IIf(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ION_PUMP).fault_bits > 0, Color.Red, Color.White), Color.Yellow)
 
-            lblSN.Text = "Serial Number H" & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(19).ToString("0000")
+            lblSN.Text = "System SN  H" & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(19).ToString("0000")
 
             Select Case access_level
                 Case 0
@@ -3633,18 +2220,6 @@ Public Class frmMain
     End Sub
 
 
-
-    Public Const ETM_CAN_ADDR_ETHERNET_BOARD = 14
-    Public Const ETM_CAN_ADDR_ION_PUMP_BOARD = 1
-    Public Const ETM_CAN_ADDR_MAGNETRON_CURRENT_BOARD = 2
-    Public Const ETM_CAN_ADDR_PULSE_SYNC_BOARD = 3
-    Public Const ETM_CAN_ADDR_HV_LAMBDA_BOARD = 4
-    Public Const ETM_CAN_ADDR_AFC_CONTROL_BOARD = 5
-    Public Const ETM_CAN_ADDR_COOLING_INTERFACE_BOARD = 6
-    Public Const ETM_CAN_ADDR_HEATER_MAGNET_BOARD = 7
-    Public Const ETM_CAN_ADDR_GUN_DRIVER_BOARD = 8
-
-
     Private Sub ButtonWriteEEprom_Click(sender As System.Object, e As System.EventArgs)
         Dim eeprom_scale_float As Double
         Dim eeprom_offset_float As Double
@@ -3681,13 +2256,7 @@ Public Class frmMain
         ServerSettings.put_modbus_commands(EEProm_index, 0, eeprom_scale, eeprom_offset)
     End Sub
 #End If
-    Private Sub Button1_Click(sender As System.Object, e As System.EventArgs)
-        ServerSettings.put_modbus_commands(REGISTER_ETM_ECB_SEND_SLAVE_RELOAD_EEPROM_WITH_DEFAULTS, selected_board_index, 0, 0)
-    End Sub
 
-    Private Sub ButtonResetSlave_Click(sender As System.Object, e As System.EventArgs)
-        ServerSettings.put_modbus_commands(REGISTER_DEBUG_RESET_MCU, selected_board_index, 0, 0)
-    End Sub
 
 
 
@@ -3739,66 +2308,32 @@ Public Class frmMain
 
 
 
-    Private Sub ButtonSetRevSN_Click(sender As System.Object, e As System.EventArgs)
-        Dim index As UInt16
-        Dim rev As UInt16
-        Dim serial_num As UInt16
-
-        index = (EEProm_index And &HFF00) + &H80
-        '    rev = Asc(TextBoxEEpromScale.Text)
-        '    serial_num = TextBoxEEpromOffSet.Text
-
-        ServerSettings.put_modbus_commands(index, 0, rev, serial_num)
-    End Sub
-
-    Private Sub ButtonSaveFactorySettings_Click(sender As System.Object, e As System.EventArgs)
-        ServerSettings.put_modbus_commands(REGISTER_ETM_ECB_SAVE_FACTORY_SETTINGS_TO_EEPROM_MIRROR, 0, 0, 0)
-    End Sub
-
-    Private Sub ButtonLoadFactorySettings_Click(sender As System.Object, e As System.EventArgs)
-        ServerSettings.put_modbus_commands(REGISTER_SYSTEM_ECB_LOAD_FACTORY_SETTINGS_FROM_EEPROM_MIRROR_AND_REBOOT, 0, 0, 0)
-    End Sub
-
-
-
-
-    Private Sub frmMain_Layout(sender As Object, e As LayoutEventArgs) Handles MyBase.Layout
-#If False Then
-        Dim x As Integer
-        Dim y As Integer
-        Dim penSize As Integer
-
-        penSize = btnDispOverview.FlatAppearance.BorderSize
-        Dim mypen As New Pen(btnDispOverview.FlatAppearance.BorderColor, penSize)
-
-        x = Size.Width - panelDispButtons.Size.Width - 20
-        y = (Size.Height - panelDispButtons.Size.Height) / 2 - 30
-        panelDispButtons.Location = New Point(x, y)
-#End If
-#If False Then
-        Dim g As Graphics
-        ' draw the frame
-        g = CreateGraphics()
-        '      Dim points As PointF() = {New PointF(0, CInt(penSize / 2)), New PointF(panelDispButtons.Location.X + panelDispButtons.Size.Width, CInt(penSize / 2)),
-        '                          New PointF(panelDispButtons.Location.X + panelDispButtons.Size.Width, CInt(panelDispButtons.Location.Y - btnDispOverview.Size.Height)),
-        '                        New PointF(panelDispButtons.Location.X, CInt(panelDispButtons.Location.Y - btnDispOverview.Size.Height)),
-        '                        panelDispButtons.Location}
-
-
-        '      g.DrawLine(mypen, Splitter1.Width, 0, Splitter1.Width, Splitter1.Height)
-        g.DrawLine(mypen, TabBoards.Left, 0, TabBoards.Left, Splitter1.Height)
-        g.Dispose()
-#End If
-
-    End Sub
-
-
     Private Sub btnDisp_Click(sender As Object, e As EventArgs) Handles btnDispOverview.Click, btnDispSysCPU.Click, btnDispService.Click, btnDispPulseSync.Click, btnDispMagnetron.Click, btnDispMagHtr.Click, btnDispIonPump.Click, btnDispHV.Click, btnDispGunDriver.Click, btnDispCoolSF6.Click, btnDispAFC.Click
         Dim btn() As CustomControls.ButtonSelected = {btnDispOverview, btnDispSysCPU, btnDispGunDriver, btnDispCoolSF6, btnDispPulseSync, btnDispHV, btnDispMagnetron, btnDispAFC, btnDispMagHtr, btnDispIonPump, btnDispService}
         Dim btn_select As CustomControls.ButtonSelected
         Dim index As Int16
         Dim normal_size As Size = New Size(DISP_BUTTON_WIDTH, DISP_BUTTON_HEIGHT)
         Dim select_size As Size = New Size(DISP_BUTTON_WIDTH, DISP_BUTTON_HEIGHT_SELECT)
+
+        Dim board_indexes() As UInt16 = {0,
+                                        MODBUS_COMMANDS.MODBUS_WR_ETHERNET,
+                                       MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER,
+                                       MODBUS_COMMANDS.MODBUS_WR_COOLING,
+                                       MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC,
+                                       MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA,
+                                       MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT,
+                                       MODBUS_COMMANDS.MODBUS_WR_AFC,
+                                       MODBUS_COMMANDS.MODBUS_WR_HTR_MAGNET,
+                                       MODBUS_COMMANDS.MODBUS_WR_ION_PUMP}
+        Dim command_indexes() As UInt16 = {0, ETM_CAN_ADDR_ETHERNET_BOARD,
+                                           ETM_CAN_ADDR_GUN_DRIVER_BOARD,
+                                           ETM_CAN_ADDR_COOLING_INTERFACE_BOARD,
+                                           ETM_CAN_ADDR_PULSE_SYNC_BOARD,
+                                           ETM_CAN_ADDR_HV_LAMBDA_BOARD,
+                                           ETM_CAN_ADDR_MAGNETRON_CURRENT_BOARD,
+                                           ETM_CAN_ADDR_AFC_CONTROL_BOARD,
+                                           ETM_CAN_ADDR_HEATER_MAGNET_BOARD,
+                                           ETM_CAN_ADDR_ION_PUMP_BOARD}
 
         btn_select = sender
         index = btn_select.Tag
@@ -3821,6 +2356,13 @@ Public Class frmMain
 
         If (btn_select.Tag < 11) Then
             TabBoards.SelectedIndex = btn_select.Tag
+            If (btn_select.Tag <= 9) Then
+                board_index = board_indexes(btn_select.Tag)
+                EEProm_index = (command_indexes(btn_select.Tag) << 12) + &H100
+            Else
+                board_index = 0
+                EEProm_index = 0
+            End If
         End If
 
         TabBoards.Location = New Point(TAB_LOCATION_X_SMALL, TAB_LOCATION_Y)
@@ -3872,15 +2414,20 @@ Public Class frmMain
         Dim dval As Double
 
         get_set_data = False
-        If (strvalue <> "") Then
-            dval = CDbl(strvalue)
-            If (dval > max Or dval < min) Then
-                MsgBox("Input data is out of range, data discarded", MsgBoxStyle.Exclamation)
-            Else
-                data = dval
-                get_set_data = True
+        Try 
+            If (strvalue <> "") Then
+                dval = CDbl(strvalue)
+                If (dval > max Or dval < min) Then
+                    MsgBox("Input data is out of range, data discarded", MsgBoxStyle.Exclamation)
+                Else
+                    data = dval
+                    get_set_data = True
+                End If
             End If
-        End If
+        Catch
+            MsgBox("Invalid input, data discarded", MsgBoxStyle.Exclamation)
+        End Try
+
     End Function
     Private Sub btnGdEgsetCargo_Click(sender As Object, e As EventArgs) Handles btnGdEgsetCargo.Click
         Dim input_data As Double
@@ -4149,7 +2696,7 @@ Public Class frmMain
     End Sub
 
     Private Sub btnServiceRestoreFactoryDefaults_Click(sender As Object, e As EventArgs) Handles btnServiceRestoreFactoryDefaults.Click
-        Dim response As MsgBoxResult = MsgBox("Restore Factory Defaults?", MsgBoxStyle.OkCancel)
+        Dim response As MsgBoxResult = MsgBox("Restore Factory Default Settings?", MsgBoxStyle.OkCancel)
 
         If (response = MsgBoxResult.Ok) Then
             ServerSettings.put_modbus_commands(REGISTER_SYSTEM_ECB_LOAD_FACTORY_SETTINGS_FROM_EEPROM_MIRROR_AND_REBOOT, 0, 0, 0)
@@ -4208,4 +2755,59 @@ Public Class frmMain
             Call ButtonSetTime_Click(sender, e)
         End If
     End Sub
+
+    Private Sub btnServiceSaveFactoryDefaults_Click(sender As Object, e As EventArgs) Handles btnServiceSaveFactoryDefaults.Click
+        Dim response As MsgBoxResult = MsgBox("Save Factory Default Settings?", MsgBoxStyle.OkCancel)
+
+        If (response = MsgBoxResult.Ok) Then
+            ServerSettings.put_modbus_commands(REGISTER_ETM_ECB_SAVE_FACTORY_SETTINGS_TO_EEPROM_MIRROR, 0, 0, 0)
+        End If
+
+    End Sub
+
+    Private Sub btnServiceReloadInitialDefaults_Click(sender As Object, e As EventArgs) Handles btnServiceReloadInitialDefaults.Click
+        Dim response As MsgBoxResult = MsgBox("Reload Initialization Settings?", MsgBoxStyle.OkCancel)
+
+        If (response = MsgBoxResult.Ok) Then
+            ServerSettings.put_modbus_commands(REGISTER_ETM_ECB_LOAD_DEFAULT_SYSTEM_SETTINGS_AND_REBOOT, 0, 0, 0)
+        End If
+
+    End Sub
+
+    Private Sub lblSN_Click(sender As Object, e As EventArgs) Handles lblSN.Click
+        If (access_level > 0) Then
+            Dim input_data As Double
+            Dim data_valid = get_set_data("Set System Serial Number", lblSystem.Text, 1, 65535, "", input_data)
+
+            If data_valid Then
+                Dim serial_num As UInt16 = input_data
+                ServerSettings.put_modbus_commands(REGISTER_ECB_SYSTEM_SERIAL_NUMBER, serial_num, serial_num, serial_num)
+            End If
+        End If
+    End Sub
+
+    Private Sub LabelAgileInfo_Click(sender As Object, e As EventArgs) Handles LabelAgileInfo.Click
+        Dim serial_num As UInt16, rev_num As UInt16
+        Dim data_valid As Boolean
+        Dim input_data As Double
+        Dim buttons() As CustomControls.ButtonSelected = {btnDispOverview, btnDispSysCPU, btnDispGunDriver, btnDispCoolSF6, btnDispPulseSync, btnDispHV,
+                                                          btnDispMagnetron, btnDispAFC, btnDispMagHtr, btnDispIonPump}
+
+        If (access_level > 0) Then
+            data_valid = get_set_data("Input Serial Number", buttons(TabBoards.SelectedIndex).Text, 1, 65535, "", input_data)
+            If data_valid Then
+                serial_num = input_data
+                data_valid = get_set_data("Input Revision Number", buttons(TabBoards.SelectedIndex).Text, 1, 999, "", input_data)
+                If data_valid Then
+                    rev_num = input_data
+                    '      ServerSettings.put_modbus_commands(index, 0, rev, serial_num)
+                    Dim index As UInt16 = (EEProm_index And &HFF00) + &H80
+                    ServerSettings.put_modbus_commands(index, 0, rev_num, serial_num)
+                End If
+            End If
+        End If
+
+    End Sub
+
+
 End Class

@@ -53,3 +53,6 @@ Temporary Items
 **/bin
 *.suo
 *.htm
+Modbus Server/frmInput.cs
+Modbus Server/frmInput.resx
+Modbus Server/frmInput.Designer.cs
