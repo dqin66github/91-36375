@@ -465,19 +465,19 @@ Public Class frmMain
                         End If
                     Next
 
-                    btnPulseStartMin.Text = "Beam Min Start  " & Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(1 + data_offset) / 256)
-                    btnPulseStart1_3.Text = "Beam 1/3 Start  " & (ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(1 + data_offset) And &HFF)
-                    btnPulseStart2_3.Text = "Beam 2/3 Start  " & Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(data_offset) / 256)
-                    btnPulseStartMax.Text = "Beam Max Start  " & (ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(data_offset) And &HFF)
+                    btnPulseStartMin.Text = "Beam Min Start  " & (Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(1 + data_offset) / 256) * 20) & "ns"
+                    btnPulseStart1_3.Text = "Beam 1/3 Start  " & ((ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(1 + data_offset) And &HFF) * 20) & "ns"
+                    btnPulseStart2_3.Text = "Beam 2/3 Start  " & (Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(data_offset) / 256) * 20) & "ns"
+                    btnPulseStartMax.Text = "Beam Max Start  " & ((ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(data_offset) And &HFF) * 20) & "ns"
 
-                    btnPulseStopMin.Text = "Beam Min Stop  " & Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(5 + data_offset) / 256)
-                    btnPulseStop1_3.Text = "Beam 1/3 Stop  " & (ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(5 + data_offset) And &HFF)
-                    btnPulseStop2_3.Text = "Beam 2/3 Stop  " & Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(4 + data_offset) / 256)
-                    btnPulseStopMax.Text = "Beam Max Stop  " & (ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(4 + data_offset) And &HFF)
+                    btnPulseStopMin.Text = "Beam Min Stop  " & (Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(5 + data_offset) / 256) * 20) & "ns"
+                    btnPulseStop1_3.Text = "Beam 1/3 Stop  " & ((ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(5 + data_offset) And &HFF) * 20) & "ns"
+                    btnPulseStop2_3.Text = "Beam 2/3 Stop  " & (Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(4 + data_offset) / 256) * 20) & "ns"
+                    btnPulseStopMax.Text = "Beam Max Stop  " & ((ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(4 + data_offset) And &HFF) * 20) & "ns"
 
-                    btnPfnDelay.Text = "PFN Delay " & Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(2 + data_offset) / 256)
-                    btnAfcDelay.Text = "AFC Delay " & Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(6 + data_offset) / 256)
-                    btnPulseSampleDelay.Text = "MagI Sample Delay " & (ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(6 + data_offset) And &HFF)
+                    btnPfnDelay.Text = "PFN Delay " & (Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(2 + data_offset) / 256) * 20) & "ns"
+                    btnAfcDelay.Text = "AFC Delay " & (Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(6 + data_offset) / 256) * 20) & "ns"
+                    btnPulseSampleDelay.Text = "MagI Sample Delay " & ((ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(6 + data_offset) And &HFF) * 20) & "ns"
 
                     '    Dim control_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(board_index).control_notice_bits
                     Dim fault_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).fault_bits
@@ -2494,9 +2494,10 @@ Public Class frmMain
 
         Select Case btn.Tag
             Case 0 To 1 ' start	max
-                data_valid = get_set_data(IIf(btn.Tag = 0, "Set Beam Max Start", "Set Beam 2/3 Start"), title, 0, 255, "", input_data)
-
+                data_valid = get_set_data(IIf(btn.Tag = 0, "Set Beam Max Start", "Set Beam 2/3 Start"), title, 0, 255 * 20, "ns", input_data)
+            
                 If data_valid Then
+                    input_data = input_data / 20
                     program_word = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(data_offset)
                     If (btn.Tag = 0) Then
                         program_word = program_word And &HFF00
@@ -2509,9 +2510,10 @@ Public Class frmMain
                 End If
 
             Case 2 To 3 ' start min
-                data_valid = get_set_data(IIf(btn.Tag = 2, "Set Beam 1/3 Start", "Set Beam Min Start"), title, 0, 255, "", input_data)
+                data_valid = get_set_data(IIf(btn.Tag = 2, "Set Beam 1/3 Start", "Set Beam Min Start"), title, 0, 255 * 20, "ns", input_data)
 
                 If data_valid Then
+                    input_data = input_data / 20
                     program_word = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(data_offset + 1)
                     If (btn.Tag = 2) Then
                         program_word = program_word And &HFF00
@@ -2524,9 +2526,10 @@ Public Class frmMain
                 End If
 
             Case 4 To 5 ' stop max
-                data_valid = get_set_data(IIf(btn.Tag = 0, "Set Beam Max Stop", "Set Beam 2/3 Stop"), title, 0, 255, "", input_data)
+                data_valid = get_set_data(IIf(btn.Tag = 0, "Set Beam Max Stop", "Set Beam 2/3 Stop"), title, 0, 255 * 20, "ns", input_data)
 
                 If data_valid Then
+                    input_data = input_data / 20
                     program_word = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(data_offset + 4)
                     If (btn.Tag = 4) Then
                         program_word = program_word And &HFF00
@@ -2538,9 +2541,10 @@ Public Class frmMain
                     ServerSettings.put_modbus_commands(REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_HIGH_ENERGY_A_B + command_offset, program_word, 0, 0)
                 End If
             Case 6 To 7 ' stop min
-                data_valid = get_set_data(IIf(btn.Tag = 6, "Set Beam 1/3 Stop", "Set Beam Min Stop"), title, 0, 255, "", input_data)
+                data_valid = get_set_data(IIf(btn.Tag = 6, "Set Beam 1/3 Stop", "Set Beam Min Stop"), title, 0, 255 * 20, "ns", input_data)
 
                 If data_valid Then
+                    input_data = input_data / 20
                     program_word = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(data_offset + 5)
                     If (btn.Tag = 6) Then
                         program_word = program_word And &HFF00
@@ -2552,9 +2556,10 @@ Public Class frmMain
                     ServerSettings.put_modbus_commands(REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_HIGH_ENERGY_C_D + command_offset, program_word, 0, 0)
                 End If
             Case 8 ' pfn delay
-                data_valid = get_set_data("Set PFN Delay", title, 0, 255, "", input_data)
+                data_valid = get_set_data("Set PFN Delay", title, 0, 255 * 20, "ns", input_data)
 
                 If data_valid Then
+                    input_data = input_data / 20
                     program_word = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(data_offset + 2)
                     program_word = program_word And &HFF
                     program_word = program_word Or ((input_data << 8) And &HFF00)
@@ -2562,18 +2567,20 @@ Public Class frmMain
                 End If
 
             Case 9 ' afc delay
-                data_valid = get_set_data("Set AFC Delay", title, 0, 255, "", input_data)
+                data_valid = get_set_data("Set AFC Delay", title, 0, 255 * 20, "ns", input_data)
 
                 If data_valid Then
+                    input_data = input_data / 20
                     program_word = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(data_offset + 6)
                     program_word = program_word And &HFF
                     program_word = program_word Or ((input_data << 8) And &HFF00)
                     ServerSettings.put_modbus_commands(REGISTER_PULSE_SYNC_AFC_AND_SPARE_PULSE_DELAY_HIGH_ENERGY + command_offset, program_word, 0, 0)
                 End If
             Case 10 ' Mag I sample delay
-                data_valid = get_set_data("MagI Sample Delay", title, 0, 255, "", input_data)
+                data_valid = get_set_data("MagI Sample Delay", title, 0, 255 * 20, "ns", input_data)
 
                 If data_valid Then
+                    input_data = input_data / 20
                     program_word = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(data_offset + 6)
                     program_word = program_word And &HFF00
                     program_word = program_word Or (input_data And &HFF)
