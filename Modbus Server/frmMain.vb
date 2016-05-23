@@ -460,7 +460,10 @@ Public Class frmMain
 
                     For Each ctrl In TabPagePulseSync.Controls
                         If (ctrl.GetType = GetType(Button)) Then
-                            ctrl.enabled = False
+                            Dim btn As Button = CType(ctrl, Button)
+                            If (btn.Text <> "Change") Then
+                                btn.Enabled = False
+                            End If
                         End If
                     Next
 
