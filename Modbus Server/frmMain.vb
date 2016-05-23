@@ -829,6 +829,7 @@ Public Class frmMain
                     Else
                         btnServiceStartLog.Text = "Start Pulse Logging"
                         ledServicePulseLogActive.FillColor = Color.Transparent
+#If False Then
                         If pulse_log_enabled Then
                             ServerSettings.ClosePulseLogFile()
                             btnServiceStartLog.Text = "Start Pulse Logging"
@@ -836,15 +837,16 @@ Public Class frmMain
                             ToolTip1.SetToolTip(lblLogFileName, "")
                             pulse_log_enabled = False
                         End If
+#End If
                     End If
 #Else
-                    If pulse_log_enabled Then
-                        btnServiceStartLog.Text = "Stop Pulse Logging"
-                        ledServicePulseLogActive.FillColor = Color.Black
-                    Else
-                        btnServiceStartLog.Text = "Start Pulse Logging"
-                        ledServicePulseLogActive.FillColor = Color.Transparent
-                    End If
+                        If pulse_log_enabled Then
+                            btnServiceStartLog.Text = "Stop Pulse Logging"
+                            ledServicePulseLogActive.FillColor = Color.Black
+                        Else
+                            btnServiceStartLog.Text = "Start Pulse Logging"
+                            ledServicePulseLogActive.FillColor = Color.Transparent
+                        End If
 
 #End If
 
