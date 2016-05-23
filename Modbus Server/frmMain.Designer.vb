@@ -455,13 +455,13 @@ Partial Class frmMain
         Me.Label11 = New System.Windows.Forms.Label()
         Me.Label12 = New System.Windows.Forms.Label()
         Me.Label17 = New System.Windows.Forms.Label()
+        Me.btnZeroOnTime = New System.Windows.Forms.Button()
         Me.btnServiceReloadInitialDefaults = New System.Windows.Forms.Button()
+        Me.btnClearDebugData = New System.Windows.Forms.Button()
+        Me.btnZeroPulseCounters = New System.Windows.Forms.Button()
         Me.BlueRect17 = New CustomControls.BlueRect()
         Me.btnServiceSaveFactoryDefaults = New System.Windows.Forms.Button()
         Me.BlueRectMain = New CustomControls.BlueRect()
-        Me.btnZeroPulseCounters = New System.Windows.Forms.Button()
-        Me.btnZeroOnTime = New System.Windows.Forms.Button()
-        Me.btnClearDebugData = New System.Windows.Forms.Button()
         Me.lblNoTrigger = New System.Windows.Forms.Label()
         Me.panelDispButtons.SuspendLayout()
         CType(Me.PictureBoxLogo, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -2603,6 +2603,7 @@ Partial Class frmMain
         'btnCoolNewSF6bottle
         '
         Me.btnCoolNewSF6bottle.BackColor = System.Drawing.Color.Blue
+        Me.btnCoolNewSF6bottle.Enabled = False
         Me.btnCoolNewSF6bottle.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnCoolNewSF6bottle.ForeColor = System.Drawing.Color.Blue
         Me.btnCoolNewSF6bottle.Location = New System.Drawing.Point(388, 222)
@@ -5719,9 +5720,9 @@ Partial Class frmMain
         Me.Label3.ForeColor = System.Drawing.Color.Black
         Me.Label3.Location = New System.Drawing.Point(76, 102)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(126, 21)
+        Me.Label3.Size = New System.Drawing.Size(60, 21)
         Me.Label3.TabIndex = 413
-        Me.Label3.Text = "Label ECB Time"
+        Me.Label3.Text = "Label1"
         '
         'Label9
         '
@@ -5796,9 +5797,9 @@ Partial Class frmMain
         Me.Label12.ForeColor = System.Drawing.Color.Black
         Me.Label12.Location = New System.Drawing.Point(76, 94)
         Me.Label12.Name = "Label12"
-        Me.Label12.Size = New System.Drawing.Size(126, 21)
+        Me.Label12.Size = New System.Drawing.Size(69, 21)
         Me.Label12.TabIndex = 413
-        Me.Label12.Text = "Label ECB Time"
+        Me.Label12.Text = "Label10"
         '
         'Label17
         '
@@ -5812,6 +5813,19 @@ Partial Class frmMain
         Me.Label17.TabIndex = 417
         Me.Label17.Text = "Developer Panel"
         '
+        'btnZeroOnTime
+        '
+        Me.btnZeroOnTime.BackColor = System.Drawing.Color.Blue
+        Me.btnZeroOnTime.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnZeroOnTime.ForeColor = System.Drawing.Color.Blue
+        Me.btnZeroOnTime.Location = New System.Drawing.Point(377, 225)
+        Me.btnZeroOnTime.Name = "btnZeroOnTime"
+        Me.btnZeroOnTime.Size = New System.Drawing.Size(253, 33)
+        Me.btnZeroOnTime.TabIndex = 409
+        Me.btnZeroOnTime.Tag = "1"
+        Me.btnZeroOnTime.Text = "Zero On Time Counters"
+        Me.btnZeroOnTime.UseVisualStyleBackColor = True
+        '
         'btnServiceReloadInitialDefaults
         '
         Me.btnServiceReloadInitialDefaults.BackColor = System.Drawing.Color.Blue
@@ -5824,6 +5838,32 @@ Partial Class frmMain
         Me.btnServiceReloadInitialDefaults.Tag = "1"
         Me.btnServiceReloadInitialDefaults.Text = "Reload Initial Settings"
         Me.btnServiceReloadInitialDefaults.UseVisualStyleBackColor = True
+        '
+        'btnClearDebugData
+        '
+        Me.btnClearDebugData.BackColor = System.Drawing.Color.Blue
+        Me.btnClearDebugData.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnClearDebugData.ForeColor = System.Drawing.Color.Blue
+        Me.btnClearDebugData.Location = New System.Drawing.Point(377, 352)
+        Me.btnClearDebugData.Name = "btnClearDebugData"
+        Me.btnClearDebugData.Size = New System.Drawing.Size(253, 33)
+        Me.btnClearDebugData.TabIndex = 409
+        Me.btnClearDebugData.Tag = "1"
+        Me.btnClearDebugData.Text = "Clear Debugging Data"
+        Me.btnClearDebugData.UseVisualStyleBackColor = True
+        '
+        'btnZeroPulseCounters
+        '
+        Me.btnZeroPulseCounters.BackColor = System.Drawing.Color.Blue
+        Me.btnZeroPulseCounters.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnZeroPulseCounters.ForeColor = System.Drawing.Color.Blue
+        Me.btnZeroPulseCounters.Location = New System.Drawing.Point(377, 289)
+        Me.btnZeroPulseCounters.Name = "btnZeroPulseCounters"
+        Me.btnZeroPulseCounters.Size = New System.Drawing.Size(253, 33)
+        Me.btnZeroPulseCounters.TabIndex = 409
+        Me.btnZeroPulseCounters.Tag = "1"
+        Me.btnZeroPulseCounters.Text = "Zero Pulse Counters"
+        Me.btnZeroPulseCounters.UseVisualStyleBackColor = True
         '
         'BlueRect17
         '
@@ -5857,45 +5897,6 @@ Partial Class frmMain
         Me.BlueRectMain.Name = "BlueRectMain"
         Me.BlueRectMain.Size = New System.Drawing.Size(296, 184)
         Me.BlueRectMain.TabIndex = 80
-        '
-        'btnZeroPulseCounters
-        '
-        Me.btnZeroPulseCounters.BackColor = System.Drawing.Color.Blue
-        Me.btnZeroPulseCounters.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnZeroPulseCounters.ForeColor = System.Drawing.Color.Blue
-        Me.btnZeroPulseCounters.Location = New System.Drawing.Point(377, 289)
-        Me.btnZeroPulseCounters.Name = "btnZeroPulseCounters"
-        Me.btnZeroPulseCounters.Size = New System.Drawing.Size(253, 33)
-        Me.btnZeroPulseCounters.TabIndex = 409
-        Me.btnZeroPulseCounters.Tag = "1"
-        Me.btnZeroPulseCounters.Text = "Zero Pulse Counters"
-        Me.btnZeroPulseCounters.UseVisualStyleBackColor = True
-        '
-        'btnZeroOnTime
-        '
-        Me.btnZeroOnTime.BackColor = System.Drawing.Color.Blue
-        Me.btnZeroOnTime.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnZeroOnTime.ForeColor = System.Drawing.Color.Blue
-        Me.btnZeroOnTime.Location = New System.Drawing.Point(377, 225)
-        Me.btnZeroOnTime.Name = "btnZeroOnTime"
-        Me.btnZeroOnTime.Size = New System.Drawing.Size(253, 33)
-        Me.btnZeroOnTime.TabIndex = 409
-        Me.btnZeroOnTime.Tag = "1"
-        Me.btnZeroOnTime.Text = "Zero On Time Counters"
-        Me.btnZeroOnTime.UseVisualStyleBackColor = True
-        '
-        'btnClearDebugData
-        '
-        Me.btnClearDebugData.BackColor = System.Drawing.Color.Blue
-        Me.btnClearDebugData.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnClearDebugData.ForeColor = System.Drawing.Color.Blue
-        Me.btnClearDebugData.Location = New System.Drawing.Point(377, 352)
-        Me.btnClearDebugData.Name = "btnClearDebugData"
-        Me.btnClearDebugData.Size = New System.Drawing.Size(253, 33)
-        Me.btnClearDebugData.TabIndex = 409
-        Me.btnClearDebugData.Tag = "1"
-        Me.btnClearDebugData.Text = "Clear Debugging Data"
-        Me.btnClearDebugData.UseVisualStyleBackColor = True
         '
         'lblNoTrigger
         '

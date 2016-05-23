@@ -404,7 +404,7 @@ Public Class frmMain
                     lblCoolCabTemp.Text = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_COOLING).log_data(10) / 10 - 272
                     lblCoolSF6Press.Text = Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_COOLING).log_data(11) / 100, "00.00")
 
-                    btnCoolNewSF6bottle.Enabled = True
+                    btnCoolNewSF6bottle.Enabled = (access_level > 0)
                     uTemp = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_COOLING).log_data(12)
                     lblAutofillRemain2.Text = uTemp
                     btnReenableAutofill2.Enabled = IIf(uTemp = 0, True, False)
