@@ -96,6 +96,20 @@ Public Class ServerSettings
 
         TimerUpdate.Enabled = True
 
+        Call init_server()
+        ' load the main screen
+        Me.Hide()
+#If True Then
+        Dim main_screen As frmMain
+        main_screen = New frmMain
+
+#Else
+        Dim main_screen As frmMainSuper
+        main_screen = New frmMainSuper
+#End If
+        main_screen.ShowDialog()
+
+
     End Sub
 
 
@@ -349,26 +363,45 @@ Public Class ServerSettings
         End If
     End Sub
 
+    Public Function isValidIPaddress(ByVal addr As String) As Boolean
+        Dim ret As Boolean = True
 
+        Try
+            IPAddress.Parse(addr)
+        Catch ex As Exception
+            ret = False
+        End Try
 
-    Private Sub btnConnect_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnConnect.Click
-        btnConnect.Enabled = False
-        Call init_server()
-        ' load the main screen
-        Me.Hide()
-#If True Then
-        Dim main_screen As frmMain
-        main_screen = New frmMain
-
-#Else
-        Dim main_screen As frmMainSuper
-        main_screen = New frmMainSuper
+        isValidIPaddress = ret
+    End Function
+    Public Sub changeIPaddress(ByVal address As String)
+        Try
+            txtIPAddr.Text = address
+            update_loop_count = 0
+            connect_status = 0  ' closing the connection
+#If DEMO_MODE = 0 Then
+            stream.Close()
+            client.Close()
+            server.Stop()
 #End If
-        main_screen.ShowDialog()
+            init_server()
+  
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+    Public Sub btnConnect_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnConnect.Click
+        update_loop_count = 0
+        connect_status = 0  ' closing the connection
+        stream.Close()
+        client.Close()
+        server.Stop()
+        init_server()
     End Sub
 
 
-  
+
 
     Private Sub TimerUpdate_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TimerUpdate.Tick
         Dim tmpstr As String
@@ -505,10 +538,13 @@ Public Class ServerSettings
 
     Public Sub OpenPulseLogFile()
         pulse_log_file_name = "Pulse_log_" & DateTime.Now.ToString("yyyy_MM_dd_HH_mm") & ".csv"
-        ' pulse_log_file_path = System.IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.MyDocuments, pulse_log_file_name)
+#If True Then
+        pulse_log_file_path = System.IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.MyDocuments, pulse_log_file_name)
+#Else
         pulse_log_file_path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
         pulse_log_file_path = My.Computer.FileSystem.GetParentPath(pulse_log_file_path)
         pulse_log_file_path = System.IO.Path.Combine(pulse_log_file_path, pulse_log_file_name)
+#End If
         pulse_log_file = My.Computer.FileSystem.OpenTextFileWriter(pulse_log_file_path, True)
         pulse_log_enabled = True
 

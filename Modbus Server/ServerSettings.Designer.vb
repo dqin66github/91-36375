@@ -90,6 +90,8 @@ Partial Class ServerSettings
         Me.Controls.Add(Me.btnConnect)
         Me.Controls.Add(Me.txtIPAddr)
         Me.Controls.Add(Me.Label1)
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
         Me.Name = "ServerSettings"
         Me.Text = "Server Settings (Modbus Port 502)"
         Me.ResumeLayout(False)

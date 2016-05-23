@@ -28,7 +28,7 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ProductName>Linac 2.5MeV Remote GUI</ProductName>
     <PublisherName>Rapiscan</PublisherName>
-    <ApplicationRevision>16</ApplicationRevision>
+    <ApplicationRevision>17</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -43,7 +43,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DocumentationFile>Linac 2.5MeV GUI.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
-    <DefineConstants>USE_ENGINEERING_UNIT_ON_GUN_DRIVER = 1, DEBUG_MODBUS = 0, DEMO_MODE = 0</DefineConstants>
+    <DefineConstants>USE_ENGINEERING_UNIT_ON_GUN_DRIVER = 1, DEBUG_MODBUS = 0, DEMO_MODE = 1</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>

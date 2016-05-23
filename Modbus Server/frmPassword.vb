@@ -30,6 +30,7 @@
 
     Private Sub frmPassword_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         access_level = 0
+        txtPassword.Text = "12345678" ' dummy
         Me.AcceptButton = btnOK
     End Sub
 End Class

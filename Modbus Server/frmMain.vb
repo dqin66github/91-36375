@@ -1,4 +1,4 @@
-﻿
+﻿Imports CustomControls
 Public Class frmMain
 
     Public Const TAB_LOCATION_X_LARGE As UInt16 = 12
@@ -42,16 +42,15 @@ Public Class frmMain
     Public Const REGISTER_PULSE_SYNC_GRID_PULSE_DELAY_HIGH_ENERGY_A_B As UInt16 = &H30
     Public Const REGISTER_PULSE_SYNC_GRID_PULSE_DELAY_HIGH_ENERGY_C_D As UInt16 = &H31
     Public Const REGISTER_PULSE_SYNC_RF_TRIGGER_AND_THYRATRON_PULSE_DELAY_HIGH_ENERGY As UInt16 = &H32
-    Public Const REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_HIGH_ENERGY_A_B As UInt16 = &H33
-    Public Const REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_HIGH_ENERGY_C_D As UInt16 = &H34
-    Public Const REGISTER_PULSE_SYNC_AFC_AND_SPARE_PULSE_DELAY_HIGH_ENERGY As UInt16 = &H35
-    Public Const REGISTER_PULSE_SYNC_GRID_PULSE_DELAY_LOW_ENERGY_A_B As UInt16 = &H36
-    Public Const REGISTER_PULSE_SYNC_GRID_PULSE_DELAY_LOW_ENERGY_C_D As UInt16 = &H37
-    Public Const REGISTER_PULSE_SYNC_RF_TRIGGER_AND_THYRATRON_PULSE_DELAY_LOW_ENERGY As UInt16 = &H38
-    Public Const REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_LOW_ENERGY_A_B As UInt16 = &H39
-    Public Const REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_LOW_ENERGY_C_D As UInt16 = &H3A
-    Public Const REGISTER_PULSE_SYNC_AFC_AND_SPARE_PULSE_DELAY_LOW_ENERGY As UInt16 = &H3B
-
+    Public Const REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_HIGH_ENERGY_A_B As UInt16 = &H34
+    Public Const REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_HIGH_ENERGY_C_D As UInt16 = &H35
+    Public Const REGISTER_PULSE_SYNC_AFC_AND_SPARE_PULSE_DELAY_HIGH_ENERGY As UInt16 = &H36
+    Public Const REGISTER_PULSE_SYNC_GRID_PULSE_DELAY_LOW_ENERGY_A_B As UInt16 = &H38
+    Public Const REGISTER_PULSE_SYNC_GRID_PULSE_DELAY_LOW_ENERGY_C_D As UInt16 = &H39
+    Public Const REGISTER_PULSE_SYNC_RF_TRIGGER_AND_THYRATRON_PULSE_DELAY_LOW_ENERGY As UInt16 = &H3A
+    Public Const REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_LOW_ENERGY_A_B As UInt16 = &H3C
+    Public Const REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_LOW_ENERGY_C_D As UInt16 = &H3D
+    Public Const REGISTER_PULSE_SYNC_AFC_AND_SPARE_PULSE_DELAY_LOW_ENERGY As UInt16 = &H3E
     Public Const REGISTER_CMD_AFC_SELECT_AFC_MODE As UInt16 = &H5202
     Public Const REGISTER_CMD_AFC_SELECT_MANUAL_MODE As UInt16 = &H5203
     Public Const REGISTER_CMD_AFC_MANUAL_TARGET_POSITION As UInt16 = &H5204
@@ -78,6 +77,9 @@ Public Class frmMain
     Public Const REGISTER_DEBUG_RESET_MCU As UInt16 = &HE502
     Public Const REGISTER_DEBUG_TEST_PULSE_FAULT As UInt16 = &HE503
 
+    Dim dispButtons() As CustomControls.ButtonSelected
+    Dim dispLeds() As OvalLed
+    Dim board_indexes() As UInt16
 
 
     Public EEProm_index As UInt16
@@ -92,8 +94,22 @@ Public Class frmMain
     Public pulse_log_enabled As Boolean
     Dim blank_string As String = "----"
 
+
+
     Private Sub frmMain_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Try
+            dispButtons = New ButtonSelected() {btnDispOverview, btnDispSysCPU, btnDispGunDriver, btnDispCoolSF6, btnDispPulseSync, btnDispHV, btnDispMagnetron, btnDispAFC, btnDispMagHtr, btnDispIonPump, btnDispService, btnDispServicePanel, btnDispDeveloperPanel}
+            dispLeds = New OvalLed() {ledReadyCpu, ledReadyGunDriver, ledReadyCooling, ledReadyPulseSync, ledReadyHV, ledReadyMagnetron, ledReadyAfc, ledReadyMagnetHtr, ledReadyIonpump}
+            board_indexes = New UInt16() {0,
+                                        MODBUS_COMMANDS.MODBUS_WR_ETHERNET,
+                                       MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER,
+                                       MODBUS_COMMANDS.MODBUS_WR_COOLING,
+                                       MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC,
+                                       MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA,
+                                       MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT,
+                                       MODBUS_COMMANDS.MODBUS_WR_AFC,
+                                       MODBUS_COMMANDS.MODBUS_WR_HTR_MAGNET,
+                                       MODBUS_COMMANDS.MODBUS_WR_ION_PUMP}
             Application.DoEvents()
 
 
@@ -136,7 +152,13 @@ Public Class frmMain
 
         btnResetFault.Enabled = True
 
-        Me.Size = New System.Drawing.Size(1300, 760)
+        Me.Size = New System.Drawing.Size(1330, 760)
+
+        DisplayMainPane(False) ' update controls first, then show
+
+        DisplayBoardSpecificData(False)
+
+
 
     End Sub
 
@@ -185,6 +207,7 @@ Public Class frmMain
        End If ' connected
 #End If
         TimerUpdate.Enabled = True
+
 
     End Sub
 
@@ -618,6 +641,7 @@ Public Class frmMain
                     lblAfcFilteredError.Text = filtered_error
                     lblAfcPreAsample.Text = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).log_data(6)
                     lblAfcPreBsample.Text = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).log_data(5)
+                    lblAfcManualPosition.Text = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).log_data(2)
 
                     Dim enble_button As Boolean = access_level > 0
                     For Each ctrl In TabPageAFC.Controls
@@ -629,7 +653,7 @@ Public Class frmMain
                     btnAfcHomePosSet.Text = "Home Pos Set  " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).ecb_local_data(0)
                     btnAfcCargoCtrlVSet.Text = "Cargo Ctrl V Set  " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).ecb_local_data(1) / 1000, "0.000") & " V"
                     btnAfcCabCtrlVSet.Text = "Cab Ctrl V Set  " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).ecb_local_data(2) / 1000, "0.000") & " V"
-                    btnAfcManualPosition.Text = "Manual Pos  " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).log_data(2)
+                    '     btnAfcManualPosition.Text = "Manual Pos  " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).log_data(2)
 
                     '    Dim control_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(board_index).control_notice_bits
                     Dim fault_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).fault_bits
@@ -827,7 +851,7 @@ Public Class frmMain
 
         End Select
 
-        If (TabBoards.SelectedIndex >= 1 And TabBoards.SelectedIndex <= 9) Then
+        If (TabBoards.SelectedIndex >= 1 And TabBoards.SelectedIndex <= 9) And (access_level > 0) Then
             LabelAgileInfo.Text = "A" & ServerSettings.ETMEthernetBoardLoggingData(board_index).agile_number & "-" &
                 Format(ServerSettings.ETMEthernetBoardLoggingData(board_index).agile_dash, "000") & "  Rev-" &
                 Convert.ToChar(ServerSettings.ETMEthernetBoardLoggingData(board_index).agile_rev_ascii) & "  SN-" &
@@ -857,8 +881,6 @@ Public Class frmMain
         ' Update the ECB State
         Dim ECBState As String = ""
         Dim ECBMode As String = ""
-        Dim tabButtons() As Button = {btnDispSysCPU, btnDispGunDriver, btnDispCoolSF6, btnDispPulseSync, btnDispHV,
-                                        btnDispMagnetron, btnDispAFC, btnDispMagHtr, btnDispIonPump}
         Static flash_toggle As Boolean = True
 
         Dim show_reset_button As Boolean = False
@@ -881,14 +903,18 @@ Public Class frmMain
             lblTrigDuration.Text = blank_string
             lblBeamDuration.Text = blank_string
 
-            For Each btn In tabButtons
-                btn.BackColor = Color.Yellow
+            lblIonIi2.Text = blank_string
+
+            For i = 1 To 9
+                dispButtons(i).BackColor = Color.Yellow
+                dispLeds(i - 1).Visible = False
             Next
             lblSN.Text = "System SN  H" & blank_string
             PanelRadLeft.Visible = False 'flash_toggle
             PanelRadRight.Visible = False ' flash_toggle
 
             lblAccessLevel.Text = "Access Level: Normal"
+            lblNoTrigger.Visible = False
 
         Else
 
@@ -917,14 +943,14 @@ Public Class frmMain
                     state_label_color = Color.Red
                     rad_panel_visible = flash_toggle
                 Case &H80
-                    ECBState = "Fault Hold"
+                    ECBState = IIf(access_level > 0, "Fault Hold", "Fault")
                     state_label_color = Color.Red
                     show_reset_button = True
                 Case &H86
-                    ECBState = "Fault Reset Hold"
+                    ECBState = IIf(access_level > 0, "Fault Reset Hold", "Fault")
                     state_label_color = Color.Red
                 Case &H8A
-                    ECBState = "Fault Latch Decision"
+                    ECBState = IIf(access_level > 0, "Fault Latch Decision", "Fault")
                     state_label_color = Color.Red
                 Case &H90
                     ECBState = "Fault Reset"
@@ -935,7 +961,7 @@ Public Class frmMain
                     ECBState = "Warmup Fault"
                     state_label_color = Color.Red
                 Case &HC0
-                    ECBState = "Standby Fault"
+                    ECBState = IIf(access_level > 0, "Standby Fault", "Fault")
                     state_label_color = Color.Red
                 Case Else
                     ECBState = "Unknown State"
@@ -988,7 +1014,7 @@ Public Class frmMain
 
             Dim trigger_width As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).log_data(7)
             Try
-                trigger_width = Math.Truncate(trigger_width / 256) * 100
+                trigger_width = Math.Truncate(trigger_width / 256) * 1000
             Catch ex As Exception
                 trigger_width = 0
             End Try
@@ -996,19 +1022,21 @@ Public Class frmMain
 
             Dim dose_rate As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(17)
             lblDoseRate.Text = dose_rate
-            lblPulseFreq.Text = Format(prf / 10, "0.0")
             lblTrigDuration.Text = trigger_width
             lblBeamDuration.Text = grid_width
 
-            ' Update the current Sync Bits, reset, hs log bit, hv off bit, xray off bit, cool flt bit,
-            Dim Sync_data As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(7)
-            If (Sync_data And &H2) > 0 Then
-                ' High speed data logging is enabled
-                btnServiceStartLog.Text = "Stop Pulse Logging"
+            If ((ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).logged_bits And &H80) > 0) Then
+                lblNoTrigger.Location = lblPulseFreq.Location
+                lblNoTrigger.BringToFront()
+                lblNoTrigger.Visible = True
+                lblPulseFreq.Text = "0.0"
             Else
-                btnServiceStartLog.Text = "Start Pulse Logging"
+                lblNoTrigger.Visible = False
+                lblPulseFreq.Text = Format(prf / 10, "0.0")
+
             End If
 
+            lblIonIi2.Text = Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ION_PUMP).log_data(3) / 1000, "0.000")
 
 
 
@@ -1031,6 +1059,9 @@ Public Class frmMain
 
             lblSN.Text = "System SN  H" & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(19).ToString("0000")
 
+            For i = 1 To 9
+                dispLeds(i - 1).FillColor = IIf((ServerSettings.ETMEthernetBoardLoggingData(board_indexes(i)).control_notice_bits And &H1) > 0, Color.Red, Color.LawnGreen)
+            Next
             Select Case access_level
                 Case 0
                     lblAccessLevel.Text = "Access Level: Normal"
@@ -2141,32 +2172,12 @@ Public Class frmMain
 
 
 
-    Private Sub ButtonToggleReset_Click(sender As System.Object, e As System.EventArgs)
-        'ServerSettings.put_modbus_commands(REGISTER_DEBUG_TOGGLE_RESET, 0, 0, 0)
-    End Sub
-
-    Private Sub ButtonToggleHighSpeedDataLogging_Click(sender As System.Object, e As System.EventArgs)
-        'ServerSettings.put_modbus_commands(REGISTER_DEBUG_TOGGLE_HIGH_SPEED_LOGGING, 0, 0, 0)
-    End Sub
+  
 
 
-    Private Sub ButtonTogglePulseSyncHV_Click(sender As System.Object, e As System.EventArgs)
-        'ServerSettings.put_modbus_commands(REGISTER_DEBUG_TOGGLE_HV_ENABLE, 0, 0, 0)
-    End Sub
+   
 
-
-    Private Sub ButtonTogglePulseSyncXray_Click(sender As System.Object, e As System.EventArgs)
-        'ServerSettings.put_modbus_commands(REGISTER_DEBUG_TOGGLE_XRAY_ENABLE, 0, 0, 0)
-    End Sub
-
-
-    Private Sub ButtonToggleCoolantFault_Click(sender As System.Object, e As System.EventArgs)
-        'ServerSettings.put_modbus_commands(REGISTER_DEBUG_TOGGLE_COOLING_FAULT, 0, 0, 0)
-    End Sub
-
-    Private Sub ButtonToggleResetDebug_Click(sender As System.Object, e As System.EventArgs)
-        ServerSettings.put_modbus_commands(REGISTER_DEBUG_TOGGLE_RESET_DEBUG, 0, 0, 0)
-    End Sub
+   
 
 
 #If False Then ' eeprom related
@@ -2260,15 +2271,6 @@ Public Class frmMain
 
 
 
-    Private Sub ButtonStartLog_Click(sender As System.Object, e As System.EventArgs)
-
-    End Sub
-
-    Private Sub ButtonStopLog_Click(sender As System.Object, e As System.EventArgs)
-
-    End Sub
-
-
     Private Sub ButtonSetTime_Click(sender As System.Object, e As System.EventArgs)
         Dim time_high_word As UInt16
         Dim time_low_word As UInt16
@@ -2294,37 +2296,19 @@ Public Class frmMain
         End Try
     End Sub
 
-    Private Sub ButtonReloadECBDefaults_Click(sender As System.Object, e As System.EventArgs)
-        ServerSettings.put_modbus_commands(REGISTER_ETM_ECB_LOAD_DEFAULT_SYSTEM_SETTINGS_AND_REBOOT, 0, 0, 0)
-    End Sub
+  
 
-    Private Sub ButtonZeroOnTime_Click(sender As System.Object, e As System.EventArgs)
-        ServerSettings.put_modbus_commands(REGISTER_ETM_ECB_RESET_SECONDS_POWERED_HV_ON_XRAY_ON, 0, 0, 0)
-    End Sub
+   
 
-    Private Sub ButtonZeroPulseCounters_Click(sender As System.Object, e As System.EventArgs)
-        ServerSettings.put_modbus_commands(REGISTER_ETM_ECB_RESET_ARC_AND_PULSE_COUNT, 0, 0, 0)
-    End Sub
+   
 
 
 
-    Private Sub btnDisp_Click(sender As Object, e As EventArgs) Handles btnDispOverview.Click, btnDispSysCPU.Click, btnDispService.Click, btnDispPulseSync.Click, btnDispMagnetron.Click, btnDispMagHtr.Click, btnDispIonPump.Click, btnDispHV.Click, btnDispGunDriver.Click, btnDispCoolSF6.Click, btnDispAFC.Click
-        Dim btn() As CustomControls.ButtonSelected = {btnDispOverview, btnDispSysCPU, btnDispGunDriver, btnDispCoolSF6, btnDispPulseSync, btnDispHV, btnDispMagnetron, btnDispAFC, btnDispMagHtr, btnDispIonPump, btnDispService}
+    Private Sub btnDisp_Click(sender As Object, e As EventArgs) Handles btnDispOverview.Click, btnDispSysCPU.Click, btnDispService.Click, btnDispPulseSync.Click, btnDispMagnetron.Click, btnDispMagHtr.Click, btnDispIonPump.Click, btnDispHV.Click, btnDispGunDriver.Click, btnDispCoolSF6.Click, btnDispAFC.Click, btnDispDeveloperPanel.Click, btnDispServicePanel.Click
         Dim btn_select As CustomControls.ButtonSelected
         Dim index As Int16
         Dim normal_size As Size = New Size(DISP_BUTTON_WIDTH, DISP_BUTTON_HEIGHT)
         Dim select_size As Size = New Size(DISP_BUTTON_WIDTH, DISP_BUTTON_HEIGHT_SELECT)
-
-        Dim board_indexes() As UInt16 = {0,
-                                        MODBUS_COMMANDS.MODBUS_WR_ETHERNET,
-                                       MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER,
-                                       MODBUS_COMMANDS.MODBUS_WR_COOLING,
-                                       MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC,
-                                       MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA,
-                                       MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT,
-                                       MODBUS_COMMANDS.MODBUS_WR_AFC,
-                                       MODBUS_COMMANDS.MODBUS_WR_HTR_MAGNET,
-                                       MODBUS_COMMANDS.MODBUS_WR_ION_PUMP}
         Dim command_indexes() As UInt16 = {0, ETM_CAN_ADDR_ETHERNET_BOARD,
                                            ETM_CAN_ADDR_GUN_DRIVER_BOARD,
                                            ETM_CAN_ADDR_COOLING_INTERFACE_BOARD,
@@ -2337,24 +2321,28 @@ Public Class frmMain
 
         btn_select = sender
         index = btn_select.Tag
-        For i = 0 To (btn.Length - 1)
-            btn(i).ShowBoardSelected = False
+        For i = 0 To (dispButtons.Length - 1)
+            dispButtons(i).ShowBoardSelected = False
             If (i <= index) Then
-                btn(i).Location = New Point(0, DISP_BUTTON_HEIGHT * i)
+                dispButtons(i).Location = New Point(0, DISP_BUTTON_HEIGHT * i)
                 If (i < index) Then
-                    btn(i).Size = normal_size
+                    dispButtons(i).Size = normal_size
                 Else
-                    btn(i).Size = select_size
-                    btn(i).ShowBoardSelected = True
+                    dispButtons(i).Size = select_size
+                    dispButtons(i).ShowBoardSelected = True
                 End If
             Else ' tag > index
-                btn(i).Location = New Point(0, DISP_BUTTON_HEIGHT * (i - index - 1) + btn(index).Location.Y + btn(index).Size.Height)
-                btn(i).Size = normal_size
+                dispButtons(i).Location = New Point(0, DISP_BUTTON_HEIGHT * (i - index - 1) + dispButtons(index).Location.Y + dispButtons(index).Size.Height)
+                dispButtons(i).Size = normal_size
             End If
+            If (i > 0 And i <= 9) Then
+                dispLeds(i - 1).Location = New Point(226, dispButtons(i).Location.Y + (dispButtons(i).Height - 20) / 2)
+            End If
+
         Next
 
 
-        If (btn_select.Tag < 11) Then
+        If (btn_select.Tag < dispButtons.Length) Then
             TabBoards.SelectedIndex = btn_select.Tag
             If (btn_select.Tag <= 9) Then
                 board_index = board_indexes(btn_select.Tag)
@@ -2367,6 +2355,10 @@ Public Class frmMain
 
         TabBoards.Location = New Point(TAB_LOCATION_X_SMALL, TAB_LOCATION_Y)
         TabBoards.Size = New Size(TAB_SIZE_WIDTH_SMALL, TAB_SIZE_HEIGHT)
+
+
+
+
 
 
 
@@ -2462,6 +2454,12 @@ Public Class frmMain
     End Sub
 
     Private Sub btnCoolNewSF6bottle_Click(sender As Object, e As EventArgs) Handles btnCoolNewSF6bottle.Click
+        Dim response As MsgBoxResult = MsgBox("Set New Bottle?", MsgBoxStyle.OkCancel)
+
+        If (response = MsgBoxResult.Ok) Then
+            ServerSettings.put_modbus_commands(REGISTER_CMD_COOLANT_INTERFACE_SET_SF6_PULSES_IN_BOTTLE, 0, 0, 0)
+        End If
+#If False Then
         Dim input_data As Double
         Dim data_valid = get_set_data("Set Bottle Pulses", "Cooling and SF6", 0, 1000, "", input_data)
 
@@ -2469,10 +2467,17 @@ Public Class frmMain
             Dim program_word As UInt16 = input_data
             ServerSettings.put_modbus_commands(REGISTER_CMD_COOLANT_INTERFACE_SET_SF6_PULSES_IN_BOTTLE, program_word, 0, 0)
         End If
-
+#End If
     End Sub
 
     Private Sub btnCoolSF6Override_Click(sender As Object, e As EventArgs) Handles btnCoolSF6Override.Click
+        Dim response As MsgBoxResult = MsgBox("Set Override Pulses?", MsgBoxStyle.OkCancel)
+
+        If (response = MsgBoxResult.Ok) Then
+            ServerSettings.put_modbus_commands(REGISTER_CMD_COOLANT_INTERFACE_ALLOW_SF6_PULSES_WHEN_PRESSURE_BELOW_LIMIT, 0, 0, 0)
+        End If
+
+#If False Then
         Dim input_data As Double
         Dim data_valid = get_set_data("Set Override Pulses", "Cooling and SF6", 0, 5, "", input_data)
 
@@ -2480,7 +2485,7 @@ Public Class frmMain
             Dim program_word As UInt16 = input_data
             ServerSettings.put_modbus_commands(REGISTER_CMD_COOLANT_INTERFACE_ALLOW_SF6_PULSES_WHEN_PRESSURE_BELOW_LIMIT, program_word, 0, 0)
         End If
-
+#End If
     End Sub
 
     Private Sub btnPulseSettings_Click(sender As Object, e As EventArgs) Handles btnPulseStartMax.Click, btnPulseStopMin.Click, btnPulseStopMax.Click, btnPulseStop2_3.Click, btnPulseStop1_3.Click, btnPulseStartMin.Click, btnPulseStart2_3.Click, btnPulseStart1_3.Click, btnPulseSampleDelay.Click, btnPfnDelay.Click, btnAfcDelay.Click
@@ -2717,6 +2722,7 @@ Public Class frmMain
             ServerSettings.put_modbus_commands(REGISTER_SYSTEM_ENABLE_HIGH_SPEED_LOGGING, 0, 0, 0)
             ServerSettings.OpenPulseLogFile()
             filename = ServerSettings.pulse_log_file_path
+#If True Then
             ToolTip1.SetToolTip(lblLogFileName, filename)
             If (Len(filename) > length) Then
                 filename = filename.Substring(Len(filename) - length, length)
@@ -2725,6 +2731,8 @@ Public Class frmMain
                     filename = "..." & filename.Substring(pos - 1, Len(filename) - pos + 1)
                 End If
             End If
+#End If
+
             lblLogFileName.Text = "Log File Name: " & filename
             btnServiceStartLog.Text = "Stop Pulse Logging"
             pulse_log_enabled = True
@@ -2733,8 +2741,8 @@ Public Class frmMain
             ServerSettings.ClosePulseLogFile()
             ServerSettings.put_modbus_commands(REGISTER_SYSTEM_DISABLE_HIGH_SPEED_LOGGING, 0, 0, 0)
             btnServiceStartLog.Text = "Start Pulse Logging"
-            lblLogFileName.Text = "Log File Name: "
-            ToolTip1.SetToolTip(lblLogFileName, "")
+            '  lblLogFileName.Text = "Log File Name: "
+            '   ToolTip1.SetToolTip(lblLogFileName, "")
 
         End If
     End Sub
@@ -2743,9 +2751,40 @@ Public Class frmMain
     Private Sub btnServiceModeChange_Click(sender As Object, e As EventArgs) Handles btnServiceModeChange.Click
         If (access_level > 0) Then
             access_level = 0 ' logout
+            lblIonIi2Title.Visible = False
+            lblIonIi2.Visible = False
+            lblIonIi2Unit.Visible = False
+            BlueRectMain.Location = New Point(28, 398)
+            btnDispServicePanel.Visible = False
+            btnDispDeveloperPanel.Visible = False
+            LabelAgileInfo.Visible = False
+            LabelFirmwareVerssion.Visible = False
+
+            For i = 1 To 9
+                dispLeds(i - 1).Visible = False
+            Next
+
+
         Else
             pwScreen.ShowDialog()
             access_level = pwScreen.access_level
+            If (access_level > 0) Then
+                lblIonIi2Title.Visible = True
+                lblIonIi2.Visible = True
+                lblIonIi2Unit.Visible = True
+                BlueRectMain.Location = New Point(28, 410)
+                btnDispServicePanel.Visible = True
+                btnDispDeveloperPanel.Visible = IIf(access_level > 1, True, False)
+
+                LabelAgileInfo.Visible = True
+                LabelFirmwareVerssion.Visible = True
+
+                For i = 1 To 9
+                    dispLeds(i - 1).Visible = True
+                Next
+
+
+            End If
         End If
 
 
@@ -2773,6 +2812,7 @@ Public Class frmMain
     End Sub
 
     Private Sub btnServiceReloadInitialDefaults_Click(sender As Object, e As EventArgs) Handles btnServiceReloadInitialDefaults.Click
+
         Dim response As MsgBoxResult = MsgBox("Reload Initialization Settings?", MsgBoxStyle.OkCancel)
 
         If (response = MsgBoxResult.Ok) Then
@@ -2782,7 +2822,7 @@ Public Class frmMain
     End Sub
 
     Private Sub lblSN_Click(sender As Object, e As EventArgs) Handles lblSN.Click
-        If (access_level > 0) Then
+        If (access_level > 1) Then
             Dim input_data As Double
             Dim data_valid = get_set_data("Set System Serial Number", lblSystem.Text, 1, 65535, "", input_data)
 
@@ -2800,7 +2840,7 @@ Public Class frmMain
         Dim buttons() As CustomControls.ButtonSelected = {btnDispOverview, btnDispSysCPU, btnDispGunDriver, btnDispCoolSF6, btnDispPulseSync, btnDispHV,
                                                           btnDispMagnetron, btnDispAFC, btnDispMagHtr, btnDispIonPump}
 
-        If (access_level > 0) Then
+        If (access_level > 1) Then
             data_valid = get_set_data("Input Serial Number", buttons(TabBoards.SelectedIndex).Text, 1, 65535, "", input_data)
             If data_valid Then
                 serial_num = input_data
@@ -2814,6 +2854,37 @@ Public Class frmMain
             End If
         End If
 
+    End Sub
+
+
+    Private Sub frmMain_close(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
+
+    End Sub
+
+    Private Sub btnIPaddress_Click(sender As Object, e As EventArgs) Handles btnIPaddress.Click
+        Dim IPAddr As String = InputBox("Input IP Address", lblSystem.Text, ServerSettings.txtIPAddr.Text)
+        If (IPAddr <> "") Then
+            If (ServerSettings.isValidIPaddress(IPAddr)) Then
+                ServerSettings.changeIPaddress(IPAddr)
+            Else
+                MsgBox("Invalid IP Address")
+            End If
+
+        End If
+    End Sub
+
+    Private Sub btnZeroOnTime_Click(sender As Object, e As EventArgs) Handles btnZeroOnTime.Click
+         ServerSettings.put_modbus_commands(REGISTER_ETM_ECB_RESET_SECONDS_POWERED_HV_ON_XRAY_ON, 0, 0, 0)
+    End Sub
+
+    Private Sub btnZeroPulseCounters_Click(sender As Object, e As EventArgs) Handles btnZeroPulseCounters.Click
+        ServerSettings.put_modbus_commands(REGISTER_ETM_ECB_RESET_ARC_AND_PULSE_COUNT, 0, 0, 0)
+    End Sub
+
+  
+
+    Private Sub btnClearDebugData_Click(sender As Object, e As EventArgs) Handles btnClearDebugData.Click
+        ServerSettings.put_modbus_commands(REGISTER_DEBUG_TOGGLE_RESET_DEBUG, 0, 0, 0)
     End Sub
 
 
