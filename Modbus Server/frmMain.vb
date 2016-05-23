@@ -2492,7 +2492,7 @@ Public Class frmMain
         Dim btn As Button = CType(sender, Button)
         Dim program_word As UInt16
         Dim data_offset As UInt16 = IIf(show_cargo_settings, 0, 8)
-        Dim command_offset As UInt16 = IIf(show_cargo_settings, 0, 6)
+        Dim command_offset As UInt16 = IIf(show_cargo_settings, 0, 8)
         Dim input_data As Double
         Dim data_valid As Boolean
         Dim title As String = IIf(show_cargo_settings, "Cargo Mode Settings", "Cab Mode Settings")
