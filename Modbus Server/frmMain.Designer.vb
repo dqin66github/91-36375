@@ -918,7 +918,6 @@ Partial Class frmMain
         'btnResetFault
         '
         Me.btnResetFault.BackColor = System.Drawing.Color.Blue
-        Me.btnResetFault.Enabled = False
         Me.btnResetFault.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnResetFault.ForeColor = System.Drawing.Color.Blue
         Me.btnResetFault.Location = New System.Drawing.Point(189, 249)

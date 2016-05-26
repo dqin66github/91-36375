@@ -134,7 +134,7 @@ Public Class frmMain
         ServerSettings.CloseEventLogFile()
 
         pwScreen = New frmPassword
-        access_level = 0
+        reset_access_level()
 
 
 
@@ -149,8 +149,6 @@ Public Class frmMain
         End If
 
         LoadLogRegisterText()
-
-        btnResetFault.Enabled = True
 
         Me.Size = New System.Drawing.Size(1330, 760)
 
@@ -181,7 +179,7 @@ Public Class frmMain
             connected = False
             Me.Text = "2.5MeV Linac GUI(Linac Disconnected)"
            ' blank all display
-            access_level = 0
+            reset_access_level()
             DisplayMainPane(True)
             DisplayBoardSpecificData(True)
 
@@ -2752,24 +2750,25 @@ Public Class frmMain
         End If
     End Sub
 
-  
+    Private Sub reset_access_level()
+        access_level = 0 ' logout
+        lblIonIi2Title.Visible = False
+        lblIonIi2.Visible = False
+        lblIonIi2Unit.Visible = False
+        BlueRectMain.Location = New Point(28, 398)
+        btnDispServicePanel.Visible = False
+        btnDispDeveloperPanel.Visible = False
+        LabelAgileInfo.Visible = False
+        LabelFirmwareVerssion.Visible = False
+
+        For i = 1 To 9
+            dispLeds(i - 1).Visible = False
+        Next
+
+    End Sub
     Private Sub btnServiceModeChange_Click(sender As Object, e As EventArgs) Handles btnServiceModeChange.Click
         If (access_level > 0) Then
-            access_level = 0 ' logout
-            lblIonIi2Title.Visible = False
-            lblIonIi2.Visible = False
-            lblIonIi2Unit.Visible = False
-            BlueRectMain.Location = New Point(28, 398)
-            btnDispServicePanel.Visible = False
-            btnDispDeveloperPanel.Visible = False
-            LabelAgileInfo.Visible = False
-            LabelFirmwareVerssion.Visible = False
-
-            For i = 1 To 9
-                dispLeds(i - 1).Visible = False
-            Next
-
-
+            reset_access_level()
         Else
             pwScreen.ShowDialog()
             access_level = pwScreen.access_level
@@ -2837,7 +2836,32 @@ Public Class frmMain
             End If
         End If
     End Sub
+    Function get_set_rev(ByVal prompt As String, ByVal title As String, ByRef data As Double) As Boolean
+        ' return true if got valid data
+        Dim strvalue As String
 
+        strvalue = InputBox(prompt, title)
+
+        get_set_rev = False
+        Try
+            If (strvalue <> "") Then
+                Select Case strvalue.Length
+                    Case 1
+                        data = Asc(strvalue(0))
+                        get_set_rev = True
+                    Case 2
+                        data = (Asc(strvalue(0)) << 8) + Asc(strvalue(1))
+                        get_set_rev = True
+                    Case Else
+                        MsgBox("The maximum revision length is 2", MsgBoxStyle.Exclamation)
+                End Select
+
+            End If
+        Catch
+            MsgBox("Invalid input, data discarded", MsgBoxStyle.Exclamation)
+        End Try
+
+    End Function
     Private Sub LabelAgileInfo_Click(sender As Object, e As EventArgs) Handles LabelAgileInfo.Click
         Dim serial_num As UInt16, rev_num As UInt16
         Dim data_valid As Boolean
@@ -2849,7 +2873,7 @@ Public Class frmMain
             data_valid = get_set_data("Input Serial Number", buttons(TabBoards.SelectedIndex).Text, 1, 65535, "", input_data)
             If data_valid Then
                 serial_num = input_data
-                data_valid = get_set_data("Input Revision Number", buttons(TabBoards.SelectedIndex).Text, 1, 999, "", input_data)
+                data_valid = get_set_rev("Input Revision Number", buttons(TabBoards.SelectedIndex).Text, input_data)
                 If data_valid Then
                     rev_num = input_data
                     '      ServerSettings.put_modbus_commands(index, 0, rev, serial_num)
