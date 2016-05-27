@@ -348,11 +348,11 @@ Public Class frmMain
                     Dim fault_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).fault_bits
 
                     ledGdFPGArev.FillColor = IIf(fault_bits And &H1, Color.Red, Color.LawnGreen)
-                    ledGdHVmon.FillColor = IIf(fault_bits And &H2, Color.Red, Color.LawnGreen)
-                    ledGdHtrMon.FillColor = IIf(fault_bits And &H4, Color.Red, Color.LawnGreen)
-                    ledGdHtrOC.FillColor = IIf(fault_bits And &H10, Color.Red, Color.LawnGreen)
-                    ledGdEgMon.FillColor = IIf(fault_bits And &H20, Color.Red, Color.LawnGreen)
-                    ledGdEcMon.FillColor = IIf(fault_bits And &H40, Color.Red, Color.LawnGreen)
+                    ledGdHVmon.FillColor = IIf(fault_bits And &H6, Color.Red, Color.LawnGreen)
+                    ledGdHtrMon.FillColor = IIf(fault_bits And &H18, Color.Red, Color.LawnGreen)
+                    ledGdHtrOC.FillColor = IIf(fault_bits And &H20, Color.Red, Color.LawnGreen)
+                    ledGdEgMon.FillColor = IIf(fault_bits And &HC0, Color.Red, Color.LawnGreen) ' 8 and 4
+                    ledGdEcMon.FillColor = IIf(fault_bits And &H100, Color.Red, Color.LawnGreen)
                     ledGdCAN.FillColor = IIf(fault_bits And &H800, Color.Red, Color.LawnGreen)
 
 
@@ -722,9 +722,9 @@ Public Class frmMain
                     ledMagImOCAbs.FillColor = IIf(fault_bits And &H10, Color.Red, Color.LawnGreen)
                     ledMagImUCAbs.FillColor = IIf(fault_bits And &H20, Color.Red, Color.LawnGreen)
                     ledMagEmUVAbs.FillColor = IIf(fault_bits And &H40, Color.Red, Color.LawnGreen)
-                    ledMagTempSW.FillColor = IIf(fault_bits And &H80, Color.Red, Color.LawnGreen)
-                    ledMagCoolFault.FillColor = IIf(fault_bits And &H100, Color.Red, Color.LawnGreen)
-                    ledMagCanFault.FillColor = IIf(fault_bits And &H200, Color.Red, Color.LawnGreen)
+                    ledMagTempSW.FillColor = IIf(fault_bits And &H200, Color.Red, Color.LawnGreen)
+                    ledMagCoolFault.FillColor = IIf(fault_bits And &H80, Color.Red, Color.LawnGreen)
+                    ledMagCanFault.FillColor = IIf(fault_bits And &H100, Color.Red, Color.LawnGreen)
 
                     ledWMagOK.FillColor = IIf(logged_bits And &H1, Color.Black, Color.Transparent)
                     ledWMagHtrOK.FillColor = IIf(logged_bits And &H2, Color.Black, Color.Transparent)
