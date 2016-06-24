@@ -2667,7 +2667,7 @@ Public Class frmMain
 
     Private Sub btnAfcManualPosition_Click(sender As Object, e As EventArgs) Handles btnAfcManualPosition.Click
         Dim input_data As Double
-        Dim data_valid = get_set_data("Set Manual Position", "AFC", 0, 6400, "", input_data)
+        Dim data_valid = get_set_data("Set Manual Position", "AFC", 0, 64000, "", input_data)
 
         If data_valid Then
             Dim program_word As UInt16 = input_data
