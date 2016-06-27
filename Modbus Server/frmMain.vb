@@ -2755,11 +2755,16 @@ Public Class frmMain
         lblIonIi2Title.Visible = False
         lblIonIi2.Visible = False
         lblIonIi2Unit.Visible = False
-        BlueRectMain.Location = New Point(28, 398)
+        BlueRectMain.Location = New Point(28, 410)  'New Point(28, 398)
         btnDispServicePanel.Visible = False
         btnDispDeveloperPanel.Visible = False
         LabelAgileInfo.Visible = False
         LabelFirmwareVerssion.Visible = False
+
+        lblDoseRate.Visible = False
+        lblDoseRateTitle.Visible = False
+        lblDoseRateUnit.Visible = False
+
 
         For i = 1 To 9
             dispLeds(i - 1).Visible = False
@@ -2787,7 +2792,11 @@ Public Class frmMain
                     dispLeds(i - 1).Visible = True
                 Next
 
-
+                If (access_level > 1) Then
+                    lblDoseRate.Visible = True
+                    lblDoseRateTitle.Visible = True
+                    lblDoseRateUnit.Visible = True
+                End If
             End If
         End If
 

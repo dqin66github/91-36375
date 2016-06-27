@@ -68,7 +68,7 @@ Partial Class frmMain
         Me.Label129 = New System.Windows.Forms.Label()
         Me.lblScanMode = New System.Windows.Forms.Label()
         Me.Label29 = New System.Windows.Forms.Label()
-        Me.Label30 = New System.Windows.Forms.Label()
+        Me.lblDoseRateUnit = New System.Windows.Forms.Label()
         Me.lblDoseRate = New System.Windows.Forms.Label()
         Me.lblPulseFreq = New System.Windows.Forms.Label()
         Me.Label31 = New System.Windows.Forms.Label()
@@ -78,7 +78,7 @@ Partial Class frmMain
         Me.lblBeamDuration = New System.Windows.Forms.Label()
         Me.Label22 = New System.Windows.Forms.Label()
         Me.Label23 = New System.Windows.Forms.Label()
-        Me.Label24 = New System.Windows.Forms.Label()
+        Me.lblDoseRateTitle = New System.Windows.Forms.Label()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.lblIonIi2Unit = New System.Windows.Forms.Label()
         Me.lblIonIi2Title = New System.Windows.Forms.Label()
@@ -1080,17 +1080,18 @@ Partial Class frmMain
         Me.Label29.TabIndex = 34
         Me.Label29.Text = "ns"
         '
-        'Label30
+        'lblDoseRateUnit
         '
-        Me.Label30.AutoSize = True
-        Me.Label30.BackColor = System.Drawing.Color.White
-        Me.Label30.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label30.ForeColor = System.Drawing.Color.Black
-        Me.Label30.Location = New System.Drawing.Point(245, 432)
-        Me.Label30.Name = "Label30"
-        Me.Label30.Size = New System.Drawing.Size(67, 21)
-        Me.Label30.TabIndex = 34
-        Me.Label30.Text = "Gy/min"
+        Me.lblDoseRateUnit.AutoSize = True
+        Me.lblDoseRateUnit.BackColor = System.Drawing.Color.White
+        Me.lblDoseRateUnit.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblDoseRateUnit.ForeColor = System.Drawing.Color.Black
+        Me.lblDoseRateUnit.Location = New System.Drawing.Point(245, 432)
+        Me.lblDoseRateUnit.Name = "lblDoseRateUnit"
+        Me.lblDoseRateUnit.Size = New System.Drawing.Size(67, 21)
+        Me.lblDoseRateUnit.TabIndex = 34
+        Me.lblDoseRateUnit.Text = "Gy/min"
+        Me.lblDoseRateUnit.Visible = False
         '
         'lblDoseRate
         '
@@ -1103,6 +1104,7 @@ Partial Class frmMain
         Me.lblDoseRate.TabIndex = 37
         Me.lblDoseRate.Text = "0"
         Me.lblDoseRate.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.lblDoseRate.Visible = False
         '
         'lblPulseFreq
         '
@@ -1200,17 +1202,18 @@ Partial Class frmMain
         Me.Label23.TabIndex = 40
         Me.Label23.Text = "Pulse Frequency"
         '
-        'Label24
+        'lblDoseRateTitle
         '
-        Me.Label24.AutoSize = True
-        Me.Label24.BackColor = System.Drawing.Color.White
-        Me.Label24.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label24.ForeColor = System.Drawing.Color.Black
-        Me.Label24.Location = New System.Drawing.Point(41, 432)
-        Me.Label24.Name = "Label24"
-        Me.Label24.Size = New System.Drawing.Size(86, 21)
-        Me.Label24.TabIndex = 40
-        Me.Label24.Text = "Dose Rate"
+        Me.lblDoseRateTitle.AutoSize = True
+        Me.lblDoseRateTitle.BackColor = System.Drawing.Color.White
+        Me.lblDoseRateTitle.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblDoseRateTitle.ForeColor = System.Drawing.Color.Black
+        Me.lblDoseRateTitle.Location = New System.Drawing.Point(41, 432)
+        Me.lblDoseRateTitle.Name = "lblDoseRateTitle"
+        Me.lblDoseRateTitle.Size = New System.Drawing.Size(86, 21)
+        Me.lblDoseRateTitle.TabIndex = 40
+        Me.lblDoseRateTitle.Text = "Dose Rate"
+        Me.lblDoseRateTitle.Visible = False
         '
         'lblIonIi2Unit
         '
@@ -5890,7 +5893,7 @@ Partial Class frmMain
         'BlueRectMain
         '
         Me.BlueRectMain.Enabled = False
-        Me.BlueRectMain.Location = New System.Drawing.Point(28, 398)
+        Me.BlueRectMain.Location = New System.Drawing.Point(28, 410)
         Me.BlueRectMain.MyBorderColor = System.Drawing.Color.Black
         Me.BlueRectMain.MyBorderWidth = 0.001!
         Me.BlueRectMain.Name = "BlueRectMain"
@@ -5915,7 +5918,7 @@ Partial Class frmMain
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.White
         Me.ClientSize = New System.Drawing.Size(1304, 721)
-        Me.Controls.Add(Me.Label24)
+        Me.Controls.Add(Me.lblDoseRateTitle)
         Me.Controls.Add(Me.Label23)
         Me.Controls.Add(Me.PanelRadRight)
         Me.Controls.Add(Me.Label22)
@@ -5937,7 +5940,7 @@ Partial Class frmMain
         Me.Controls.Add(Me.lblAccessLevel)
         Me.Controls.Add(Me.lblDoseRate)
         Me.Controls.Add(Me.lblSystem)
-        Me.Controls.Add(Me.Label30)
+        Me.Controls.Add(Me.lblDoseRateUnit)
         Me.Controls.Add(Me.Panel2)
         Me.Controls.Add(Me.Label29)
         Me.Controls.Add(Me.lblScanMode)
@@ -6366,7 +6369,7 @@ Partial Class frmMain
     Friend WithEvents lblSF6Pressure As System.Windows.Forms.Label
     Friend WithEvents BlueRect15 As CustomControls.BlueRect
     Friend WithEvents Label29 As System.Windows.Forms.Label
-    Friend WithEvents Label30 As System.Windows.Forms.Label
+    Friend WithEvents lblDoseRateUnit As System.Windows.Forms.Label
     Friend WithEvents lblDoseRate As System.Windows.Forms.Label
     Friend WithEvents lblPulseFreq As System.Windows.Forms.Label
     Friend WithEvents Label31 As System.Windows.Forms.Label
@@ -6376,7 +6379,7 @@ Partial Class frmMain
     Friend WithEvents lblBeamDuration As System.Windows.Forms.Label
     Friend WithEvents Label22 As System.Windows.Forms.Label
     Friend WithEvents Label23 As System.Windows.Forms.Label
-    Friend WithEvents Label24 As System.Windows.Forms.Label
+    Friend WithEvents lblDoseRateTitle As System.Windows.Forms.Label
     Friend WithEvents BlueRect5 As CustomControls.BlueRect
     Friend WithEvents LabelComputerTime As System.Windows.Forms.Label
     Friend WithEvents LabelECBTime As System.Windows.Forms.Label
