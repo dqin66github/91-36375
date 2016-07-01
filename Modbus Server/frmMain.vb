@@ -469,6 +469,7 @@ Public Class frmMain
                     ledPulseCanFault.FillColor = Color.Red
                     ledPulseRFArc.FillColor = Color.Red
                     ledPulsePFNfan.FillColor = Color.Red
+                    ledPulseTriggerStayedOn.FillColor = Color.Red
                     ledPulsePanel.FillColor = Color.Red
                     ledPulseKeylock.FillColor = Color.Red
 
@@ -511,6 +512,7 @@ Public Class frmMain
                     ledPulseCanFault.FillColor = IIf(fault_bits And &H2, Color.Red, Color.LawnGreen)
                     ledPulseRFArc.FillColor = IIf(fault_bits And &H4, Color.Red, Color.LawnGreen)
                     ledPulsePFNfan.FillColor = IIf(fault_bits And &H8, Color.Red, Color.LawnGreen)
+                    ledPulseTriggerStayedOn.FillColor = IIf(fault_bits And &H10, Color.Red, Color.LawnGreen)
                     ledPulsePanel.FillColor = IIf(fault_bits And &H20, Color.Red, Color.LawnGreen)
                     ledPulseKeylock.FillColor = IIf(fault_bits And &H40, Color.Red, Color.LawnGreen)
 
