@@ -255,6 +255,7 @@ Partial Class frmMain
         Me.ledPulseCanFault = New CustomControls.OvalLed()
         Me.ledWPulseCustomHVon = New CustomControls.OvalLed()
         Me.ledPulseKeylock = New CustomControls.OvalLed()
+        Me.ledPulseTriggerStayedOn = New CustomControls.OvalLed()
         Me.ledPulsePFNfan = New CustomControls.OvalLed()
         Me.ledWPulseCustomXrayOn = New CustomControls.OvalLed()
         Me.ledPulseXrayTiming = New CustomControls.OvalLed()
@@ -262,6 +263,7 @@ Partial Class frmMain
         Me.ledPulseRFArc = New CustomControls.OvalLed()
         Me.ledPulsePanel = New CustomControls.OvalLed()
         Me.Label162 = New System.Windows.Forms.Label()
+        Me.Label1 = New System.Windows.Forms.Label()
         Me.Label165 = New System.Windows.Forms.Label()
         Me.Label167 = New System.Windows.Forms.Label()
         Me.Label168 = New System.Windows.Forms.Label()
@@ -463,8 +465,6 @@ Partial Class frmMain
         Me.btnServiceSaveFactoryDefaults = New System.Windows.Forms.Button()
         Me.BlueRectMain = New CustomControls.BlueRect()
         Me.lblNoTrigger = New System.Windows.Forms.Label()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.ledPulseTriggerStayedOn = New CustomControls.OvalLed()
         Me.panelDispButtons.SuspendLayout()
         CType(Me.PictureBoxLogo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel2.SuspendLayout()
@@ -3369,7 +3369,7 @@ Partial Class frmMain
         '
         Me.ledWPulseTrigFault.FillColor = System.Drawing.Color.Black
         Me.ledWPulseTrigFault.ForeColor = System.Drawing.Color.White
-        Me.ledWPulseTrigFault.Location = New System.Drawing.Point(355, 482)
+        Me.ledWPulseTrigFault.Location = New System.Drawing.Point(356, 482)
         Me.ledWPulseTrigFault.MyBorderColor = System.Drawing.Color.Black
         Me.ledWPulseTrigFault.MyBorderWidth = 2
         Me.ledWPulseTrigFault.Name = "ledWPulseTrigFault"
@@ -3408,6 +3408,17 @@ Partial Class frmMain
         Me.ledPulseKeylock.Name = "ledPulseKeylock"
         Me.ledPulseKeylock.Size = New System.Drawing.Size(18, 20)
         Me.ledPulseKeylock.TabIndex = 114
+        '
+        'ledPulseTriggerStayedOn
+        '
+        Me.ledPulseTriggerStayedOn.FillColor = System.Drawing.Color.LawnGreen
+        Me.ledPulseTriggerStayedOn.ForeColor = System.Drawing.Color.White
+        Me.ledPulseTriggerStayedOn.Location = New System.Drawing.Point(132, 482)
+        Me.ledPulseTriggerStayedOn.MyBorderColor = System.Drawing.Color.Black
+        Me.ledPulseTriggerStayedOn.MyBorderWidth = 2
+        Me.ledPulseTriggerStayedOn.Name = "ledPulseTriggerStayedOn"
+        Me.ledPulseTriggerStayedOn.Size = New System.Drawing.Size(18, 20)
+        Me.ledPulseTriggerStayedOn.TabIndex = 111
         '
         'ledPulsePFNfan
         '
@@ -3486,12 +3497,23 @@ Partial Class frmMain
         Me.Label162.TabIndex = 84
         Me.Label162.Text = "Cab Scan"
         '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label1.ForeColor = System.Drawing.Color.Black
+        Me.Label1.Location = New System.Drawing.Point(156, 481)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(147, 21)
+        Me.Label1.TabIndex = 88
+        Me.Label1.Text = "Trigger Stayed On"
+        '
         'Label165
         '
         Me.Label165.AutoSize = True
         Me.Label165.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label165.ForeColor = System.Drawing.Color.Black
-        Me.Label165.Location = New System.Drawing.Point(379, 482)
+        Me.Label165.Location = New System.Drawing.Point(380, 482)
         Me.Label165.Name = "Label165"
         Me.Label165.Size = New System.Drawing.Size(107, 21)
         Me.Label165.TabIndex = 87
@@ -5915,28 +5937,6 @@ Partial Class frmMain
         Me.lblNoTrigger.TabIndex = 37
         Me.lblNoTrigger.Text = "No Trigger"
         Me.lblNoTrigger.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        '
-        'Label1
-        '
-        Me.Label1.AutoSize = True
-        Me.Label1.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.ForeColor = System.Drawing.Color.Black
-        Me.Label1.Location = New System.Drawing.Point(156, 481)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(147, 21)
-        Me.Label1.TabIndex = 88
-        Me.Label1.Text = "Trigger Stayed On"
-        '
-        'ledPulseTriggerStayedOn
-        '
-        Me.ledPulseTriggerStayedOn.FillColor = System.Drawing.Color.LawnGreen
-        Me.ledPulseTriggerStayedOn.ForeColor = System.Drawing.Color.White
-        Me.ledPulseTriggerStayedOn.Location = New System.Drawing.Point(132, 482)
-        Me.ledPulseTriggerStayedOn.MyBorderColor = System.Drawing.Color.Black
-        Me.ledPulseTriggerStayedOn.MyBorderWidth = 2
-        Me.ledPulseTriggerStayedOn.Name = "ledPulseTriggerStayedOn"
-        Me.ledPulseTriggerStayedOn.Size = New System.Drawing.Size(18, 20)
-        Me.ledPulseTriggerStayedOn.TabIndex = 111
         '
         'frmMain
         '
