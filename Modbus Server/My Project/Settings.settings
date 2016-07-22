@@ -17,5 +17,8 @@
     <Setting Name="AdvancedGUI" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="IonPumpLogInterval" Type="System.UInt16" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

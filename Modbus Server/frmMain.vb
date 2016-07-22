@@ -1,4 +1,8 @@
-﻿Imports CustomControls
+﻿
+Imports System
+Imports System.IO
+Imports CustomControls
+
 Public Class frmMain
 
     Public Const TAB_LOCATION_X_LARGE As UInt16 = 12
@@ -94,6 +98,10 @@ Public Class frmMain
     Public pulse_log_enabled As Boolean
     Dim blank_string As String = "----"
 
+    Public ion_pump_log_enabled As Boolean
+    Public ion_pump_log_file_name As String
+ 
+
 
 
     Private Sub frmMain_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
@@ -112,6 +120,8 @@ Public Class frmMain
                                        MODBUS_COMMANDS.MODBUS_WR_ION_PUMP}
             Application.DoEvents()
 
+            txtIonPumpLogInterval.Text = My.Settings.IonPumpLogInterval
+ 
 
             '     TextBoxIPAddress.Text = ServerSettings.txtIPAddr.Text
             '     ModBusPort = 502      'Modbus = 502 , Explicit Ethernet/IP = 44818 (TCP) , Implicit Ethernet/IP = 2222 (UDP)
@@ -161,6 +171,9 @@ Public Class frmMain
     End Sub
 
     Private Sub frmMain_close(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.FormClosing
+        My.Settings.IonPumpLogInterval = Val(txtIonPumpLogInterval.Text)
+  
+
         ServerSettings.CloseEventLogFile()
     End Sub
 
@@ -169,6 +182,9 @@ Public Class frmMain
         Dim ivalue As Integer
         Static connected As Boolean = False
         Static admin_param_checked As Boolean = False
+        Static last_log_time As DateTime
+
+
 
         TimerUpdate.Enabled = False
         ServerSettings.board_to_monitor = CByte(board_index)
@@ -200,6 +216,18 @@ Public Class frmMain
         '      DisplayBoardCommonElements(board_index)
         DisplayBoardSpecificData(False)
         '       DisplayDebugData()
+
+        ' check ion pump logging
+        If (access_level > 1) Then
+            If (ion_pump_log_enabled) Then
+                If (Now - last_log_time).TotalSeconds > Val(txtIonPumpLogInterval.Text) Then
+                    lblIonEi.Text = Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ION_PUMP).log_data(2) / 1000, "0.000")
+                    lblIonIi.Text = Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ION_PUMP).log_data(3) / 100, "0.00")
+                    logIonPump(lblIonEi.Text + "," + lblIonIi.Text)
+                    last_log_time = Now
+                End If
+            End If
+        End If
 
 #If DEMO_MODE = 0 Then
        End If ' connected
@@ -2767,6 +2795,9 @@ Public Class frmMain
         lblDoseRateTitle.Visible = False
         lblDoseRateUnit.Visible = False
 
+        panelIonPumpLogger.Visible = False
+        ion_pump_log_enabled = False
+        btnIonPumpLog.Text = "Start Ion Pump Logging"
 
         For i = 1 To 9
             dispLeds(i - 1).Visible = False
@@ -2798,6 +2829,8 @@ Public Class frmMain
                     lblDoseRate.Visible = True
                     lblDoseRateTitle.Visible = True
                     lblDoseRateUnit.Visible = True
+
+                    panelIonPumpLogger.Visible = True
                 End If
             End If
         End If
@@ -2926,6 +2959,71 @@ Public Class frmMain
     Private Sub btnClearDebugData_Click(sender As Object, e As EventArgs) Handles btnClearDebugData.Click
         ServerSettings.put_modbus_commands(REGISTER_DEBUG_TOGGLE_RESET_DEBUG, 0, 0, 0)
     End Sub
+
+#Region "Ion Pump Logging Related"
+    Private Sub createIonPumpLogFilename()
+        Dim file_path As String = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+        Dim log_path As String = Path.Combine(file_path, "2.5MeV_Linac")
+
+        If (Directory.Exists(log_path) = False) Then
+            Directory.CreateDirectory(log_path)
+        End If
+        ion_pump_log_file_name = Path.Combine(log_path, "IonPumpLog_" + DateTime.Now.ToString("yyyy_MM_dd_HH_mm") + ".csv")
+    End Sub
+
+    Private Sub logIonPump(item As String)
+        Dim line As String = DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss") + "," + item
+        Dim sw As StreamWriter
+
+        Try
+            sw = File.AppendText(ion_pump_log_file_name)
+            sw.WriteLine(line)
+            sw.Close()
+        Catch
+            ' create a new file
+            Try
+                createIonPumpLogFilename()
+                sw = File.AppendText(ion_pump_log_file_name)
+                sw.WriteLine(line)
+                sw.Close()
+            Catch
+                MessageBox.Show("Can't write to file " + ion_pump_log_file_name, "Ion Pump Data Logging", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Finally
+            End Try
+        End Try
+
+    End Sub
+    Private Sub btnIonPumpLog_Click(sender As Object, e As EventArgs) Handles btnIonPumpLog.Click
+        Dim filename As String, length As Byte = 50
+        If (btnIonPumpLog.Text.Contains("Start Ion Pump")) Then
+            createIonPumpLogFilename()
+            logIonPump("Ei, Ii")
+#If True Then
+            ToolTip1.SetToolTip(lblIonPumpLogName, ion_pump_log_file_name)
+            If (Len(ion_pump_log_file_name) > length) Then
+                filename = ion_pump_log_file_name.Substring(Len(ion_pump_log_file_name) - length, length)
+                Dim pos As Byte = InStr(filename, "\")
+                If (pos > 0) Then
+                    filename = "..." & filename.Substring(pos - 1, Len(filename) - pos + 1)
+                End If
+            Else
+                filename = ion_pump_log_file_name
+            End If
+#End If
+            lblIonPumpLogName.Text = "Log File Name: " & filename
+            btnIonPumpLog.Text = "Stop Ion Pump Logging"
+            ion_pump_log_enabled = True
+        Else
+            ion_pump_log_enabled = False
+            btnIonPumpLog.Text = "Start Ion Pump Logging"
+
+        End If
+
+    End Sub
+
+
+
+#End Region
 
 
 End Class

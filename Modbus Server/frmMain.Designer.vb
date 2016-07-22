@@ -413,6 +413,11 @@ Partial Class frmMain
         Me.Label71 = New System.Windows.Forms.Label()
         Me.BlueRect13 = New CustomControls.BlueRect()
         Me.TabPageIonPump = New System.Windows.Forms.TabPage()
+        Me.panelIonPumpLogger = New System.Windows.Forms.Panel()
+        Me.Label6 = New System.Windows.Forms.Label()
+        Me.txtIonPumpLogInterval = New System.Windows.Forms.TextBox()
+        Me.lblIonPumpLogName = New System.Windows.Forms.Label()
+        Me.btnIonPumpLog = New System.Windows.Forms.Button()
         Me.ledIonUV = New CustomControls.OvalLed()
         Me.ledIonOC = New CustomControls.OvalLed()
         Me.ledIonCanFault = New CustomControls.OvalLed()
@@ -483,6 +488,7 @@ Partial Class frmMain
         Me.TabPageAFC.SuspendLayout()
         Me.TabPageMagnetrHtr.SuspendLayout()
         Me.TabPageIonPump.SuspendLayout()
+        Me.panelIonPumpLogger.SuspendLayout()
         Me.TabPageService.SuspendLayout()
         Me.TabPageServicePanel.SuspendLayout()
         Me.tabPageDeveloper.SuspendLayout()
@@ -5292,6 +5298,7 @@ Partial Class frmMain
         '
         Me.TabPageIonPump.BackColor = System.Drawing.SystemColors.Control
         Me.TabPageIonPump.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
+        Me.TabPageIonPump.Controls.Add(Me.panelIonPumpLogger)
         Me.TabPageIonPump.Controls.Add(Me.ledIonUV)
         Me.TabPageIonPump.Controls.Add(Me.ledIonOC)
         Me.TabPageIonPump.Controls.Add(Me.ledIonCanFault)
@@ -5312,6 +5319,58 @@ Partial Class frmMain
         Me.TabPageIonPump.Size = New System.Drawing.Size(680, 580)
         Me.TabPageIonPump.TabIndex = 9
         Me.TabPageIonPump.Text = "TabPage8"
+        '
+        'panelIonPumpLogger
+        '
+        Me.panelIonPumpLogger.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.panelIonPumpLogger.Controls.Add(Me.Label6)
+        Me.panelIonPumpLogger.Controls.Add(Me.txtIonPumpLogInterval)
+        Me.panelIonPumpLogger.Controls.Add(Me.lblIonPumpLogName)
+        Me.panelIonPumpLogger.Controls.Add(Me.btnIonPumpLog)
+        Me.panelIonPumpLogger.Location = New System.Drawing.Point(50, 448)
+        Me.panelIonPumpLogger.Name = "panelIonPumpLogger"
+        Me.panelIonPumpLogger.Size = New System.Drawing.Size(572, 113)
+        Me.panelIonPumpLogger.TabIndex = 176
+        '
+        'Label6
+        '
+        Me.Label6.AutoSize = True
+        Me.Label6.Location = New System.Drawing.Point(30, 15)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(92, 13)
+        Me.Label6.TabIndex = 417
+        Me.Label6.Text = "Log Interval (sec)"
+        '
+        'txtIonPumpLogInterval
+        '
+        Me.txtIonPumpLogInterval.Location = New System.Drawing.Point(33, 31)
+        Me.txtIonPumpLogInterval.Name = "txtIonPumpLogInterval"
+        Me.txtIonPumpLogInterval.Size = New System.Drawing.Size(100, 22)
+        Me.txtIonPumpLogInterval.TabIndex = 416
+        '
+        'lblIonPumpLogName
+        '
+        Me.lblIonPumpLogName.AutoSize = True
+        Me.lblIonPumpLogName.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblIonPumpLogName.ForeColor = System.Drawing.Color.Black
+        Me.lblIonPumpLogName.Location = New System.Drawing.Point(29, 74)
+        Me.lblIonPumpLogName.Name = "lblIonPumpLogName"
+        Me.lblIonPumpLogName.Size = New System.Drawing.Size(110, 21)
+        Me.lblIonPumpLogName.TabIndex = 415
+        Me.lblIonPumpLogName.Text = "Log File Name"
+        '
+        'btnIonPumpLog
+        '
+        Me.btnIonPumpLog.BackColor = System.Drawing.Color.Blue
+        Me.btnIonPumpLog.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnIonPumpLog.ForeColor = System.Drawing.Color.Blue
+        Me.btnIonPumpLog.Location = New System.Drawing.Point(292, 22)
+        Me.btnIonPumpLog.Name = "btnIonPumpLog"
+        Me.btnIonPumpLog.Size = New System.Drawing.Size(222, 33)
+        Me.btnIonPumpLog.TabIndex = 414
+        Me.btnIonPumpLog.Tag = "1"
+        Me.btnIonPumpLog.Text = "Start Ion Pump Logging"
+        Me.btnIonPumpLog.UseVisualStyleBackColor = True
         '
         'ledIonUV
         '
@@ -6010,6 +6069,8 @@ Partial Class frmMain
         Me.TabPageMagnetrHtr.PerformLayout()
         Me.TabPageIonPump.ResumeLayout(False)
         Me.TabPageIonPump.PerformLayout()
+        Me.panelIonPumpLogger.ResumeLayout(False)
+        Me.panelIonPumpLogger.PerformLayout()
         Me.TabPageService.ResumeLayout(False)
         Me.TabPageService.PerformLayout()
         Me.TabPageServicePanel.ResumeLayout(False)
@@ -6461,4 +6522,9 @@ Partial Class frmMain
     Friend WithEvents lblNoTrigger As System.Windows.Forms.Label
     Friend WithEvents ledPulseTriggerStayedOn As CustomControls.OvalLed
     Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents panelIonPumpLogger As System.Windows.Forms.Panel
+    Friend WithEvents lblIonPumpLogName As System.Windows.Forms.Label
+    Friend WithEvents btnIonPumpLog As System.Windows.Forms.Button
+    Friend WithEvents Label6 As System.Windows.Forms.Label
+    Friend WithEvents txtIonPumpLogInterval As System.Windows.Forms.TextBox
 End Class
