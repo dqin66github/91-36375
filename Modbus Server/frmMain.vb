@@ -2507,7 +2507,7 @@ Public Class frmMain
         Dim response As MsgBoxResult = MsgBox("Set Override Pulses?", MsgBoxStyle.OkCancel)
 
         If (response = MsgBoxResult.Ok) Then
-            ServerSettings.put_modbus_commands(REGISTER_CMD_COOLANT_INTERFACE_ALLOW_SF6_PULSES_WHEN_PRESSURE_BELOW_LIMIT, 0, 0, 0)
+            ServerSettings.put_modbus_commands(REGISTER_CMD_COOLANT_INTERFACE_ALLOW_SF6_PULSES_WHEN_PRESSURE_BELOW_LIMIT, 5, 0, 0)
         End If
 
 #If False Then
