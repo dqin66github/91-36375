@@ -1069,7 +1069,7 @@ Public Class frmMain
 
             End If
 
-            lblIonIi2.Text = Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ION_PUMP).log_data(3) / 1000, "0.000")
+            lblIonIi2.Text = Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ION_PUMP).log_data(3) / 100, "0.00")
 
 
 
