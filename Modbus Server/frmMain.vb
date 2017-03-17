@@ -69,6 +69,9 @@ Public Class frmMain
     Public Const REGISTER_SYSTEM_ENABLE_HIGH_SPEED_LOGGING As UInt16 = &HE301
     Public Const REGISTER_SYSTEM_DISABLE_HIGH_SPEED_LOGGING As UInt16 = &HE302
     Public Const REGISTER_SYSTEM_ECB_LOAD_FACTORY_SETTINGS_FROM_EEPROM_MIRROR_AND_REBOOT As UInt16 = &HE303
+    ' reserved for future changes
+    Public Const REGISTER_SYSTEM_ECB_MAGNETRON_CONDITIONING As UInt16 = &HE304
+
 
     Public Const REGISTER_ETM_ECB_RESET_ARC_AND_PULSE_COUNT As UInt16 = &HE400
     Public Const REGISTER_ETM_ECB_RESET_SECONDS_POWERED_HV_ON_XRAY_ON As UInt16 = &HE401
@@ -76,10 +79,14 @@ Public Class frmMain
     Public Const REGISTER_ETM_ECB_LOAD_DEFAULT_SYSTEM_SETTINGS_AND_REBOOT As UInt16 = &HE403
     Public Const REGISTER_ETM_ECB_SAVE_FACTORY_SETTINGS_TO_EEPROM_MIRROR As UInt16 = &HE404
 
+
     Public Const REGISTER_DEBUG_TOGGLE_RESET_DEBUG As UInt16 = &HE500
     Public Const REGISTER_DEBUG_GUN_DRIVER_RESET_FPGA As UInt16 = &HE501
     Public Const REGISTER_DEBUG_RESET_MCU As UInt16 = &HE502
     Public Const REGISTER_DEBUG_TEST_PULSE_FAULT As UInt16 = &HE503
+
+
+
 
     Dim dispButtons() As CustomControls.ButtonSelected
     Dim dispLeds() As OvalLed
@@ -100,7 +107,11 @@ Public Class frmMain
 
     Public ion_pump_log_enabled As Boolean
     Public ion_pump_log_file_name As String
- 
+
+    Public form_hidden As Boolean
+    Public hidden_wait_count As UInt16
+
+    Private set_commands(SET_CMDS.LENGTH) As SET_COMMAND_STRUCTURE
 
 
 
@@ -159,6 +170,8 @@ Public Class frmMain
         End If
 
         LoadLogRegisterText()
+        init_set_commands()
+        ServerSettings.delete_older_dump_data_files()
 
         Me.Size = New System.Drawing.Size(1330, 760)
 
@@ -166,16 +179,29 @@ Public Class frmMain
 
         DisplayBoardSpecificData(False)
 
-
+        form_hidden = False
+        hidden_wait_count = 10
 
     End Sub
 
-    Private Sub frmMain_close(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.FormClosing
-        My.Settings.IonPumpLogInterval = Val(txtIonPumpLogInterval.Text)
-  
 
-        ServerSettings.CloseEventLogFile()
+    Private Sub frmMain_FormClosed(ByVal sender As System.Object, ByVal e As System.Windows.Forms.FormClosedEventArgs) Handles MyBase.FormClosed
+        Try
+            TimerUpdate.Enabled = False
+            My.Settings.IonPumpLogInterval = Val(txtIonPumpLogInterval.Text)
+            ServerSettings.CloseEventLogFile()
+
+            ServerSettings.Close()
+        Catch ex As Exception
+            MessageBox.Show("Exception caught in FormMain.FormClosed  " + ex.ToString)
+        End Try
+
     End Sub
+
+    Private Sub frmMain_Move(sender As Object, e As EventArgs) Handles MyBase.Move
+        Me.CenterToScreen()
+    End Sub
+
 
 
     Private Sub TimerUpdate_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TimerUpdate.Tick
@@ -184,9 +210,27 @@ Public Class frmMain
         Static admin_param_checked As Boolean = False
         Static last_log_time As DateTime
 
-
-
         TimerUpdate.Enabled = False
+
+        Try
+            Dim instances() As Process = Process.GetProcessesByName(Process.GetCurrentProcess.ProcessName)
+
+            If (hidden_wait_count >= 10) Then
+                If (instances.Length > 1) Then
+                    form_hidden = Not form_hidden
+                    Me.Visible = Not form_hidden
+                    hidden_wait_count = 0
+                End If
+            Else
+                hidden_wait_count = CUShort(hidden_wait_count + 1)
+            End If
+        Catch
+            MsgBox(Err.Description)
+
+        End Try
+
+
+
         ServerSettings.board_to_monitor = CByte(board_index)
 
         ivalue = ServerSettings.get_modbus_status()
@@ -362,10 +406,10 @@ Public Class frmMain
                     lblGdEg.Text = Format(Convert.ToInt16(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(3)) * 0.01 - 80, "0.0")
                     lblGdEc.Text = Format(Convert.ToUInt16(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(12)) * -0.01, "0.0")
 
-                    btnGdEkset.Text = String.Format("{0,-19}", "Ek Set") & Format(Convert.ToUInt16(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(8)) * (-0.001), "0.00 kV")
-                    btnGdIfSet.Text = String.Format("{0,-22}", "If Set") & Format(Convert.ToUInt16(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(9)) * (0.001), "0.00 A")
-                    btnGdEgsetCargo.Text = String.Format("{0,-15}", "Cargo Eg Set") & Format(Convert.ToUInt16(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).ecb_local_data(0)) * 0.01 - 80, "0.0 V")
-                    btnGdEgsetCab.Text = String.Format("{0,-17}", "Cab Eg Set") & Format(Convert.ToUInt16(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).ecb_local_data(1)) * 0.01 - 80, "0.0 V")
+                    btnGdEkset.Text = String.Format("{0,-19}", "Ek Set") & Format(get_ref_data(REGISTER_GUN_DRIVER_CATHODE_VOLTAGE) * (-0.001), "0.00 kV")
+                    btnGdIfSet.Text = String.Format("{0,-22}", "If Set") & Format(get_ref_data(REGISTER_GUN_DRIVER_HEATER_VOLTAGE) * (0.001), "0.00 A")
+                    btnGdEgsetCargo.Text = String.Format("{0,-15}", "Cargo Eg Set") & Format(get_ref_data(REGISTER_GUN_DRIVER_HIGH_ENERGY_PULSE_TOP_VOLTAGE) * 0.01 - 80, "0.0 V")
+                    btnGdEgsetCab.Text = String.Format("{0,-17}", "Cab Eg Set") & Format(get_ref_data(REGISTER_GUN_DRIVER_LOW_ENERGY_PULSE_TOP_VOLTAGE) * 0.01 - 80, "0.0 V")
 
                     btnGdEkset.Enabled = IIf(access_level > 1, True, False)
                     btnGdIfSet.Enabled = IIf(access_level > 1, True, False)
@@ -460,13 +504,13 @@ Public Class frmMain
                 End If
             Case 4 ' pulse sync
 
-                Dim data_offset As Byte
+                Dim offset As Byte
                 If (show_cargo_settings) Then
                     lblModeSettings.Text = "Cargo Mode Settings"
-                    data_offset = 0
+                    offset = 0
                 Else
                     lblModeSettings.Text = "Cab Mode Settings"
-                    data_offset = 8
+                    offset = 8
                 End If
 
                 If (bBlank_disp) Then
@@ -518,19 +562,19 @@ Public Class frmMain
                         End If
                     Next
 
-                    btnPulseStartMin.Text = "Beam Min Start  " & (Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(1 + data_offset) / 256) * 20) & "ns"
-                    btnPulseStart1_3.Text = "Beam 1/3 Start  " & ((ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(1 + data_offset) And &HFF) * 20) & "ns"
-                    btnPulseStart2_3.Text = "Beam 2/3 Start  " & (Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(data_offset) / 256) * 20) & "ns"
-                    btnPulseStartMax.Text = "Beam Max Start  " & ((ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(data_offset) And &HFF) * 20) & "ns"
+                    btnPulseStartMin.Text = "Beam Min Start  " & (Math.Truncate(get_ref_data(REGISTER_PULSE_SYNC_GRID_PULSE_DELAY_HIGH_ENERGY_C_D + offset) / 256) * 20) & "ns"
+                    btnPulseStart1_3.Text = "Beam 1/3 Start  " & ((get_ref_data(REGISTER_PULSE_SYNC_GRID_PULSE_DELAY_HIGH_ENERGY_C_D + offset) And &HFF) * 20) & "ns"
+                    btnPulseStart2_3.Text = "Beam 2/3 Start  " & (Math.Truncate(get_ref_data(REGISTER_PULSE_SYNC_GRID_PULSE_DELAY_HIGH_ENERGY_A_B + offset) / 256) * 20) & "ns"
+                    btnPulseStartMax.Text = "Beam Max Start  " & ((get_ref_data(REGISTER_PULSE_SYNC_GRID_PULSE_DELAY_HIGH_ENERGY_A_B + offset) And &HFF) * 20) & "ns"
 
-                    btnPulseStopMin.Text = "Beam Min Stop  " & (Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(5 + data_offset) / 256) * 20) & "ns"
-                    btnPulseStop1_3.Text = "Beam 1/3 Stop  " & ((ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(5 + data_offset) And &HFF) * 20) & "ns"
-                    btnPulseStop2_3.Text = "Beam 2/3 Stop  " & (Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(4 + data_offset) / 256) * 20) & "ns"
-                    btnPulseStopMax.Text = "Beam Max Stop  " & ((ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(4 + data_offset) And &HFF) * 20) & "ns"
+                    btnPulseStopMin.Text = "Beam Min Stop  " & (Math.Truncate(get_ref_data(REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_HIGH_ENERGY_C_D + offset) / 256) * 20) & "ns"
+                    btnPulseStop1_3.Text = "Beam 1/3 Stop  " & ((get_ref_data(REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_HIGH_ENERGY_C_D + offset) And &HFF) * 20) & "ns"
+                    btnPulseStop2_3.Text = "Beam 2/3 Stop  " & (Math.Truncate(get_ref_data(REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_HIGH_ENERGY_A_B + offset) / 256) * 20) & "ns"
+                    btnPulseStopMax.Text = "Beam Max Stop  " & ((get_ref_data(REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_HIGH_ENERGY_A_B + offset) And &HFF) * 20) & "ns"
 
-                    btnPfnDelay.Text = "PFN Delay " & (Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(2 + data_offset) / 256) * 20) & "ns"
-                    btnAfcDelay.Text = "AFC Delay " & (Math.Truncate(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(6 + data_offset) / 256) * 20) & "ns"
-                    btnPulseSampleDelay.Text = "MagI Sample Delay " & ((ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(6 + data_offset) And &HFF) * 20) & "ns"
+                    btnPfnDelay.Text = "PFN Delay " & (Math.Truncate(get_ref_data(REGISTER_PULSE_SYNC_RF_TRIGGER_AND_THYRATRON_PULSE_DELAY_HIGH_ENERGY + offset) / 256) * 20) & "ns"
+                    btnAfcDelay.Text = "AFC Delay " & (Math.Truncate(get_ref_data(REGISTER_PULSE_SYNC_AFC_AND_SPARE_PULSE_DELAY_HIGH_ENERGY + offset) / 256) * 20) & "ns"
+                    btnPulseSampleDelay.Text = "MagI Sample Delay " & ((get_ref_data(REGISTER_PULSE_SYNC_AFC_AND_SPARE_PULSE_DELAY_HIGH_ENERGY + offset) And &HFF) * 20) & "ns"
 
                     '    Dim control_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(board_index).control_notice_bits
                     Dim fault_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).fault_bits
@@ -577,8 +621,8 @@ Public Class frmMain
                     lblHVprePulseVolt.Text = Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA).log_data(0) / 1000, "0.000")
                     lblHVcurrent.Text = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA).log_data(5) / 1000
 
-                    btnHVsetCargo.Text = "Cargo V Set  " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA).log_data(2) / 1000, "0.000") & " kV"
-                    btnHVsetCab.Text = "Cab V Set  " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA).log_data(1) / 1000, "0.000") & " kV"
+                    btnHVsetCargo.Text = "Cargo V Set  " & Format(get_ref_data(REGISTER_HIGH_ENERGY_SET_POINT) / 1000, "0.000") & " kV"
+                    btnHVsetCab.Text = "Cab V Set  " & Format(get_ref_data(REGISTER_LOW_ENERGY_SET_POINT) / 1000, "0.000") & " kV"
                     btnHVsetCargo.Enabled = access_level > 0
                     btnHVsetCab.Enabled = access_level > 0
 
@@ -672,7 +716,7 @@ Public Class frmMain
                     lblAfcFilteredError.Text = filtered_error
                     lblAfcPreAsample.Text = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).log_data(6)
                     lblAfcPreBsample.Text = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).log_data(5)
-                    lblAfcManualPosition.Text = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).log_data(2)
+                    lblAfcManualPosition.Text = get_ref_data(REGISTER_CMD_AFC_MANUAL_TARGET_POSITION)
 
                     Dim enble_button As Boolean = access_level > 0
                     For Each ctrl In TabPageAFC.Controls
@@ -681,9 +725,9 @@ Public Class frmMain
                         End If
                     Next
 
-                    btnAfcHomePosSet.Text = "Home Pos Set  " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).ecb_local_data(0)
-                    btnAfcCargoCtrlVSet.Text = "Cargo Ctrl V Set  " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).ecb_local_data(1) / 1000, "0.000") & " V"
-                    btnAfcCabCtrlVSet.Text = "Cab Ctrl V Set  " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).ecb_local_data(2) / 1000, "0.000") & " V"
+                    btnAfcHomePosSet.Text = "Home Pos Set  " & get_ref_data(REGISTER_HOME_POSITION)
+                    btnAfcCargoCtrlVSet.Text = "Cargo Ctrl V Set  " & Format(get_ref_data(REGISTER_AFC_AFT_CONTROL_VOLTAGE_HIGH_ENERGY) / 1000, "0.000") & " V"
+                    btnAfcCabCtrlVSet.Text = "Cab Ctrl V Set  " & Format(get_ref_data(REGISTER_AFC_AFT_CONTROL_VOLTAGE_LOW_ENERGY) / 1000, "0.000") & " V"
                     '     btnAfcManualPosition.Text = "Manual Pos  " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).log_data(2)
 
                     '    Dim control_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(board_index).control_notice_bits
@@ -737,9 +781,9 @@ Public Class frmMain
                     btnMagCargoIset.Enabled = access_level > 0
                     btnMagCabIset.Enabled = access_level > 0
                     btnMagIfSet.Enabled = access_level > 0
-                    btnMagCargoIset.Text = "Cargo Mag I Set  " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HTR_MAGNET).ecb_local_data(2) / 1000, "0.00") & " A"
-                    btnMagCabIset.Text = "Cab Mag I Set  " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HTR_MAGNET).ecb_local_data(3) / 1000, "0.00") & " A"
-                    btnMagIfSet.Text = "Heater I Set  " & Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HTR_MAGNET).ecb_local_data(0) / 1000, "0.00") & " A"
+                    btnMagCargoIset.Text = "Cargo Mag I Set  " & Format(get_ref_data(REGISTER_ELECTROMAGNET_CURRENT_HIGH_ENERGY) / 1000, "0.00") & " A"
+                    btnMagCabIset.Text = "Cab Mag I Set  " & Format(get_ref_data(REGISTER_ELECTROMAGNET_CURRENT_LOW_ENERGY) / 1000, "0.00") & " A"
+                    btnMagIfSet.Text = "Heater I Set  " & Format(get_ref_data(REGISTER_HEATER_CURRENT_AT_STANDBY) / 1000, "0.00") & " A"
 
                     '    Dim control_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(board_index).control_notice_bits
                     Dim fault_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HTR_MAGNET).fault_bits
@@ -832,16 +876,16 @@ Public Class frmMain
                     time = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(2) * 2 ^ 16
                     time += ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(1)
 
-                    year = CInt(Math.Truncate(time / 31622400))
-                    time = CUInt(time Mod 31622400)
-                    month = CInt(Math.Truncate(time / 2678400))
-                    time = CUInt(time Mod 2678400)
-                    day = CInt(Math.Truncate(time / 86400))
-                    time = CUInt(time Mod 86400)
-                    hour = CInt(Math.Truncate(time / 3600))
-                    time = CUInt(time Mod 3600)
-                    minute = CInt(Math.Truncate(time / 60))
-                    second = CInt(time Mod 60)
+                    year = CInt(Math.Truncate(time / Constants.YEAR_MULT))
+                    time = CUInt(time Mod Constants.YEAR_MULT)
+                    month = CInt(Math.Truncate(time / Constants.MONTH_MULT))
+                    time = CUInt(time Mod Constants.MONTH_MULT)
+                    day = CInt(Math.Truncate(time / Constants.DAY_MULT))
+                    time = CUInt(time Mod Constants.DAY_MULT)
+                    hour = CInt(Math.Truncate(time / Constants.HOUR_MULT))
+                    time = CUInt(time Mod Constants.HOUR_MULT)
+                    minute = CInt(Math.Truncate(time / Constants.MIN_MULT))
+                    second = CInt(time Mod Constants.MIN_MULT)
 
                     LabelECBTime.Text = "Linac UTC = 20" & Format(year, "00") & "/" & Format(month, "00") & "/" & Format(day, "00") & " " & Format(hour, "00") & ":" & Format(minute, "00") & ":" & Format(second, "00")
 
@@ -849,7 +893,7 @@ Public Class frmMain
 
 
                     btnServiceModeChange.Text = IIf(access_level > 0, "Logout", "Change Mode")
-#If DEMO_MODE = False Then
+#If DEMO_MODE = 0 Then
                     Dim Sync_data As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(7)
                     If (Sync_data And &H2) > 0 Then
                         btnServiceStartLog.Text = "Stop Pulse Logging"
@@ -868,13 +912,13 @@ Public Class frmMain
 #End If
                     End If
 #Else
-                        If pulse_log_enabled Then
-                            btnServiceStartLog.Text = "Stop Pulse Logging"
-                            ledServicePulseLogActive.FillColor = Color.Black
-                        Else
-                            btnServiceStartLog.Text = "Start Pulse Logging"
-                            ledServicePulseLogActive.FillColor = Color.Transparent
-                        End If
+                    If pulse_log_enabled Then
+                        btnServiceStartLog.Text = "Stop Pulse Logging"
+                        ledServicePulseLogActive.FillColor = Color.Black
+                    Else
+                        btnServiceStartLog.Text = "Start Pulse Logging"
+                        ledServicePulseLogActive.FillColor = Color.Transparent
+                    End If
 
 #End If
 
@@ -920,6 +964,8 @@ Public Class frmMain
         Dim state_label_color As Color = Color.FromArgb(0, 110, 199)
         Dim rad_panel_visible As Boolean = False
 
+        Static bData_dumped As Boolean = False
+
 
         flash_toggle = Not flash_toggle
 
@@ -933,7 +979,7 @@ Public Class frmMain
             btnResetFault.Visible = False
             lblDoseRate.Text = blank_string
             lblPulseFreq.Text = blank_string
-            lblTrigDuration.Text = blank_string
+            lblDoseCommand.Text = blank_string
             lblBeamDuration.Text = blank_string
 
             lblIonIi2.Text = blank_string
@@ -969,12 +1015,21 @@ Public Class frmMain
                     ECBState = "Standby"
                 Case &H40
                     ECBState = "Drive Up"
+                    bData_dumped = False
                 Case &H50
                     ECBState = "Ready"
+                    bData_dumped = False
                 Case &H60
                     ECBState = "X-Ray On"
                     state_label_color = Color.Red
                     rad_panel_visible = flash_toggle
+                    If (bData_dumped = False) Then
+                        ' check magetron current
+                        If (ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).log_data(0) >= 5000 Or ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_MAGNETRON_CURRENT).log_data(2) >= 5000) Then
+                            ServerSettings.dump_all_data()
+                            bData_dumped = True
+                        End If
+                    End If
                 Case &H80
                     ECBState = IIf(access_level > 0, "Fault Hold", "Fault")
                     state_label_color = Color.Red
@@ -1044,18 +1099,19 @@ Public Class frmMain
                 grid_width = 0
             End Try
 
-
+#If False Then
             Dim trigger_width As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).log_data(7)
             Try
                 trigger_width = Math.Truncate(trigger_width / 256) * 1000
             Catch ex As Exception
                 trigger_width = 0
             End Try
-
+#End If
 
             Dim dose_rate As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(17)
             lblDoseRate.Text = dose_rate
-            lblTrigDuration.Text = trigger_width
+            Dim dose_command As Byte = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).log_data(7) And &HFF ' range 0 to 255
+            lblDoseCommand.Text = dose_command
             lblBeamDuration.Text = grid_width
 
             If ((ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).logged_bits And &H80) > 0) Then
@@ -2189,15 +2245,6 @@ Public Class frmMain
 
 
 
-    Private Sub frmMain_FormClosed(ByVal sender As System.Object, ByVal e As System.Windows.Forms.FormClosedEventArgs) Handles MyBase.FormClosed
-        Try
-            TimerUpdate.Enabled = False
-            ServerSettings.Close()
-        Catch ex As Exception
-            MessageBox.Show("Exception caught in FormMain.FormClosed  " + ex.ToString)
-        End Try
-
-    End Sub
 
 
 
@@ -2205,12 +2252,12 @@ Public Class frmMain
 
 
 
-  
 
 
-   
 
-   
+
+
+
 
 
 #If False Then ' eeprom related
@@ -2310,11 +2357,11 @@ Public Class frmMain
         Dim time_now As Date = DateTime.UtcNow
         Dim time_seconds As UInt32
 
-        time_seconds = (time_now.Year Mod 100) * 31622400
-        time_seconds += (time_now.Month) * 2678400
-        time_seconds += (time_now.Day) * 86400
-        time_seconds += (time_now.Hour) * 3600
-        time_seconds += (time_now.Minute) * 60
+        time_seconds = (time_now.Year Mod 100) * Constants.YEAR_MULT
+        time_seconds += (time_now.Month) * Constants.MONTH_MULT
+        time_seconds += (time_now.Day) * Constants.DAY_MULT
+        time_seconds += (time_now.Hour) * Constants.HOUR_MULT
+        time_seconds += (time_now.Minute) * Constants.MIN_MULT
         time_seconds += (time_now.Second)
 
         time_high_word = CUShort(time_seconds >> 16)
@@ -2329,11 +2376,11 @@ Public Class frmMain
         End Try
     End Sub
 
-  
 
-   
 
-   
+
+
+
 
 
 
@@ -2439,7 +2486,7 @@ Public Class frmMain
         Dim dval As Double
 
         get_set_data = False
-        Try 
+        Try
             If (strvalue <> "") Then
                 dval = CDbl(strvalue)
                 If (dval > max Or dval < min) Then
@@ -2533,7 +2580,7 @@ Public Class frmMain
         Select Case btn.Tag
             Case 0 To 1 ' start	max
                 data_valid = get_set_data(IIf(btn.Tag = 0, "Set Beam Max Start", "Set Beam 2/3 Start"), title, 0, 255 * 20, "ns", input_data)
-            
+
                 If data_valid Then
                     input_data = input_data / 20
                     program_word = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(data_offset)
@@ -2795,6 +2842,11 @@ Public Class frmMain
         lblDoseRateTitle.Visible = False
         lblDoseRateUnit.Visible = False
 
+        PanelArcCounts.Visible = False
+        BlueRectMagnetron.Height = 180 '168
+        PanelMagnetronLeds.Location = New Point(PanelMagnetronLeds.Location.X, 280)
+
+
         panelIonPumpLogger.Visible = False
         ion_pump_log_enabled = False
         btnIonPumpLog.Text = "Start Ion Pump Logging"
@@ -2820,6 +2872,9 @@ Public Class frmMain
 
                 LabelAgileInfo.Visible = True
                 LabelFirmwareVerssion.Visible = True
+                PanelArcCounts.Visible = True
+                BlueRectMagnetron.Height = 258
+                PanelMagnetronLeds.Location = New Point(PanelMagnetronLeds.Location.X, 374)
 
                 For i = 1 To 9
                     dispLeds(i - 1).Visible = True
@@ -2838,9 +2893,7 @@ Public Class frmMain
 
     End Sub
 
-    Private Sub frmMain_Move(sender As Object, e As EventArgs) Handles MyBase.Move
-        Me.CenterToScreen()
-    End Sub
+
 
     Private Sub btnServiceResetLinacTime_Click(sender As Object, e As EventArgs) Handles btnServiceResetLinacTime.Click
         Dim response As MsgBoxResult = MsgBox("Reset Linac Time?", MsgBoxStyle.OkCancel)
@@ -2930,9 +2983,7 @@ Public Class frmMain
     End Sub
 
 
-    Private Sub frmMain_close(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
 
-    End Sub
 
     Private Sub btnIPaddress_Click(sender As Object, e As EventArgs) Handles btnIPaddress.Click
         Dim IPAddr As String = InputBox("Input IP Address", lblSystem.Text, ServerSettings.txtIPAddr.Text)
@@ -2947,14 +2998,14 @@ Public Class frmMain
     End Sub
 
     Private Sub btnZeroOnTime_Click(sender As Object, e As EventArgs) Handles btnZeroOnTime.Click
-         ServerSettings.put_modbus_commands(REGISTER_ETM_ECB_RESET_SECONDS_POWERED_HV_ON_XRAY_ON, 0, 0, 0)
+        ServerSettings.put_modbus_commands(REGISTER_ETM_ECB_RESET_SECONDS_POWERED_HV_ON_XRAY_ON, 0, 0, 0)
     End Sub
 
-    Private Sub btnZeroPulseCounters_Click(sender As Object, e As EventArgs) Handles btnZeroPulseCounters.Click
+    Private Sub btnZeroPulseCounters_Click(sender As Object, e As EventArgs) Handles btnZeroArcPulseCounters.Click
         ServerSettings.put_modbus_commands(REGISTER_ETM_ECB_RESET_ARC_AND_PULSE_COUNT, 0, 0, 0)
     End Sub
 
-  
+
 
     Private Sub btnClearDebugData_Click(sender As Object, e As EventArgs) Handles btnClearDebugData.Click
         ServerSettings.put_modbus_commands(REGISTER_DEBUG_TOGGLE_RESET_DEBUG, 0, 0, 0)
@@ -2963,12 +3014,12 @@ Public Class frmMain
 #Region "Ion Pump Logging Related"
     Private Sub createIonPumpLogFilename()
         Dim file_path As String = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
-        Dim log_path As String = Path.Combine(file_path, "2.5MeV_Linac")
+        Dim log_path As String = Path.Combine(file_path, Constants.DIR_LOG & "\" & Constants.DIR_IONPUMP)
 
         If (Directory.Exists(log_path) = False) Then
             Directory.CreateDirectory(log_path)
         End If
-        ion_pump_log_file_name = Path.Combine(log_path, "IonPumpLog_" + DateTime.Now.ToString("yyyy_MM_dd_HH_mm") + ".csv")
+        ion_pump_log_file_name = Path.Combine(log_path, "H" & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(19).ToString("0000") & "_IonPumpLog_" + DateTime.Now.ToString("yyyy_MM_dd_HH_mm") + ".csv")
     End Sub
 
     Private Sub logIonPump(item As String)
@@ -3026,4 +3077,280 @@ Public Class frmMain
 #End Region
 
 
+
+
+    Private Sub btnMagnetronConditioning_Click(sender As Object, e As EventArgs) Handles btnMagnetronConditioning.Click
+        Dim response As MsgBoxResult = MsgBox("Do Magnetron Conditioning ?", MsgBoxStyle.OkCancel)
+
+        If (response = MsgBoxResult.Ok) Then
+            ServerSettings.put_modbus_commands(REGISTER_SYSTEM_ECB_MAGNETRON_CONDITIONING, 0, 0, 0)
+        End If
+    End Sub
+
+    Private Sub btnSaveAllParams_Click(sender As Object, e As EventArgs) Handles btnSaveAllParams.Click
+        Dim file_path As String = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+        Dim param_path As String = Path.Combine(file_path, Constants.DIR_LOG & "\" & Constants.DIR_PARAM)
+        Dim uValue As UInt16, iCrc As Int16
+        Dim strValue As String
+
+        If (Directory.Exists(param_path) = False) Then
+            Directory.CreateDirectory(param_path)
+        End If
+
+
+#If True Then
+        Dim filename As String = "H" & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(19).ToString("0000") & "_param_" & DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss") & ".log"
+
+        Dim filepath As String = Path.Combine(param_path, filename)
+
+        Using sw As StreamWriter = New StreamWriter(filepath)
+            For i = 0 To (SET_CMDS.LENGTH - 1)
+                uValue = get_ref_data(set_commands(i).command_index)
+                strValue = set_commands(i).command_index & "," & uValue
+                iCrc = c_crc16(strValue, strValue.Length)
+                strValue = strValue & "," & iCrc
+                sw.WriteLine(strValue)
+            Next
+        End Using
+        MessageBox.Show("Parameters are saved in " & filepath & ".")
+
+
+#Else
+        Directory.SetCurrentDirectory(param_path)
+        Dim saveFileDialog1 As New SaveFileDialog()
+
+        saveFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
+        saveFileDialog1.FilterIndex = 2
+        saveFileDialog1.RestoreDirectory = True
+        saveFileDialog1.Title = "Select file to save parameters"
+
+        If saveFileDialog1.ShowDialog() = DialogResult.OK Then
+            Using sw As StreamWriter = New StreamWriter(saveFileDialog1.FileName)
+                For i = 0 To (SET_CMDS.LENGTH - 1)
+                    uValue = get_ref_data(set_commands(i).command_index)
+                    strValue = set_commands(i).command_index & "," & uValue
+                    iCrc = c_crc16(strValue, strValue.Length)
+                    strValue = strValue & "," & iCrc
+                    sw.WriteLine(strValue)
+                Next
+            End Using
+            MessageBox.Show("Parameters are saved in " & saveFileDialog1.FileName & ".")
+        End If
+#End If
+    End Sub
+
+    Private Sub btnLoadParameters_Click(sender As Object, e As EventArgs) Handles btnLoadParameters.Click
+        Dim file_path As String = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+        Dim param_path As String = Path.Combine(file_path, Constants.DIR_LOG & "\" & Constants.DIR_PARAM)
+        Dim setValues(SET_CMDS.LENGTH) As UInt16
+        Dim uValue As UInt16, iCrc As Int16, iCrcFile As Int16, bValidData As Boolean = True
+        Dim split() As String
+
+        Dim response As MsgBoxResult = MsgBox("Save the current parameters first?", MsgBoxStyle.YesNo)
+
+        If (response = MsgBoxResult.Yes) Then
+            btnSaveAllParams_Click(sender, e)
+        End If
+
+        If (Directory.Exists(param_path) = False) Then
+            Directory.CreateDirectory(param_path)
+        End If
+
+        Dim openFileDialog1 As New OpenFileDialog()
+
+
+        '   openFileDialog1.Title 
+        openFileDialog1.InitialDirectory = param_path
+        openFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
+        openFileDialog1.FilterIndex = 2
+        openFileDialog1.RestoreDirectory = True
+        openFileDialog1.Title = "Select file to load parameters"
+
+        If openFileDialog1.ShowDialog() = DialogResult.OK Then
+            Try
+                Using sr As StreamReader = New StreamReader(openFileDialog1.FileName)
+                    Dim line As String
+                    For i = 0 To (SET_CMDS.LENGTH - 1)
+                        line = sr.ReadLine  ' line contains command index, command data, crc
+                        split = line.Split(",")
+                        line = split(0) & "," & split(1)
+                        iCrc = c_crc16(line, line.Length)
+                        iCrcFile = Convert.ToInt16(split(2))
+                        uValue = Convert.ToUInt16(split(0))
+                        If (iCrc = iCrcFile And uValue = set_commands(i).command_index) Then
+                            setValues(i) = Convert.ToUInt16(split(1))
+                        Else
+                            bValidData = False
+                            MessageBox.Show("File Corrupted! ")
+                            Exit For
+                        End If
+                    Next
+                End Using
+
+            Catch Ex As Exception
+                bValidData = False
+                MessageBox.Show("File access error! " & Ex.Message)
+            Finally
+                If (bValidData) Then
+                    ' data is valid, send ethernet commands
+                    response = MsgBox("File is ok, restore the parameters?", MsgBoxStyle.OkCancel)
+
+                    If (response = MsgBoxResult.Ok) Then
+                        For i = 0 To (SET_CMDS.SET_CMD_AFC_SELECT_AFC_MODE - 1)
+                            If (setValues(i) <= set_commands(i).max And setValues(i) >= set_commands(i).min) Then
+                                ServerSettings.put_modbus_commands(set_commands(i).command_index, setValues(i), 0, 0)
+                            End If
+                        Next
+                        If setValues(SET_CMDS.SET_CMD_AFC_SELECT_MANUAL_MODE) > 0 Then
+                            ServerSettings.put_modbus_commands(set_commands(SET_CMDS.SET_CMD_AFC_SELECT_MANUAL_MODE).command_index, 0, 0, 0)
+                        Else
+                            ServerSettings.put_modbus_commands(set_commands(SET_CMDS.SET_CMD_AFC_SELECT_AFC_MODE).command_index, 0, 0, 0)
+                        End If
+                        MessageBox.Show("Parameters are restored.")
+                    End If
+                End If
+            End Try
+        End If
+    End Sub
+    Function get_ref_data(index As UInt16) As UInt16
+        Dim uRetData As UInt16, offset As UInt16 = 0
+        Select Case (index)
+            ' gun driver
+            Case REGISTER_GUN_DRIVER_CATHODE_VOLTAGE
+                uRetData = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(8)
+            Case REGISTER_GUN_DRIVER_HEATER_VOLTAGE
+                uRetData = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).log_data(9)
+            Case REGISTER_GUN_DRIVER_HIGH_ENERGY_PULSE_TOP_VOLTAGE
+                uRetData = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).ecb_local_data(0)
+            Case REGISTER_GUN_DRIVER_LOW_ENERGY_PULSE_TOP_VOLTAGE
+                uRetData = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_GUN_DRIVER).ecb_local_data(1)
+                ' pulse sync
+            Case REGISTER_PULSE_SYNC_GRID_PULSE_DELAY_HIGH_ENERGY_A_B, REGISTER_PULSE_SYNC_GRID_PULSE_DELAY_LOW_ENERGY_A_B
+                offset = IIf(index = REGISTER_PULSE_SYNC_GRID_PULSE_DELAY_HIGH_ENERGY_A_B, 0, 8)
+                uRetData = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(offset)
+            Case REGISTER_PULSE_SYNC_GRID_PULSE_DELAY_HIGH_ENERGY_C_D, REGISTER_PULSE_SYNC_GRID_PULSE_DELAY_LOW_ENERGY_C_D
+                offset = IIf(index = REGISTER_PULSE_SYNC_GRID_PULSE_DELAY_HIGH_ENERGY_C_D, 0, 8)
+                uRetData = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(offset + 1)
+            Case REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_HIGH_ENERGY_A_B, REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_LOW_ENERGY_A_B
+                offset = IIf(index = REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_HIGH_ENERGY_A_B, 0, 8)
+                uRetData = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(offset + 4)
+            Case REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_HIGH_ENERGY_C_D, REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_LOW_ENERGY_C_D
+                offset = IIf(index = REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_HIGH_ENERGY_C_D, 0, 8)
+                uRetData = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(offset + 5)
+            Case REGISTER_PULSE_SYNC_RF_TRIGGER_AND_THYRATRON_PULSE_DELAY_HIGH_ENERGY, REGISTER_PULSE_SYNC_RF_TRIGGER_AND_THYRATRON_PULSE_DELAY_LOW_ENERGY
+                offset = IIf(index = REGISTER_PULSE_SYNC_RF_TRIGGER_AND_THYRATRON_PULSE_DELAY_HIGH_ENERGY, 0, 8)
+                uRetData = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(offset + 2)
+            Case REGISTER_PULSE_SYNC_AFC_AND_SPARE_PULSE_DELAY_HIGH_ENERGY, REGISTER_PULSE_SYNC_AFC_AND_SPARE_PULSE_DELAY_LOW_ENERGY
+                offset = IIf(index = REGISTER_PULSE_SYNC_AFC_AND_SPARE_PULSE_DELAY_HIGH_ENERGY, 0, 8)
+                uRetData = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).ecb_local_data(offset + 6)
+
+                ' hv 
+            Case REGISTER_HIGH_ENERGY_SET_POINT
+                uRetData = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA).log_data(2)
+            Case REGISTER_LOW_ENERGY_SET_POINT
+                uRetData = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA).log_data(1)
+
+                ' afc
+            Case REGISTER_HOME_POSITION
+                uRetData = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).ecb_local_data(0)
+            Case REGISTER_AFC_AFT_CONTROL_VOLTAGE_HIGH_ENERGY
+                uRetData = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).ecb_local_data(1)
+            Case REGISTER_AFC_AFT_CONTROL_VOLTAGE_LOW_ENERGY
+                uRetData = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).ecb_local_data(2)
+            Case REGISTER_CMD_AFC_SELECT_AFC_MODE
+                uRetData = IIF((ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).logged_bits And &H1) > 0, 0, 1)
+            Case REGISTER_CMD_AFC_SELECT_MANUAL_MODE
+                uRetData = (ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).logged_bits And &H1)
+            Case REGISTER_CMD_AFC_MANUAL_TARGET_POSITION
+                uRetData = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).log_data(2)
+
+                ' magnet and heater
+            Case REGISTER_ELECTROMAGNET_CURRENT_HIGH_ENERGY
+                uRetData = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HTR_MAGNET).ecb_local_data(2)
+            Case REGISTER_ELECTROMAGNET_CURRENT_LOW_ENERGY
+                uRetData = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HTR_MAGNET).ecb_local_data(3)
+            Case REGISTER_HEATER_CURRENT_AT_STANDBY
+                uRetData = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_HTR_MAGNET).ecb_local_data(0)
+
+            Case Else
+                uRetData = 0
+
+        End Select
+
+        get_ref_data = uRetData
+
+    End Function
+
+    Function c_crc16(ByVal outstring As String, ByVal length As Integer) As Int16
+        Dim crc As Long
+        Dim i, j As Integer
+        crc = 0
+        For i = 1 To length
+            crc = crc Xor (Asc(Mid$(outstring, i, 1)) * 256)
+            For j = 0 To 7
+                If (crc And 32768) Then
+                    crc = (CLng((CDbl(crc) * 2)) And 65535) Xor &H1021
+                Else
+                    crc = (CLng((CDbl(crc) * 2)) And 65535)
+                End If
+            Next j
+        Next i
+        If (crc < 2 ^ 15) Then
+            c_crc16 = crc
+        Else
+            c_crc16 = crc - 2 ^ 16
+        End If
+
+    End Function
+
+    Sub init_set_commands()
+        set_commands(SET_CMDS.SET_GUN_DRIVER_CATHODE_VOLTAGE) = New SET_COMMAND_STRUCTURE(REGISTER_GUN_DRIVER_CATHODE_VOLTAGE, 20000, 6000)
+        set_commands(SET_CMDS.SET_GUN_DRIVER_HEATER_VOLTAGE) = New SET_COMMAND_STRUCTURE(REGISTER_GUN_DRIVER_HEATER_VOLTAGE, 1600, 0)
+        set_commands(SET_CMDS.SET_GUN_DRIVER_HIGH_ENERGY_PULSE_TOP_VOLTAGE) = New SET_COMMAND_STRUCTURE(REGISTER_GUN_DRIVER_HIGH_ENERGY_PULSE_TOP_VOLTAGE, 22000, 0)
+        set_commands(SET_CMDS.SET_GUN_DRIVER_LOW_ENERGY_PULSE_TOP_VOLTAGE) = New SET_COMMAND_STRUCTURE(REGISTER_GUN_DRIVER_LOW_ENERGY_PULSE_TOP_VOLTAGE, 22000, 0)
+
+        set_commands(SET_CMDS.SET_PULSE_SYNC_GRID_PULSE_DELAY_HIGH_ENERGY_A_B) = New SET_COMMAND_STRUCTURE(REGISTER_PULSE_SYNC_GRID_PULSE_DELAY_HIGH_ENERGY_A_B, 65535, 0)
+        set_commands(SET_CMDS.SET_PULSE_SYNC_GRID_PULSE_DELAY_LOW_ENERGY_A_B) = New SET_COMMAND_STRUCTURE(REGISTER_PULSE_SYNC_GRID_PULSE_DELAY_LOW_ENERGY_A_B, 65535, 0)
+        set_commands(SET_CMDS.SET_PULSE_SYNC_GRID_PULSE_DELAY_HIGH_ENERGY_C_D) = New SET_COMMAND_STRUCTURE(REGISTER_PULSE_SYNC_GRID_PULSE_DELAY_HIGH_ENERGY_C_D, 65535, 0)
+        set_commands(SET_CMDS.SET_PULSE_SYNC_GRID_PULSE_DELAY_LOW_ENERGY_C_D) = New SET_COMMAND_STRUCTURE(REGISTER_PULSE_SYNC_GRID_PULSE_DELAY_LOW_ENERGY_C_D, 65535, 0)
+        set_commands(SET_CMDS.SET_PULSE_SYNC_GRID_PULSE_WIDTH_HIGH_ENERGY_A_B) = New SET_COMMAND_STRUCTURE(REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_HIGH_ENERGY_A_B, 65535, 0)
+        set_commands(SET_CMDS.SET_PULSE_SYNC_GRID_PULSE_WIDTH_LOW_ENERGY_A_B) = New SET_COMMAND_STRUCTURE(REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_LOW_ENERGY_A_B, 65535, 0)
+        set_commands(SET_CMDS.SET_PULSE_SYNC_GRID_PULSE_WIDTH_HIGH_ENERGY_C_D) = New SET_COMMAND_STRUCTURE(REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_HIGH_ENERGY_C_D, 65535, 0)
+        set_commands(SET_CMDS.SET_PULSE_SYNC_GRID_PULSE_WIDTH_LOW_ENERGY_C_D) = New SET_COMMAND_STRUCTURE(REGISTER_PULSE_SYNC_GRID_PULSE_WIDTH_LOW_ENERGY_C_D, 65535, 0)
+        set_commands(SET_CMDS.SET_PULSE_SYNC_RF_TRIGGER_AND_THYRATRON_PULSE_DELAY_HIGH_ENERGY) = New SET_COMMAND_STRUCTURE(REGISTER_PULSE_SYNC_RF_TRIGGER_AND_THYRATRON_PULSE_DELAY_HIGH_ENERGY, 65535, 0)
+        set_commands(SET_CMDS.SET_PULSE_SYNC_RF_TRIGGER_AND_THYRATRON_PULSE_DELAY_LOW_ENERGY) = New SET_COMMAND_STRUCTURE(REGISTER_PULSE_SYNC_RF_TRIGGER_AND_THYRATRON_PULSE_DELAY_LOW_ENERGY, 65535, 0)
+        set_commands(SET_CMDS.SET_PULSE_SYNC_AFC_AND_SPARE_PULSE_DELAY_HIGH_ENERGY) = New SET_COMMAND_STRUCTURE(REGISTER_PULSE_SYNC_AFC_AND_SPARE_PULSE_DELAY_HIGH_ENERGY, 65535, 0)
+        set_commands(SET_CMDS.SET_PULSE_SYNC_AFC_AND_SPARE_PULSE_DELAY_LOW_ENERGY) = New SET_COMMAND_STRUCTURE(REGISTER_PULSE_SYNC_AFC_AND_SPARE_PULSE_DELAY_LOW_ENERGY, 65535, 0)
+
+        set_commands(SET_CMDS.SET_HIGH_ENERGY_SET_POINT) = New SET_COMMAND_STRUCTURE(REGISTER_HIGH_ENERGY_SET_POINT, 17000, 6000)
+        set_commands(SET_CMDS.SET_LOW_ENERGY_SET_POINT) = New SET_COMMAND_STRUCTURE(REGISTER_LOW_ENERGY_SET_POINT, 17000, 6000)
+
+        set_commands(SET_CMDS.SET_HOME_POSITION) = New SET_COMMAND_STRUCTURE(REGISTER_HOME_POSITION, 51200, 6400)
+        set_commands(SET_CMDS.SET_AFC_AFT_CONTROL_VOLTAGE_HIGH_ENERGY) = New SET_COMMAND_STRUCTURE(REGISTER_AFC_AFT_CONTROL_VOLTAGE_HIGH_ENERGY, 10000, 1000)
+        set_commands(SET_CMDS.SET_AFC_AFT_CONTROL_VOLTAGE_LOW_ENERGY) = New SET_COMMAND_STRUCTURE(REGISTER_AFC_AFT_CONTROL_VOLTAGE_LOW_ENERGY, 10000, 1000)
+        set_commands(SET_CMDS.SET_CMD_AFC_SELECT_AFC_MODE) = New SET_COMMAND_STRUCTURE(REGISTER_CMD_AFC_SELECT_AFC_MODE, 1, 0)
+        set_commands(SET_CMDS.SET_CMD_AFC_SELECT_MANUAL_MODE) = New SET_COMMAND_STRUCTURE(REGISTER_CMD_AFC_SELECT_MANUAL_MODE, 1, 0)
+        set_commands(SET_CMDS.SET_CMD_AFC_MANUAL_TARGET_POSITION) = New SET_COMMAND_STRUCTURE(REGISTER_CMD_AFC_MANUAL_TARGET_POSITION, 64000, 0)
+
+        set_commands(SET_CMDS.SET_ELECTROMAGNET_CURRENT_HIGH_ENERGY) = New SET_COMMAND_STRUCTURE(REGISTER_ELECTROMAGNET_CURRENT_HIGH_ENERGY, 21000, 8000)
+        set_commands(SET_CMDS.SET_ELECTROMAGNET_CURRENT_LOW_ENERGY) = New SET_COMMAND_STRUCTURE(REGISTER_ELECTROMAGNET_CURRENT_LOW_ENERGY, 21000, 8000)
+        set_commands(SET_CMDS.SET_HEATER_CURRENT_AT_STANDBY) = New SET_COMMAND_STRUCTURE(REGISTER_HEATER_CURRENT_AT_STANDBY, 10000, 0)
+
+    End Sub
+
+    Private Sub btnDumpData_Click(sender As Object, e As EventArgs) Handles btnDumpData.Click
+        ' test data dump function
+#If False Then
+        ServerSettings.ETMEthernetBoardLoggingData(1).fault_bits = &HFF
+        ServerSettings.ETMEthernetBoardLoggingData(2).fault_bits = &HAA
+        ServerSettings.ETMEthernetBoardLoggingData(3).fault_bits = &H77
+        ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(9) = 200
+#End If
+        ServerSettings.dump_all_data()
+    End Sub
+
+    Private Sub btnRestoreData_Click(sender As Object, e As EventArgs) Handles btnRestoreData.Click
+        ServerSettings.restore_dumped_data()
+
+    End Sub
 End Class

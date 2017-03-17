@@ -17,9 +17,61 @@
 
 End Enum
 
+Enum SET_CMDS
+	SET_GUN_DRIVER_CATHODE_VOLTAGE = 0
+ 	SET_GUN_DRIVER_HEATER_VOLTAGE
+ 	SET_GUN_DRIVER_HIGH_ENERGY_PULSE_TOP_VOLTAGE
+ 	SET_GUN_DRIVER_LOW_ENERGY_PULSE_TOP_VOLTAGE
+ 
+  	SET_PULSE_SYNC_GRID_PULSE_DELAY_HIGH_ENERGY_A_B
+ 	SET_PULSE_SYNC_GRID_PULSE_DELAY_LOW_ENERGY_A_B
+ 	SET_PULSE_SYNC_GRID_PULSE_DELAY_HIGH_ENERGY_C_D
+ 	SET_PULSE_SYNC_GRID_PULSE_DELAY_LOW_ENERGY_C_D
+ 	SET_PULSE_SYNC_GRID_PULSE_WIDTH_HIGH_ENERGY_A_B
+ 	SET_PULSE_SYNC_GRID_PULSE_WIDTH_LOW_ENERGY_A_B
+ 	SET_PULSE_SYNC_GRID_PULSE_WIDTH_HIGH_ENERGY_C_D
+ 	SET_PULSE_SYNC_GRID_PULSE_WIDTH_LOW_ENERGY_C_D
+ 	SET_PULSE_SYNC_RF_TRIGGER_AND_THYRATRON_PULSE_DELAY_HIGH_ENERGY
+ 	SET_PULSE_SYNC_RF_TRIGGER_AND_THYRATRON_PULSE_DELAY_LOW_ENERGY
+ 	SET_PULSE_SYNC_AFC_AND_SPARE_PULSE_DELAY_HIGH_ENERGY
+ 	SET_PULSE_SYNC_AFC_AND_SPARE_PULSE_DELAY_LOW_ENERGY
+ 
+  	SET_HIGH_ENERGY_SET_POINT
+ 	SET_LOW_ENERGY_SET_POINT
 
+ 	SET_HOME_POSITION
+ 	SET_AFC_AFT_CONTROL_VOLTAGE_HIGH_ENERGY
+ 	SET_AFC_AFT_CONTROL_VOLTAGE_LOW_ENERGY
+    SET_CMD_AFC_MANUAL_TARGET_POSITION
 
-Public Class ETM_CAN_BOARD_DATA
+  	SET_ELECTROMAGNET_CURRENT_HIGH_ENERGY
+ 	SET_ELECTROMAGNET_CURRENT_LOW_ENERGY
+    SET_HEATER_CURRENT_AT_STANDBY
+
+    SET_CMD_AFC_SELECT_MANUAL_MODE   ' put these two commands at the end to process them separately
+    SET_CMD_AFC_SELECT_AFC_MODE
+
+    LENGTH
+End Enum
+
+' global constants, multipliers for system timers, directories to save log.
+Public Class Constants
+    Public Const YEAR_MULT = 35942400
+    Public Const MONTH_MULT = 2764800
+    Public Const DAY_MULT = 86400
+    Public Const HOUR_MULT = 3600
+    Public Const MIN_MULT = 60
+
+    Public Const DIR_LOG = "2.5MeV Linac"  ' location for log files
+    Public Const DIR_EVENT = "Event Log"
+    Public Const DIR_PULSE = "Pulse Log"
+    Public Const DIR_IONPUMP = "Ion Pump Log"
+    Public Const DIR_PARAM = "Param Set Log"
+    Public Const DIR_DATA_DUMP = "Data Dump Log"
+
+End Class
+
+<Serializable()> Public Class ETM_CAN_BOARD_DATA
     Public data_identification As Byte         ' This is a unique identifier for each data set
 
     ' Status Register
@@ -83,7 +135,7 @@ Public Class ETM_CAN_BOARD_DATA
 End Class
 
 
-Public Class ETM_CAN_DEBUG_DATA
+<Serializable()> Public Class ETM_CAN_DEBUG_DATA
     Public data_identification As Byte         ' This is a unique identifier for each data set
 
     Public debug_0 As UInt16
@@ -233,6 +285,19 @@ Public Class ETM_ETHERNET_COMMAND_STRUCTURE
         data(0) = word0
         data(1) = word1
         data(2) = word2
+    End Sub
+End Class
+Public Class SET_COMMAND_STRUCTURE
+    Public command_index As UInt16
+    Public max As UInt16
+    Public min As UInt16
+
+    ' constructor
+    Sub New(ByVal index As UInt16, ByVal max_val As UInt16, ByVal min_val As UInt16)
+        command_index = index
+        max = max_val
+        min = min_val
+
     End Sub
 End Class
 

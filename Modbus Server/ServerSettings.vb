@@ -6,6 +6,7 @@ Imports System.Net
 Imports System.Net.Sockets
 Imports System.Text
 Imports System.IO
+Imports System.Globalization
 
 
 Public Class ServerSettings
@@ -58,7 +59,7 @@ Public Class ServerSettings
     Public Const MAX_EVENT_SIZE_DATA = 512 ' 64 entries
     '   Public ETMEthernetEventData(MAX_EVENT_SIZE_ROW, MAX_EVENT_SIZE_DATA) As Byte
     Public event_index As UInt16
- 
+
 
     Public QueueCommandToECB As Queue
 
@@ -77,11 +78,28 @@ Public Class ServerSettings
 
     Private Sub ServerSettings_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
-        txtIPAddr.Text = My.Settings.ServerIP
+        txtIPAddr.Text = "192.168.70.15" ' fixed IP, My.Settings.ServerIP
+
+        Try
+            Dim instances() As Process = Process.GetProcessesByName(Process.GetCurrentProcess.ProcessName)
+
+            If (instances.Length > 1) Then
+                ' wait 2s to let other app to see me            
+                Threading.Thread.Sleep(2000)
+                '    MsgBox("Program already running")
+                Application.Exit()
+                Exit Sub
+            End If
+        Catch
+            MsgBox(Err.Description)
+
+        End Try
+
 
         My.Settings.HighLowEnergyReverse = True
         connect_status = 0
         update_loop_count = 0
+
 
         pulse_index = 0
         QueueCommandToECB = New Queue()
@@ -94,11 +112,13 @@ Public Class ServerSettings
         Next
         ETMEthernetDebugData = New ETM_CAN_DEBUG_DATA(0)
 
-        TimerUpdate.Enabled = True
 
         Call init_server()
         ' load the main screen
-        Me.Hide()
+        ' Me.Hide()
+        Me.Visible = False
+
+
 #If True Then
         Dim main_screen As frmMain
         main_screen = New frmMain
@@ -108,6 +128,8 @@ Public Class ServerSettings
         main_screen = New frmMainSuper
 #End If
         main_screen.ShowDialog()
+
+        TimerUpdate.Enabled = True
 
 
     End Sub
@@ -385,7 +407,7 @@ Public Class ServerSettings
             server.Stop()
 #End If
             init_server()
-  
+
         Catch ex As Exception
 
         End Try
@@ -405,6 +427,10 @@ Public Class ServerSettings
 
     Private Sub TimerUpdate_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TimerUpdate.Tick
         Dim tmpstr As String
+
+        Me.Visible = False
+
+
         Select Case connect_status
             Case 0
                 lblConnectStatus.Text = "Idle"
@@ -431,6 +457,10 @@ Public Class ServerSettings
                     stream.Close()
                     client.Close()
                     server.Stop()
+                    ' log the timeout
+                    OpenEventLogFile()
+                    event_log_file.WriteLine("Ethernet Connection Timeout at " & Format(DateTime.UtcNow, "yyyy/MM/dd HH:mm:ss"))
+                    CloseEventLogFile()
                     init_server()
                 End If
 
@@ -449,12 +479,39 @@ Public Class ServerSettings
 
     Public event_log_enabled As Boolean
     Public event_log_file_name As String
-    Public event_log_file_path As String
     Public event_log_file As System.IO.StreamWriter
 
     Public Sub OpenEventLogFile()
-        event_log_file_name = "P1395_Event_log.csv"
-        event_log_file_path = System.IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.MyDocuments, event_log_file_name)
+        Static event_log_file_path As String = ""
+
+        Dim file_path As String = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+        Dim log_path As String = Path.Combine(file_path, Constants.DIR_LOG & "\" & Constants.DIR_EVENT)
+        Dim event_log_header As String = "H" & ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(19).ToString("0000") & "_EventLog_"
+        Dim provider As CultureInfo = CultureInfo.InvariantCulture
+
+        If (Directory.Exists(log_path) = False) Then
+            Directory.CreateDirectory(log_path)
+        End If
+
+        If (event_log_file_path = "") Then
+            For Each filename In Directory.GetFiles(log_path)
+                Dim index As Integer = InStr(filename, event_log_header)
+
+                If (index > 0) Then  ' same serial number
+                    Dim date_string As String = Mid$(filename, index + event_log_header.Length, 10)
+                    Dim log_date As Date = Date.ParseExact(date_string, "yyyy_MM_dd", provider)
+                    If (DateTime.Now - log_date).TotalDays < 60 Then
+                        event_log_file_path = filename
+                        Exit For
+                    End If
+                End If
+            Next            
+        End If
+
+        If (event_log_file_path = "") Then
+            event_log_file_name = "H" & ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(19).ToString("0000") & "_EventLog_" & DateTime.Now.ToString("yyyy_MM_dd") & ".csv"
+            event_log_file_path = System.IO.Path.Combine(log_path, event_log_file_name)
+        End If
         event_log_file = My.Computer.FileSystem.OpenTextFileWriter(event_log_file_path, True)
 
         'event_log_file.Write("Event Number, ")
@@ -497,21 +554,21 @@ Public Class ServerSettings
                 time += CUInt(bytes(head + 4)) << 8
                 time += CUInt(bytes(head + 5))
 
-                year = CInt(Math.Truncate(time / 31622400))
+                year = CInt(Math.Truncate(time / Constants.YEAR_MULT))
 
-                time = CUInt(time Mod 31622400)
-                month = CInt(Math.Truncate(time / 2678400))
+                time = CUInt(time Mod Constants.YEAR_MULT)
+                month = CInt(Math.Truncate(time / Constants.MONTH_MULT))
 
-                time = CUInt(time Mod 2678400)
-                day = CInt(Math.Truncate(time / 86400))
+                time = CUInt(time Mod Constants.MONTH_MULT)
+                day = CInt(Math.Truncate(time / Constants.DAY_MULT))
 
-                time = CUInt(time Mod 86400)
-                hour = CInt(Math.Truncate(time / 3600))
+                time = CUInt(time Mod Constants.DAY_MULT)
+                hour = CInt(Math.Truncate(time / Constants.HOUR_MULT))
 
-                time = CUInt(time Mod 3600)
-                minute = CInt(Math.Truncate(time / 60))
+                time = CUInt(time Mod Constants.HOUR_MULT)
+                minute = CInt(Math.Truncate(time / Constants.MIN_MULT))
 
-                second = CInt(time Mod 60)
+                second = CInt(time Mod Constants.MIN_MULT)
                 time_log = "20" & Format(year, "00") & "/" & Format(month, "00") & "/" & Format(day, "00") & " " & Format(hour, "00") & ":" & Format(minute, "00") & ":" & Format(second, "00")
                 event_id = CUShort(bytes(head + 6)) << 8
                 event_id += CUShort(bytes(head + 7))
@@ -530,16 +587,22 @@ Public Class ServerSettings
 
 
 
-
     Public pulse_log_enabled As Boolean
     Public pulse_log_file_name As String
     Public pulse_log_file_path As String
     Public pulse_log_file As System.IO.StreamWriter
 
     Public Sub OpenPulseLogFile()
-        pulse_log_file_name = "Pulse_log_" & DateTime.Now.ToString("yyyy_MM_dd_HH_mm") & ".csv"
+        Dim file_path As String = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+        Dim log_path As String = Path.Combine(file_path, Constants.DIR_LOG & "\" & Constants.DIR_PULSE)
+
+        If (Directory.Exists(log_path) = False) Then
+            Directory.CreateDirectory(log_path)
+        End If
+
+        pulse_log_file_name = "H" & ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(19).ToString("0000") & "_PulseLog_" & DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss") & ".csv"
 #If True Then
-        pulse_log_file_path = System.IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.MyDocuments, pulse_log_file_name)
+        pulse_log_file_path = Path.Combine(log_path, pulse_log_file_name)
 #Else
         pulse_log_file_path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
         pulse_log_file_path = My.Computer.FileSystem.GetParentPath(pulse_log_file_path)
@@ -627,8 +690,110 @@ Public Class ServerSettings
     End Sub
 
 
+    Public Sub dump_all_data()
+
+        Dim doc_path As String = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+        Dim log_path As String = Path.Combine(doc_path, Constants.DIR_LOG & "\" & Constants.DIR_DATA_DUMP)
+        Dim data_path As String = Path.Combine(log_path, DateTime.Now.ToString("yyyy_MM_dd"))
+
+        If (Directory.Exists(data_path) = False) Then
+            Directory.CreateDirectory(data_path)
+        End If
+
+        Dim data_file_name As String = "H" & ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(19).ToString("0000") & "_data_" & DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss") & ".log"
+
+        Dim data_file_path As String = Path.Combine(data_path, data_file_name)
+        Dim fStream As New FileStream(data_file_path, FileMode.Create)
+
+        Dim bf As New System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+
+        ' write to file
+        For i = MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA To MODBUS_COMMANDS.MODBUS_WR_ETHERNET
+            bf.Serialize(fStream, ETMEthernetBoardLoggingData(i))
+        Next
+        bf.Serialize(fStream, ETMEthernetDebugData)
+
+        fStream.Close()
+
+    End Sub
+
+    Public Sub restore_dumped_data()
+        Dim doc_path As String = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+        Dim log_path As String = Path.Combine(doc_path, Constants.DIR_LOG & "\" & Constants.DIR_DATA_DUMP)
+
+        If (Directory.Exists(log_path) = False) Then
+            Directory.CreateDirectory(log_path)
+        End If
+
+        Dim openFileDialog1 As New OpenFileDialog()
+        Dim bValidData = True
+
+        '   openFileDialog1.Title 
+        openFileDialog1.InitialDirectory = log_path
+        openFileDialog1.Filter = "log files (*.log)|*.log|All files (*.*)|*.*"
+        openFileDialog1.FilterIndex = 2
+        openFileDialog1.RestoreDirectory = True
+        openFileDialog1.Title = "Select file to load data"
+
+        If openFileDialog1.ShowDialog() = DialogResult.OK Then
+            Try
+                Dim fStream As New FileStream(openFileDialog1.FileName, FileMode.Open)
+
+                Dim bf As New System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+
+                fStream.Position = 0 ' reset stream pointer
+                ' read data
+                For i = MODBUS_COMMANDS.MODBUS_WR_HVLAMBDA To MODBUS_COMMANDS.MODBUS_WR_ETHERNET
+                    ETMEthernetBoardLoggingData(i) = DirectCast(bf.Deserialize(fStream), ETM_CAN_BOARD_DATA)
+                Next
+                ETMEthernetDebugData = DirectCast(bf.Deserialize(fStream), ETM_CAN_DEBUG_DATA)
+                fStream.Close()
+
+            Catch Ex As Exception
+                bValidData = False
+                MessageBox.Show("File access error! " & Ex.Message)
+            Finally
+                If (bValidData) Then
+                    ' data is valid, send ethernet commands
+                    MessageBox.Show("Data restored ok!")
+                End If
+            End Try
+        End If
+
+    End Sub
+    Public Sub delete_older_dump_data_files()
+        Try
+            Dim doc_path As String = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+            Dim log_path As String = Path.Combine(doc_path, Constants.DIR_LOG & "\" & Constants.DIR_DATA_DUMP)
+
+            Dim provider As CultureInfo = CultureInfo.InvariantCulture
+
+            If (Directory.Exists(log_path) = False) Then
+                Directory.CreateDirectory(log_path)
+            End If
+
+            For Each dir_name In Directory.GetDirectories(log_path)
+                Dim str As String = dir_name
+                Dim i As Integer = str.LastIndexOf(ChrW(&H5C))
+
+                If (i <> -1) Then
+                    str = str.Substring(i + 1)
+                    If (str.Length > 0) Then
+                        Dim log_date As Date = Date.ParseExact(str, "yyyy_MM_dd", provider)
+                        If (DateTime.Now - log_date).TotalDays > 180 Then
+                            My.Computer.FileSystem.DeleteDirectory(dir_name, FileIO.DeleteDirectoryOption.DeleteAllContents)
+                        End If
+                    End If
+                End If
+
+            Next
+
+        Catch ex As Exception
+            MessageBox.Show("Exception caught in delete_older_dump_data_files  " + ex.ToString)
+        End Try
 
 
+    End Sub
 
 
 
