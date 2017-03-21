@@ -38,6 +38,7 @@ Public Class ServerSettings
     Private command_index_number As Byte
     Private word_count As UInt16
     Private update_loop_count As Byte
+    Private event_ethernet_just_connected As Boolean = False
     Private Const MODBUS_COMMAND_REFRESH_TOTAL = 2
 
 
@@ -155,6 +156,11 @@ Public Class ServerSettings
                 Case Else
             End Select
             '  load_save_modbus_data(True)
+            If (event_ethernet_just_connected = True) Then
+                OpenEventLogFile()
+                event_log_file.WriteLine("Ethernet closed at " & Format(DateTime.UtcNow, "yyyy/MM/dd HH:mm:ss"))
+                CloseEventLogFile()
+            End If
         Catch ex As Exception
             MsgBox(ex.Message)
         End Try
@@ -202,6 +208,12 @@ Public Class ServerSettings
                             Next
                         Else
                             bytecount = 0
+                        End If
+                        If (event_ethernet_just_connected = False And update_loop_count >= 2) Then
+                            event_ethernet_just_connected = True
+                            OpenEventLogFile()
+                            event_log_file.WriteLine("Ethernet Connected at " & Format(DateTime.UtcNow, "yyyy/MM/dd HH:mm:ss"))
+                            CloseEventLogFile()
                         End If
                     Else
                         bytecount = 0
@@ -344,6 +356,7 @@ Public Class ServerSettings
             connect_status = 1
             connect_timeout = 0
             update_loop_count = 0
+            event_ethernet_just_connected = False
         Catch ex As Exception
             MsgBox(ex.Message)
         End Try
@@ -500,7 +513,7 @@ Public Class ServerSettings
                 If (index > 0) Then  ' same serial number
                     Dim date_string As String = Mid$(filename, index + event_log_header.Length, 10)
                     Dim log_date As Date = Date.ParseExact(date_string, "yyyy_MM_dd", provider)
-                    If (DateTime.Now - log_date).TotalDays < 60 Then
+                    If (DateTime.UtcNow - log_date).TotalDays < 60 Then
                         event_log_file_path = filename
                         Exit For
                     End If
@@ -509,7 +522,7 @@ Public Class ServerSettings
         End If
 
         If (event_log_file_path = "") Then
-            event_log_file_name = "H" & ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(19).ToString("0000") & "_EventLog_" & DateTime.Now.ToString("yyyy_MM_dd") & ".csv"
+            event_log_file_name = "H" & ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(19).ToString("0000") & "_EventLog_" & DateTime.UtcNow.ToString("yyyy_MM_dd") & ".csv"
             event_log_file_path = System.IO.Path.Combine(log_path, event_log_file_name)
         End If
         event_log_file = My.Computer.FileSystem.OpenTextFileWriter(event_log_file_path, True)
@@ -600,7 +613,7 @@ Public Class ServerSettings
             Directory.CreateDirectory(log_path)
         End If
 
-        pulse_log_file_name = "H" & ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(19).ToString("0000") & "_PulseLog_" & DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss") & ".csv"
+        pulse_log_file_name = "H" & ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(19).ToString("0000") & "_PulseLog_" & DateTime.UtcNow.ToString("yyyy_MM_dd_HH_mm_ss") & ".csv"
 #If True Then
         pulse_log_file_path = Path.Combine(log_path, pulse_log_file_name)
 #Else
@@ -694,13 +707,13 @@ Public Class ServerSettings
 
         Dim doc_path As String = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
         Dim log_path As String = Path.Combine(doc_path, Constants.DIR_LOG & "\" & Constants.DIR_DATA_DUMP)
-        Dim data_path As String = Path.Combine(log_path, DateTime.Now.ToString("yyyy_MM_dd"))
+        Dim data_path As String = Path.Combine(log_path, DateTime.UtcNow.ToString("yyyy_MM_dd"))
 
         If (Directory.Exists(data_path) = False) Then
             Directory.CreateDirectory(data_path)
         End If
 
-        Dim data_file_name As String = "H" & ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(19).ToString("0000") & "_data_" & DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss") & ".log"
+        Dim data_file_name As String = "H" & ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(19).ToString("0000") & "_data_" & DateTime.UtcNow.ToString("yyyy_MM_dd_HH_mm_ss") & ".log"
 
         Dim data_file_path As String = Path.Combine(data_path, data_file_name)
         Dim fStream As New FileStream(data_file_path, FileMode.Create)
@@ -780,7 +793,7 @@ Public Class ServerSettings
                     str = str.Substring(i + 1)
                     If (str.Length > 0) Then
                         Dim log_date As Date = Date.ParseExact(str, "yyyy_MM_dd", provider)
-                        If (DateTime.Now - log_date).TotalDays > 180 Then
+                        If (DateTime.UtcNow - log_date).TotalDays > 180 Then
                             My.Computer.FileSystem.DeleteDirectory(dir_name, FileIO.DeleteDirectoryOption.DeleteAllContents)
                         End If
                     End If

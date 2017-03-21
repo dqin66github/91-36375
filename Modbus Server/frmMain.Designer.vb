@@ -28,28 +28,6 @@ Partial Class frmMain
         Me.LabelAgileInfo = New System.Windows.Forms.Label()
         Me.LabelFirmwareVerssion = New System.Windows.Forms.Label()
         Me.panelDispButtons = New System.Windows.Forms.Panel()
-        Me.btnDispAFC = New CustomControls.ButtonSelected()
-        Me.btnDispCoolSF6 = New CustomControls.ButtonSelected()
-        Me.btnDispDeveloperPanel = New CustomControls.ButtonSelected()
-        Me.btnDispServicePanel = New CustomControls.ButtonSelected()
-        Me.ledReadyIonpump = New CustomControls.OvalLed()
-        Me.btnDispService = New CustomControls.ButtonSelected()
-        Me.btnDispMagnetron = New CustomControls.ButtonSelected()
-        Me.ledReadyMagnetHtr = New CustomControls.OvalLed()
-        Me.btnDispGunDriver = New CustomControls.ButtonSelected()
-        Me.btnDispIonPump = New CustomControls.ButtonSelected()
-        Me.ledReadyAfc = New CustomControls.OvalLed()
-        Me.btnDispHV = New CustomControls.ButtonSelected()
-        Me.btnDispSysCPU = New CustomControls.ButtonSelected()
-        Me.ledReadyMagnetron = New CustomControls.OvalLed()
-        Me.btnDispMagHtr = New CustomControls.ButtonSelected()
-        Me.btnDispPulseSync = New CustomControls.ButtonSelected()
-        Me.ledReadyHV = New CustomControls.OvalLed()
-        Me.btnDispOverview = New CustomControls.ButtonSelected()
-        Me.ledReadyCpu = New CustomControls.OvalLed()
-        Me.ledReadyPulseSync = New CustomControls.OvalLed()
-        Me.ledReadyGunDriver = New CustomControls.OvalLed()
-        Me.ledReadyCooling = New CustomControls.OvalLed()
         Me.PictureBoxLogo = New System.Windows.Forms.PictureBox()
         Me.lblSystem = New System.Windows.Forms.Label()
         Me.LabelECBState = New System.Windows.Forms.Label()
@@ -82,6 +60,29 @@ Partial Class frmMain
         Me.lblIonIi2Unit = New System.Windows.Forms.Label()
         Me.lblIonIi2Title = New System.Windows.Forms.Label()
         Me.lblIonIi2 = New System.Windows.Forms.Label()
+        Me.lblNoTrigger = New System.Windows.Forms.Label()
+        Me.btnDispAFC = New CustomControls.ButtonSelected()
+        Me.btnDispCoolSF6 = New CustomControls.ButtonSelected()
+        Me.btnDispDeveloperPanel = New CustomControls.ButtonSelected()
+        Me.btnDispServicePanel = New CustomControls.ButtonSelected()
+        Me.ledReadyIonpump = New CustomControls.OvalLed()
+        Me.btnDispService = New CustomControls.ButtonSelected()
+        Me.btnDispMagnetron = New CustomControls.ButtonSelected()
+        Me.ledReadyMagnetHtr = New CustomControls.OvalLed()
+        Me.btnDispGunDriver = New CustomControls.ButtonSelected()
+        Me.btnDispIonPump = New CustomControls.ButtonSelected()
+        Me.ledReadyAfc = New CustomControls.OvalLed()
+        Me.btnDispHV = New CustomControls.ButtonSelected()
+        Me.btnDispSysCPU = New CustomControls.ButtonSelected()
+        Me.ledReadyMagnetron = New CustomControls.OvalLed()
+        Me.btnDispMagHtr = New CustomControls.ButtonSelected()
+        Me.btnDispPulseSync = New CustomControls.ButtonSelected()
+        Me.ledReadyHV = New CustomControls.OvalLed()
+        Me.btnDispOverview = New CustomControls.ButtonSelected()
+        Me.ledReadyCpu = New CustomControls.OvalLed()
+        Me.ledReadyPulseSync = New CustomControls.OvalLed()
+        Me.ledReadyGunDriver = New CustomControls.OvalLed()
+        Me.ledReadyCooling = New CustomControls.OvalLed()
         Me.TabBoards = New CustomControls.RightSideTab()
         Me.TabPageOverview = New System.Windows.Forms.TabPage()
         Me.Label283 = New System.Windows.Forms.Label()
@@ -437,10 +438,6 @@ Partial Class frmMain
         Me.lblLogFileName = New System.Windows.Forms.Label()
         Me.btnServiceModeChange = New System.Windows.Forms.Button()
         Me.btnServiceResetLinacTime = New System.Windows.Forms.Button()
-        Me.btnRestoreData = New System.Windows.Forms.Button()
-        Me.btnDumpData = New System.Windows.Forms.Button()
-        Me.btnLoadParameters = New System.Windows.Forms.Button()
-        Me.btnSaveAllParams = New System.Windows.Forms.Button()
         Me.btnIPaddress = New System.Windows.Forms.Button()
         Me.LabelComputerTime = New System.Windows.Forms.Label()
         Me.LabelECBTime = New System.Windows.Forms.Label()
@@ -461,8 +458,12 @@ Partial Class frmMain
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.Label9 = New System.Windows.Forms.Label()
+        Me.btnLoadParameters = New System.Windows.Forms.Button()
+        Me.btnRestoreData = New System.Windows.Forms.Button()
         Me.BlueRect3 = New CustomControls.BlueRect()
+        Me.btnSaveAllParams = New System.Windows.Forms.Button()
         Me.btnServiceRestoreFactoryDefaults = New System.Windows.Forms.Button()
+        Me.btnDumpData = New System.Windows.Forms.Button()
         Me.btnMagnetronConditioning = New System.Windows.Forms.Button()
         Me.btnZeroArcPulseCounters = New System.Windows.Forms.Button()
         Me.tabPageDeveloper = New System.Windows.Forms.TabPage()
@@ -475,7 +476,6 @@ Partial Class frmMain
         Me.BlueRect17 = New CustomControls.BlueRect()
         Me.btnServiceSaveFactoryDefaults = New System.Windows.Forms.Button()
         Me.BlueRectMain = New CustomControls.BlueRect()
-        Me.lblNoTrigger = New System.Windows.Forms.Label()
         Me.panelDispButtons.SuspendLayout()
         CType(Me.PictureBoxLogo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel2.SuspendLayout()
@@ -562,324 +562,6 @@ Partial Class frmMain
         Me.panelDispButtons.Name = "panelDispButtons"
         Me.panelDispButtons.Size = New System.Drawing.Size(252, 412)
         Me.panelDispButtons.TabIndex = 5
-        '
-        'btnDispAFC
-        '
-        Me.btnDispAFC.BackColor = System.Drawing.Color.White
-        Me.btnDispAFC.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.btnDispAFC.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnDispAFC.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
-        Me.btnDispAFC.ForeColor = System.Drawing.Color.Black
-        Me.btnDispAFC.Location = New System.Drawing.Point(0, 230)
-        Me.btnDispAFC.Name = "btnDispAFC"
-        Me.btnDispAFC.ShowBoardSelected = False
-        Me.btnDispAFC.Size = New System.Drawing.Size(220, 30)
-        Me.btnDispAFC.TabIndex = 4
-        Me.btnDispAFC.Tag = "7"
-        Me.btnDispAFC.Text = "AFC"
-        Me.btnDispAFC.UseVisualStyleBackColor = False
-        '
-        'btnDispCoolSF6
-        '
-        Me.btnDispCoolSF6.BackColor = System.Drawing.Color.White
-        Me.btnDispCoolSF6.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.btnDispCoolSF6.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnDispCoolSF6.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
-        Me.btnDispCoolSF6.ForeColor = System.Drawing.Color.Black
-        Me.btnDispCoolSF6.Location = New System.Drawing.Point(0, 110)
-        Me.btnDispCoolSF6.Name = "btnDispCoolSF6"
-        Me.btnDispCoolSF6.ShowBoardSelected = False
-        Me.btnDispCoolSF6.Size = New System.Drawing.Size(220, 30)
-        Me.btnDispCoolSF6.TabIndex = 4
-        Me.btnDispCoolSF6.Tag = "3"
-        Me.btnDispCoolSF6.Text = "Cooling/SF6"
-        Me.btnDispCoolSF6.UseVisualStyleBackColor = False
-        '
-        'btnDispDeveloperPanel
-        '
-        Me.btnDispDeveloperPanel.BackColor = System.Drawing.Color.White
-        Me.btnDispDeveloperPanel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.btnDispDeveloperPanel.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnDispDeveloperPanel.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
-        Me.btnDispDeveloperPanel.ForeColor = System.Drawing.Color.Black
-        Me.btnDispDeveloperPanel.Location = New System.Drawing.Point(0, 380)
-        Me.btnDispDeveloperPanel.Name = "btnDispDeveloperPanel"
-        Me.btnDispDeveloperPanel.ShowBoardSelected = False
-        Me.btnDispDeveloperPanel.Size = New System.Drawing.Size(220, 30)
-        Me.btnDispDeveloperPanel.TabIndex = 4
-        Me.btnDispDeveloperPanel.Tag = "12"
-        Me.btnDispDeveloperPanel.Text = "Developer Panel"
-        Me.btnDispDeveloperPanel.UseVisualStyleBackColor = False
-        Me.btnDispDeveloperPanel.Visible = False
-        '
-        'btnDispServicePanel
-        '
-        Me.btnDispServicePanel.BackColor = System.Drawing.Color.White
-        Me.btnDispServicePanel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.btnDispServicePanel.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnDispServicePanel.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
-        Me.btnDispServicePanel.ForeColor = System.Drawing.Color.Black
-        Me.btnDispServicePanel.Location = New System.Drawing.Point(0, 350)
-        Me.btnDispServicePanel.Name = "btnDispServicePanel"
-        Me.btnDispServicePanel.ShowBoardSelected = False
-        Me.btnDispServicePanel.Size = New System.Drawing.Size(220, 30)
-        Me.btnDispServicePanel.TabIndex = 4
-        Me.btnDispServicePanel.Tag = "11"
-        Me.btnDispServicePanel.Text = "Service Panel"
-        Me.btnDispServicePanel.UseVisualStyleBackColor = False
-        Me.btnDispServicePanel.Visible = False
-        '
-        'ledReadyIonpump
-        '
-        Me.ledReadyIonpump.FillColor = System.Drawing.Color.LawnGreen
-        Me.ledReadyIonpump.ForeColor = System.Drawing.SystemColors.Control
-        Me.ledReadyIonpump.Location = New System.Drawing.Point(226, 292)
-        Me.ledReadyIonpump.MyBorderColor = System.Drawing.Color.Black
-        Me.ledReadyIonpump.MyBorderWidth = 2
-        Me.ledReadyIonpump.Name = "ledReadyIonpump"
-        Me.ledReadyIonpump.Size = New System.Drawing.Size(18, 20)
-        Me.ledReadyIonpump.TabIndex = 101
-        Me.ledReadyIonpump.Visible = False
-        '
-        'btnDispService
-        '
-        Me.btnDispService.BackColor = System.Drawing.Color.White
-        Me.btnDispService.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.btnDispService.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnDispService.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
-        Me.btnDispService.ForeColor = System.Drawing.Color.Black
-        Me.btnDispService.Location = New System.Drawing.Point(0, 320)
-        Me.btnDispService.Name = "btnDispService"
-        Me.btnDispService.ShowBoardSelected = False
-        Me.btnDispService.Size = New System.Drawing.Size(220, 30)
-        Me.btnDispService.TabIndex = 4
-        Me.btnDispService.Tag = "10"
-        Me.btnDispService.Text = "Service Tools"
-        Me.btnDispService.UseVisualStyleBackColor = False
-        '
-        'btnDispMagnetron
-        '
-        Me.btnDispMagnetron.BackColor = System.Drawing.Color.White
-        Me.btnDispMagnetron.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.btnDispMagnetron.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnDispMagnetron.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
-        Me.btnDispMagnetron.ForeColor = System.Drawing.Color.Black
-        Me.btnDispMagnetron.Location = New System.Drawing.Point(0, 200)
-        Me.btnDispMagnetron.Name = "btnDispMagnetron"
-        Me.btnDispMagnetron.ShowBoardSelected = False
-        Me.btnDispMagnetron.Size = New System.Drawing.Size(220, 30)
-        Me.btnDispMagnetron.TabIndex = 4
-        Me.btnDispMagnetron.Tag = "6"
-        Me.btnDispMagnetron.Text = "Magnetron Current"
-        Me.btnDispMagnetron.UseVisualStyleBackColor = False
-        '
-        'ledReadyMagnetHtr
-        '
-        Me.ledReadyMagnetHtr.FillColor = System.Drawing.Color.LawnGreen
-        Me.ledReadyMagnetHtr.ForeColor = System.Drawing.SystemColors.Control
-        Me.ledReadyMagnetHtr.Location = New System.Drawing.Point(226, 263)
-        Me.ledReadyMagnetHtr.MyBorderColor = System.Drawing.Color.Black
-        Me.ledReadyMagnetHtr.MyBorderWidth = 2
-        Me.ledReadyMagnetHtr.Name = "ledReadyMagnetHtr"
-        Me.ledReadyMagnetHtr.Size = New System.Drawing.Size(18, 20)
-        Me.ledReadyMagnetHtr.TabIndex = 101
-        Me.ledReadyMagnetHtr.Visible = False
-        '
-        'btnDispGunDriver
-        '
-        Me.btnDispGunDriver.BackColor = System.Drawing.Color.White
-        Me.btnDispGunDriver.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.btnDispGunDriver.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnDispGunDriver.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
-        Me.btnDispGunDriver.ForeColor = System.Drawing.Color.Black
-        Me.btnDispGunDriver.Location = New System.Drawing.Point(0, 80)
-        Me.btnDispGunDriver.Name = "btnDispGunDriver"
-        Me.btnDispGunDriver.ShowBoardSelected = False
-        Me.btnDispGunDriver.Size = New System.Drawing.Size(220, 30)
-        Me.btnDispGunDriver.TabIndex = 4
-        Me.btnDispGunDriver.Tag = "2"
-        Me.btnDispGunDriver.Text = "Gun Driver"
-        Me.btnDispGunDriver.UseVisualStyleBackColor = False
-        '
-        'btnDispIonPump
-        '
-        Me.btnDispIonPump.BackColor = System.Drawing.Color.White
-        Me.btnDispIonPump.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.btnDispIonPump.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnDispIonPump.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
-        Me.btnDispIonPump.ForeColor = System.Drawing.Color.Black
-        Me.btnDispIonPump.Location = New System.Drawing.Point(0, 290)
-        Me.btnDispIonPump.Name = "btnDispIonPump"
-        Me.btnDispIonPump.ShowBoardSelected = False
-        Me.btnDispIonPump.Size = New System.Drawing.Size(220, 30)
-        Me.btnDispIonPump.TabIndex = 4
-        Me.btnDispIonPump.Tag = "9"
-        Me.btnDispIonPump.Text = "Ion Pump"
-        Me.btnDispIonPump.UseVisualStyleBackColor = False
-        '
-        'ledReadyAfc
-        '
-        Me.ledReadyAfc.FillColor = System.Drawing.Color.LawnGreen
-        Me.ledReadyAfc.ForeColor = System.Drawing.SystemColors.Control
-        Me.ledReadyAfc.Location = New System.Drawing.Point(226, 234)
-        Me.ledReadyAfc.MyBorderColor = System.Drawing.Color.Black
-        Me.ledReadyAfc.MyBorderWidth = 2
-        Me.ledReadyAfc.Name = "ledReadyAfc"
-        Me.ledReadyAfc.Size = New System.Drawing.Size(18, 20)
-        Me.ledReadyAfc.TabIndex = 101
-        Me.ledReadyAfc.Visible = False
-        '
-        'btnDispHV
-        '
-        Me.btnDispHV.BackColor = System.Drawing.Color.White
-        Me.btnDispHV.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.btnDispHV.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnDispHV.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
-        Me.btnDispHV.ForeColor = System.Drawing.Color.Black
-        Me.btnDispHV.Location = New System.Drawing.Point(0, 170)
-        Me.btnDispHV.Name = "btnDispHV"
-        Me.btnDispHV.ShowBoardSelected = False
-        Me.btnDispHV.Size = New System.Drawing.Size(220, 30)
-        Me.btnDispHV.TabIndex = 4
-        Me.btnDispHV.Tag = "5"
-        Me.btnDispHV.Text = "HV Power Supply"
-        Me.btnDispHV.UseVisualStyleBackColor = False
-        '
-        'btnDispSysCPU
-        '
-        Me.btnDispSysCPU.BackColor = System.Drawing.Color.White
-        Me.btnDispSysCPU.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.btnDispSysCPU.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnDispSysCPU.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
-        Me.btnDispSysCPU.ForeColor = System.Drawing.Color.Black
-        Me.btnDispSysCPU.Location = New System.Drawing.Point(0, 50)
-        Me.btnDispSysCPU.Name = "btnDispSysCPU"
-        Me.btnDispSysCPU.ShowBoardSelected = False
-        Me.btnDispSysCPU.Size = New System.Drawing.Size(220, 30)
-        Me.btnDispSysCPU.TabIndex = 4
-        Me.btnDispSysCPU.Tag = "1"
-        Me.btnDispSysCPU.Text = "System CPU"
-        Me.btnDispSysCPU.UseVisualStyleBackColor = False
-        '
-        'ledReadyMagnetron
-        '
-        Me.ledReadyMagnetron.FillColor = System.Drawing.Color.LawnGreen
-        Me.ledReadyMagnetron.ForeColor = System.Drawing.SystemColors.Control
-        Me.ledReadyMagnetron.Location = New System.Drawing.Point(226, 205)
-        Me.ledReadyMagnetron.MyBorderColor = System.Drawing.Color.Black
-        Me.ledReadyMagnetron.MyBorderWidth = 2
-        Me.ledReadyMagnetron.Name = "ledReadyMagnetron"
-        Me.ledReadyMagnetron.Size = New System.Drawing.Size(18, 20)
-        Me.ledReadyMagnetron.TabIndex = 101
-        Me.ledReadyMagnetron.Visible = False
-        '
-        'btnDispMagHtr
-        '
-        Me.btnDispMagHtr.BackColor = System.Drawing.Color.White
-        Me.btnDispMagHtr.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.btnDispMagHtr.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnDispMagHtr.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
-        Me.btnDispMagHtr.ForeColor = System.Drawing.Color.Black
-        Me.btnDispMagHtr.Location = New System.Drawing.Point(0, 260)
-        Me.btnDispMagHtr.Name = "btnDispMagHtr"
-        Me.btnDispMagHtr.ShowBoardSelected = False
-        Me.btnDispMagHtr.Size = New System.Drawing.Size(220, 30)
-        Me.btnDispMagHtr.TabIndex = 4
-        Me.btnDispMagHtr.Tag = "8"
-        Me.btnDispMagHtr.Text = "Magnet/Heater"
-        Me.btnDispMagHtr.UseVisualStyleBackColor = False
-        '
-        'btnDispPulseSync
-        '
-        Me.btnDispPulseSync.BackColor = System.Drawing.Color.White
-        Me.btnDispPulseSync.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.btnDispPulseSync.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnDispPulseSync.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
-        Me.btnDispPulseSync.ForeColor = System.Drawing.Color.Black
-        Me.btnDispPulseSync.Location = New System.Drawing.Point(0, 140)
-        Me.btnDispPulseSync.Name = "btnDispPulseSync"
-        Me.btnDispPulseSync.ShowBoardSelected = False
-        Me.btnDispPulseSync.Size = New System.Drawing.Size(220, 30)
-        Me.btnDispPulseSync.TabIndex = 4
-        Me.btnDispPulseSync.Tag = "4"
-        Me.btnDispPulseSync.Text = "Pulse Sync"
-        Me.btnDispPulseSync.UseVisualStyleBackColor = False
-        '
-        'ledReadyHV
-        '
-        Me.ledReadyHV.FillColor = System.Drawing.Color.LawnGreen
-        Me.ledReadyHV.ForeColor = System.Drawing.SystemColors.Control
-        Me.ledReadyHV.Location = New System.Drawing.Point(226, 176)
-        Me.ledReadyHV.MyBorderColor = System.Drawing.Color.Black
-        Me.ledReadyHV.MyBorderWidth = 2
-        Me.ledReadyHV.Name = "ledReadyHV"
-        Me.ledReadyHV.Size = New System.Drawing.Size(18, 20)
-        Me.ledReadyHV.TabIndex = 101
-        Me.ledReadyHV.Visible = False
-        '
-        'btnDispOverview
-        '
-        Me.btnDispOverview.BackColor = System.Drawing.Color.White
-        Me.btnDispOverview.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.btnDispOverview.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnDispOverview.Font = New System.Drawing.Font("Segoe UI", 16.0!, System.Drawing.FontStyle.Bold)
-        Me.btnDispOverview.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(110, Byte), Integer), CType(CType(199, Byte), Integer))
-        Me.btnDispOverview.Location = New System.Drawing.Point(0, 0)
-        Me.btnDispOverview.Name = "btnDispOverview"
-        Me.btnDispOverview.ShowBoardSelected = True
-        Me.btnDispOverview.Size = New System.Drawing.Size(220, 50)
-        Me.btnDispOverview.TabIndex = 4
-        Me.btnDispOverview.Tag = "0"
-        Me.btnDispOverview.Text = "System Overview"
-        Me.btnDispOverview.UseVisualStyleBackColor = False
-        '
-        'ledReadyCpu
-        '
-        Me.ledReadyCpu.FillColor = System.Drawing.Color.LawnGreen
-        Me.ledReadyCpu.ForeColor = System.Drawing.SystemColors.Control
-        Me.ledReadyCpu.Location = New System.Drawing.Point(226, 60)
-        Me.ledReadyCpu.MyBorderColor = System.Drawing.Color.Black
-        Me.ledReadyCpu.MyBorderWidth = 2
-        Me.ledReadyCpu.Name = "ledReadyCpu"
-        Me.ledReadyCpu.Size = New System.Drawing.Size(18, 20)
-        Me.ledReadyCpu.TabIndex = 101
-        Me.ledReadyCpu.Visible = False
-        '
-        'ledReadyPulseSync
-        '
-        Me.ledReadyPulseSync.FillColor = System.Drawing.Color.LawnGreen
-        Me.ledReadyPulseSync.ForeColor = System.Drawing.SystemColors.Control
-        Me.ledReadyPulseSync.Location = New System.Drawing.Point(226, 147)
-        Me.ledReadyPulseSync.MyBorderColor = System.Drawing.Color.Black
-        Me.ledReadyPulseSync.MyBorderWidth = 2
-        Me.ledReadyPulseSync.Name = "ledReadyPulseSync"
-        Me.ledReadyPulseSync.Size = New System.Drawing.Size(18, 20)
-        Me.ledReadyPulseSync.TabIndex = 101
-        Me.ledReadyPulseSync.Visible = False
-        '
-        'ledReadyGunDriver
-        '
-        Me.ledReadyGunDriver.FillColor = System.Drawing.Color.LawnGreen
-        Me.ledReadyGunDriver.ForeColor = System.Drawing.SystemColors.Control
-        Me.ledReadyGunDriver.Location = New System.Drawing.Point(226, 89)
-        Me.ledReadyGunDriver.MyBorderColor = System.Drawing.Color.Black
-        Me.ledReadyGunDriver.MyBorderWidth = 2
-        Me.ledReadyGunDriver.Name = "ledReadyGunDriver"
-        Me.ledReadyGunDriver.Size = New System.Drawing.Size(18, 20)
-        Me.ledReadyGunDriver.TabIndex = 101
-        Me.ledReadyGunDriver.Visible = False
-        '
-        'ledReadyCooling
-        '
-        Me.ledReadyCooling.FillColor = System.Drawing.Color.LawnGreen
-        Me.ledReadyCooling.ForeColor = System.Drawing.SystemColors.Control
-        Me.ledReadyCooling.Location = New System.Drawing.Point(226, 118)
-        Me.ledReadyCooling.MyBorderColor = System.Drawing.Color.Black
-        Me.ledReadyCooling.MyBorderWidth = 2
-        Me.ledReadyCooling.Name = "ledReadyCooling"
-        Me.ledReadyCooling.Size = New System.Drawing.Size(18, 20)
-        Me.ledReadyCooling.TabIndex = 101
-        Me.ledReadyCooling.Visible = False
         '
         'PictureBoxLogo
         '
@@ -1255,6 +937,336 @@ Partial Class frmMain
         Me.lblIonIi2.Text = "0"
         Me.lblIonIi2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.lblIonIi2.Visible = False
+        '
+        'lblNoTrigger
+        '
+        Me.lblNoTrigger.BackColor = System.Drawing.Color.White
+        Me.lblNoTrigger.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblNoTrigger.ForeColor = System.Drawing.Color.Black
+        Me.lblNoTrigger.Location = New System.Drawing.Point(174, 356)
+        Me.lblNoTrigger.Name = "lblNoTrigger"
+        Me.lblNoTrigger.Size = New System.Drawing.Size(116, 22)
+        Me.lblNoTrigger.TabIndex = 37
+        Me.lblNoTrigger.Text = "No Trigger"
+        Me.lblNoTrigger.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'btnDispAFC
+        '
+        Me.btnDispAFC.BackColor = System.Drawing.Color.White
+        Me.btnDispAFC.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.btnDispAFC.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnDispAFC.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
+        Me.btnDispAFC.ForeColor = System.Drawing.Color.Black
+        Me.btnDispAFC.Location = New System.Drawing.Point(0, 230)
+        Me.btnDispAFC.Name = "btnDispAFC"
+        Me.btnDispAFC.ShowBoardSelected = False
+        Me.btnDispAFC.Size = New System.Drawing.Size(220, 30)
+        Me.btnDispAFC.TabIndex = 4
+        Me.btnDispAFC.Tag = "7"
+        Me.btnDispAFC.Text = "AFC"
+        Me.btnDispAFC.UseVisualStyleBackColor = False
+        '
+        'btnDispCoolSF6
+        '
+        Me.btnDispCoolSF6.BackColor = System.Drawing.Color.White
+        Me.btnDispCoolSF6.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.btnDispCoolSF6.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnDispCoolSF6.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
+        Me.btnDispCoolSF6.ForeColor = System.Drawing.Color.Black
+        Me.btnDispCoolSF6.Location = New System.Drawing.Point(0, 110)
+        Me.btnDispCoolSF6.Name = "btnDispCoolSF6"
+        Me.btnDispCoolSF6.ShowBoardSelected = False
+        Me.btnDispCoolSF6.Size = New System.Drawing.Size(220, 30)
+        Me.btnDispCoolSF6.TabIndex = 4
+        Me.btnDispCoolSF6.Tag = "3"
+        Me.btnDispCoolSF6.Text = "Cooling/SF6"
+        Me.btnDispCoolSF6.UseVisualStyleBackColor = False
+        '
+        'btnDispDeveloperPanel
+        '
+        Me.btnDispDeveloperPanel.BackColor = System.Drawing.Color.White
+        Me.btnDispDeveloperPanel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.btnDispDeveloperPanel.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnDispDeveloperPanel.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
+        Me.btnDispDeveloperPanel.ForeColor = System.Drawing.Color.Black
+        Me.btnDispDeveloperPanel.Location = New System.Drawing.Point(0, 380)
+        Me.btnDispDeveloperPanel.Name = "btnDispDeveloperPanel"
+        Me.btnDispDeveloperPanel.ShowBoardSelected = False
+        Me.btnDispDeveloperPanel.Size = New System.Drawing.Size(220, 30)
+        Me.btnDispDeveloperPanel.TabIndex = 4
+        Me.btnDispDeveloperPanel.Tag = "12"
+        Me.btnDispDeveloperPanel.Text = "Developer Panel"
+        Me.btnDispDeveloperPanel.UseVisualStyleBackColor = False
+        Me.btnDispDeveloperPanel.Visible = False
+        '
+        'btnDispServicePanel
+        '
+        Me.btnDispServicePanel.BackColor = System.Drawing.Color.White
+        Me.btnDispServicePanel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.btnDispServicePanel.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnDispServicePanel.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
+        Me.btnDispServicePanel.ForeColor = System.Drawing.Color.Black
+        Me.btnDispServicePanel.Location = New System.Drawing.Point(0, 350)
+        Me.btnDispServicePanel.Name = "btnDispServicePanel"
+        Me.btnDispServicePanel.ShowBoardSelected = False
+        Me.btnDispServicePanel.Size = New System.Drawing.Size(220, 30)
+        Me.btnDispServicePanel.TabIndex = 4
+        Me.btnDispServicePanel.Tag = "11"
+        Me.btnDispServicePanel.Text = "Service Panel"
+        Me.btnDispServicePanel.UseVisualStyleBackColor = False
+        Me.btnDispServicePanel.Visible = False
+        '
+        'ledReadyIonpump
+        '
+        Me.ledReadyIonpump.FillColor = System.Drawing.Color.LawnGreen
+        Me.ledReadyIonpump.ForeColor = System.Drawing.SystemColors.Control
+        Me.ledReadyIonpump.Location = New System.Drawing.Point(226, 292)
+        Me.ledReadyIonpump.MyBorderColor = System.Drawing.Color.Black
+        Me.ledReadyIonpump.MyBorderWidth = 2
+        Me.ledReadyIonpump.Name = "ledReadyIonpump"
+        Me.ledReadyIonpump.Size = New System.Drawing.Size(18, 20)
+        Me.ledReadyIonpump.TabIndex = 101
+        Me.ledReadyIonpump.Visible = False
+        '
+        'btnDispService
+        '
+        Me.btnDispService.BackColor = System.Drawing.Color.White
+        Me.btnDispService.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.btnDispService.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnDispService.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
+        Me.btnDispService.ForeColor = System.Drawing.Color.Black
+        Me.btnDispService.Location = New System.Drawing.Point(0, 320)
+        Me.btnDispService.Name = "btnDispService"
+        Me.btnDispService.ShowBoardSelected = False
+        Me.btnDispService.Size = New System.Drawing.Size(220, 30)
+        Me.btnDispService.TabIndex = 4
+        Me.btnDispService.Tag = "10"
+        Me.btnDispService.Text = "Service Tools"
+        Me.btnDispService.UseVisualStyleBackColor = False
+        '
+        'btnDispMagnetron
+        '
+        Me.btnDispMagnetron.BackColor = System.Drawing.Color.White
+        Me.btnDispMagnetron.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.btnDispMagnetron.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnDispMagnetron.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
+        Me.btnDispMagnetron.ForeColor = System.Drawing.Color.Black
+        Me.btnDispMagnetron.Location = New System.Drawing.Point(0, 200)
+        Me.btnDispMagnetron.Name = "btnDispMagnetron"
+        Me.btnDispMagnetron.ShowBoardSelected = False
+        Me.btnDispMagnetron.Size = New System.Drawing.Size(220, 30)
+        Me.btnDispMagnetron.TabIndex = 4
+        Me.btnDispMagnetron.Tag = "6"
+        Me.btnDispMagnetron.Text = "Magnetron Current"
+        Me.btnDispMagnetron.UseVisualStyleBackColor = False
+        '
+        'ledReadyMagnetHtr
+        '
+        Me.ledReadyMagnetHtr.FillColor = System.Drawing.Color.LawnGreen
+        Me.ledReadyMagnetHtr.ForeColor = System.Drawing.SystemColors.Control
+        Me.ledReadyMagnetHtr.Location = New System.Drawing.Point(226, 263)
+        Me.ledReadyMagnetHtr.MyBorderColor = System.Drawing.Color.Black
+        Me.ledReadyMagnetHtr.MyBorderWidth = 2
+        Me.ledReadyMagnetHtr.Name = "ledReadyMagnetHtr"
+        Me.ledReadyMagnetHtr.Size = New System.Drawing.Size(18, 20)
+        Me.ledReadyMagnetHtr.TabIndex = 101
+        Me.ledReadyMagnetHtr.Visible = False
+        '
+        'btnDispGunDriver
+        '
+        Me.btnDispGunDriver.BackColor = System.Drawing.Color.White
+        Me.btnDispGunDriver.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.btnDispGunDriver.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnDispGunDriver.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
+        Me.btnDispGunDriver.ForeColor = System.Drawing.Color.Black
+        Me.btnDispGunDriver.Location = New System.Drawing.Point(0, 80)
+        Me.btnDispGunDriver.Name = "btnDispGunDriver"
+        Me.btnDispGunDriver.ShowBoardSelected = False
+        Me.btnDispGunDriver.Size = New System.Drawing.Size(220, 30)
+        Me.btnDispGunDriver.TabIndex = 4
+        Me.btnDispGunDriver.Tag = "2"
+        Me.btnDispGunDriver.Text = "Gun Driver"
+        Me.btnDispGunDriver.UseVisualStyleBackColor = False
+        '
+        'btnDispIonPump
+        '
+        Me.btnDispIonPump.BackColor = System.Drawing.Color.White
+        Me.btnDispIonPump.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.btnDispIonPump.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnDispIonPump.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
+        Me.btnDispIonPump.ForeColor = System.Drawing.Color.Black
+        Me.btnDispIonPump.Location = New System.Drawing.Point(0, 290)
+        Me.btnDispIonPump.Name = "btnDispIonPump"
+        Me.btnDispIonPump.ShowBoardSelected = False
+        Me.btnDispIonPump.Size = New System.Drawing.Size(220, 30)
+        Me.btnDispIonPump.TabIndex = 4
+        Me.btnDispIonPump.Tag = "9"
+        Me.btnDispIonPump.Text = "Ion Pump"
+        Me.btnDispIonPump.UseVisualStyleBackColor = False
+        '
+        'ledReadyAfc
+        '
+        Me.ledReadyAfc.FillColor = System.Drawing.Color.LawnGreen
+        Me.ledReadyAfc.ForeColor = System.Drawing.SystemColors.Control
+        Me.ledReadyAfc.Location = New System.Drawing.Point(226, 234)
+        Me.ledReadyAfc.MyBorderColor = System.Drawing.Color.Black
+        Me.ledReadyAfc.MyBorderWidth = 2
+        Me.ledReadyAfc.Name = "ledReadyAfc"
+        Me.ledReadyAfc.Size = New System.Drawing.Size(18, 20)
+        Me.ledReadyAfc.TabIndex = 101
+        Me.ledReadyAfc.Visible = False
+        '
+        'btnDispHV
+        '
+        Me.btnDispHV.BackColor = System.Drawing.Color.White
+        Me.btnDispHV.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.btnDispHV.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnDispHV.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
+        Me.btnDispHV.ForeColor = System.Drawing.Color.Black
+        Me.btnDispHV.Location = New System.Drawing.Point(0, 170)
+        Me.btnDispHV.Name = "btnDispHV"
+        Me.btnDispHV.ShowBoardSelected = False
+        Me.btnDispHV.Size = New System.Drawing.Size(220, 30)
+        Me.btnDispHV.TabIndex = 4
+        Me.btnDispHV.Tag = "5"
+        Me.btnDispHV.Text = "HV Power Supply"
+        Me.btnDispHV.UseVisualStyleBackColor = False
+        '
+        'btnDispSysCPU
+        '
+        Me.btnDispSysCPU.BackColor = System.Drawing.Color.White
+        Me.btnDispSysCPU.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.btnDispSysCPU.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnDispSysCPU.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
+        Me.btnDispSysCPU.ForeColor = System.Drawing.Color.Black
+        Me.btnDispSysCPU.Location = New System.Drawing.Point(0, 50)
+        Me.btnDispSysCPU.Name = "btnDispSysCPU"
+        Me.btnDispSysCPU.ShowBoardSelected = False
+        Me.btnDispSysCPU.Size = New System.Drawing.Size(220, 30)
+        Me.btnDispSysCPU.TabIndex = 4
+        Me.btnDispSysCPU.Tag = "1"
+        Me.btnDispSysCPU.Text = "System CPU"
+        Me.btnDispSysCPU.UseVisualStyleBackColor = False
+        '
+        'ledReadyMagnetron
+        '
+        Me.ledReadyMagnetron.FillColor = System.Drawing.Color.LawnGreen
+        Me.ledReadyMagnetron.ForeColor = System.Drawing.SystemColors.Control
+        Me.ledReadyMagnetron.Location = New System.Drawing.Point(226, 205)
+        Me.ledReadyMagnetron.MyBorderColor = System.Drawing.Color.Black
+        Me.ledReadyMagnetron.MyBorderWidth = 2
+        Me.ledReadyMagnetron.Name = "ledReadyMagnetron"
+        Me.ledReadyMagnetron.Size = New System.Drawing.Size(18, 20)
+        Me.ledReadyMagnetron.TabIndex = 101
+        Me.ledReadyMagnetron.Visible = False
+        '
+        'btnDispMagHtr
+        '
+        Me.btnDispMagHtr.BackColor = System.Drawing.Color.White
+        Me.btnDispMagHtr.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.btnDispMagHtr.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnDispMagHtr.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
+        Me.btnDispMagHtr.ForeColor = System.Drawing.Color.Black
+        Me.btnDispMagHtr.Location = New System.Drawing.Point(0, 260)
+        Me.btnDispMagHtr.Name = "btnDispMagHtr"
+        Me.btnDispMagHtr.ShowBoardSelected = False
+        Me.btnDispMagHtr.Size = New System.Drawing.Size(220, 30)
+        Me.btnDispMagHtr.TabIndex = 4
+        Me.btnDispMagHtr.Tag = "8"
+        Me.btnDispMagHtr.Text = "Magnet/Heater"
+        Me.btnDispMagHtr.UseVisualStyleBackColor = False
+        '
+        'btnDispPulseSync
+        '
+        Me.btnDispPulseSync.BackColor = System.Drawing.Color.White
+        Me.btnDispPulseSync.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.btnDispPulseSync.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnDispPulseSync.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
+        Me.btnDispPulseSync.ForeColor = System.Drawing.Color.Black
+        Me.btnDispPulseSync.Location = New System.Drawing.Point(0, 140)
+        Me.btnDispPulseSync.Name = "btnDispPulseSync"
+        Me.btnDispPulseSync.ShowBoardSelected = False
+        Me.btnDispPulseSync.Size = New System.Drawing.Size(220, 30)
+        Me.btnDispPulseSync.TabIndex = 4
+        Me.btnDispPulseSync.Tag = "4"
+        Me.btnDispPulseSync.Text = "Pulse Sync"
+        Me.btnDispPulseSync.UseVisualStyleBackColor = False
+        '
+        'ledReadyHV
+        '
+        Me.ledReadyHV.FillColor = System.Drawing.Color.LawnGreen
+        Me.ledReadyHV.ForeColor = System.Drawing.SystemColors.Control
+        Me.ledReadyHV.Location = New System.Drawing.Point(226, 176)
+        Me.ledReadyHV.MyBorderColor = System.Drawing.Color.Black
+        Me.ledReadyHV.MyBorderWidth = 2
+        Me.ledReadyHV.Name = "ledReadyHV"
+        Me.ledReadyHV.Size = New System.Drawing.Size(18, 20)
+        Me.ledReadyHV.TabIndex = 101
+        Me.ledReadyHV.Visible = False
+        '
+        'btnDispOverview
+        '
+        Me.btnDispOverview.BackColor = System.Drawing.Color.White
+        Me.btnDispOverview.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.btnDispOverview.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnDispOverview.Font = New System.Drawing.Font("Segoe UI", 16.0!, System.Drawing.FontStyle.Bold)
+        Me.btnDispOverview.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(110, Byte), Integer), CType(CType(199, Byte), Integer))
+        Me.btnDispOverview.Location = New System.Drawing.Point(0, 0)
+        Me.btnDispOverview.Name = "btnDispOverview"
+        Me.btnDispOverview.ShowBoardSelected = True
+        Me.btnDispOverview.Size = New System.Drawing.Size(220, 50)
+        Me.btnDispOverview.TabIndex = 4
+        Me.btnDispOverview.Tag = "0"
+        Me.btnDispOverview.Text = "System Overview"
+        Me.btnDispOverview.UseVisualStyleBackColor = False
+        '
+        'ledReadyCpu
+        '
+        Me.ledReadyCpu.FillColor = System.Drawing.Color.LawnGreen
+        Me.ledReadyCpu.ForeColor = System.Drawing.SystemColors.Control
+        Me.ledReadyCpu.Location = New System.Drawing.Point(226, 60)
+        Me.ledReadyCpu.MyBorderColor = System.Drawing.Color.Black
+        Me.ledReadyCpu.MyBorderWidth = 2
+        Me.ledReadyCpu.Name = "ledReadyCpu"
+        Me.ledReadyCpu.Size = New System.Drawing.Size(18, 20)
+        Me.ledReadyCpu.TabIndex = 101
+        Me.ledReadyCpu.Visible = False
+        '
+        'ledReadyPulseSync
+        '
+        Me.ledReadyPulseSync.FillColor = System.Drawing.Color.LawnGreen
+        Me.ledReadyPulseSync.ForeColor = System.Drawing.SystemColors.Control
+        Me.ledReadyPulseSync.Location = New System.Drawing.Point(226, 147)
+        Me.ledReadyPulseSync.MyBorderColor = System.Drawing.Color.Black
+        Me.ledReadyPulseSync.MyBorderWidth = 2
+        Me.ledReadyPulseSync.Name = "ledReadyPulseSync"
+        Me.ledReadyPulseSync.Size = New System.Drawing.Size(18, 20)
+        Me.ledReadyPulseSync.TabIndex = 101
+        Me.ledReadyPulseSync.Visible = False
+        '
+        'ledReadyGunDriver
+        '
+        Me.ledReadyGunDriver.FillColor = System.Drawing.Color.LawnGreen
+        Me.ledReadyGunDriver.ForeColor = System.Drawing.SystemColors.Control
+        Me.ledReadyGunDriver.Location = New System.Drawing.Point(226, 89)
+        Me.ledReadyGunDriver.MyBorderColor = System.Drawing.Color.Black
+        Me.ledReadyGunDriver.MyBorderWidth = 2
+        Me.ledReadyGunDriver.Name = "ledReadyGunDriver"
+        Me.ledReadyGunDriver.Size = New System.Drawing.Size(18, 20)
+        Me.ledReadyGunDriver.TabIndex = 101
+        Me.ledReadyGunDriver.Visible = False
+        '
+        'ledReadyCooling
+        '
+        Me.ledReadyCooling.FillColor = System.Drawing.Color.LawnGreen
+        Me.ledReadyCooling.ForeColor = System.Drawing.SystemColors.Control
+        Me.ledReadyCooling.Location = New System.Drawing.Point(226, 118)
+        Me.ledReadyCooling.MyBorderColor = System.Drawing.Color.Black
+        Me.ledReadyCooling.MyBorderWidth = 2
+        Me.ledReadyCooling.Name = "ledReadyCooling"
+        Me.ledReadyCooling.Size = New System.Drawing.Size(18, 20)
+        Me.ledReadyCooling.TabIndex = 101
+        Me.ledReadyCooling.Visible = False
         '
         'TabBoards
         '
@@ -5605,58 +5617,6 @@ Partial Class frmMain
         Me.btnServiceResetLinacTime.Text = "Reset Linac Time"
         Me.btnServiceResetLinacTime.UseVisualStyleBackColor = True
         '
-        'btnRestoreData
-        '
-        Me.btnRestoreData.BackColor = System.Drawing.Color.Blue
-        Me.btnRestoreData.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnRestoreData.ForeColor = System.Drawing.Color.Blue
-        Me.btnRestoreData.Location = New System.Drawing.Point(52, 479)
-        Me.btnRestoreData.Name = "btnRestoreData"
-        Me.btnRestoreData.Size = New System.Drawing.Size(253, 33)
-        Me.btnRestoreData.TabIndex = 409
-        Me.btnRestoreData.Tag = "1"
-        Me.btnRestoreData.Text = "Restore Dumped Data"
-        Me.btnRestoreData.UseVisualStyleBackColor = True
-        '
-        'btnDumpData
-        '
-        Me.btnDumpData.BackColor = System.Drawing.Color.Blue
-        Me.btnDumpData.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnDumpData.ForeColor = System.Drawing.Color.Blue
-        Me.btnDumpData.Location = New System.Drawing.Point(52, 423)
-        Me.btnDumpData.Name = "btnDumpData"
-        Me.btnDumpData.Size = New System.Drawing.Size(253, 33)
-        Me.btnDumpData.TabIndex = 409
-        Me.btnDumpData.Tag = "1"
-        Me.btnDumpData.Text = "Dump Data"
-        Me.btnDumpData.UseVisualStyleBackColor = True
-        '
-        'btnLoadParameters
-        '
-        Me.btnLoadParameters.BackColor = System.Drawing.Color.Blue
-        Me.btnLoadParameters.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnLoadParameters.ForeColor = System.Drawing.Color.Blue
-        Me.btnLoadParameters.Location = New System.Drawing.Point(377, 479)
-        Me.btnLoadParameters.Name = "btnLoadParameters"
-        Me.btnLoadParameters.Size = New System.Drawing.Size(253, 33)
-        Me.btnLoadParameters.TabIndex = 409
-        Me.btnLoadParameters.Tag = "1"
-        Me.btnLoadParameters.Text = "Load All Parameters"
-        Me.btnLoadParameters.UseVisualStyleBackColor = True
-        '
-        'btnSaveAllParams
-        '
-        Me.btnSaveAllParams.BackColor = System.Drawing.Color.Blue
-        Me.btnSaveAllParams.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnSaveAllParams.ForeColor = System.Drawing.Color.Blue
-        Me.btnSaveAllParams.Location = New System.Drawing.Point(377, 423)
-        Me.btnSaveAllParams.Name = "btnSaveAllParams"
-        Me.btnSaveAllParams.Size = New System.Drawing.Size(253, 33)
-        Me.btnSaveAllParams.TabIndex = 409
-        Me.btnSaveAllParams.Tag = "1"
-        Me.btnSaveAllParams.Text = "Save All Parameters"
-        Me.btnSaveAllParams.UseVisualStyleBackColor = True
-        '
         'btnIPaddress
         '
         Me.btnIPaddress.BackColor = System.Drawing.Color.Blue
@@ -5845,11 +5805,9 @@ Partial Class frmMain
         Me.TabPageServicePanel.Controls.Add(Me.Label3)
         Me.TabPageServicePanel.Controls.Add(Me.Label9)
         Me.TabPageServicePanel.Controls.Add(Me.btnLoadParameters)
-        Me.TabPageServicePanel.Controls.Add(Me.btnRestoreData)
         Me.TabPageServicePanel.Controls.Add(Me.BlueRect3)
         Me.TabPageServicePanel.Controls.Add(Me.btnSaveAllParams)
         Me.TabPageServicePanel.Controls.Add(Me.btnServiceRestoreFactoryDefaults)
-        Me.TabPageServicePanel.Controls.Add(Me.btnDumpData)
         Me.TabPageServicePanel.Controls.Add(Me.btnMagnetronConditioning)
         Me.TabPageServicePanel.Controls.Add(Me.btnZeroArcPulseCounters)
         Me.TabPageServicePanel.Location = New System.Drawing.Point(0, 0)
@@ -5894,6 +5852,33 @@ Partial Class frmMain
         Me.Label9.TabIndex = 417
         Me.Label9.Text = "Service Panel"
         '
+        'btnLoadParameters
+        '
+        Me.btnLoadParameters.BackColor = System.Drawing.Color.Blue
+        Me.btnLoadParameters.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnLoadParameters.ForeColor = System.Drawing.Color.Blue
+        Me.btnLoadParameters.Location = New System.Drawing.Point(52, 471)
+        Me.btnLoadParameters.Name = "btnLoadParameters"
+        Me.btnLoadParameters.Size = New System.Drawing.Size(253, 33)
+        Me.btnLoadParameters.TabIndex = 409
+        Me.btnLoadParameters.Tag = "1"
+        Me.btnLoadParameters.Text = "Load All Parameters"
+        Me.btnLoadParameters.UseVisualStyleBackColor = True
+        '
+        'btnRestoreData
+        '
+        Me.btnRestoreData.BackColor = System.Drawing.Color.Blue
+        Me.btnRestoreData.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnRestoreData.ForeColor = System.Drawing.Color.Blue
+        Me.btnRestoreData.Location = New System.Drawing.Point(52, 461)
+        Me.btnRestoreData.Name = "btnRestoreData"
+        Me.btnRestoreData.Size = New System.Drawing.Size(253, 33)
+        Me.btnRestoreData.TabIndex = 409
+        Me.btnRestoreData.Tag = "1"
+        Me.btnRestoreData.Text = "Restore Dumped Data"
+        Me.btnRestoreData.UseVisualStyleBackColor = True
+        Me.btnRestoreData.Visible = False
+        '
         'BlueRect3
         '
         Me.BlueRect3.Enabled = False
@@ -5903,6 +5888,19 @@ Partial Class frmMain
         Me.BlueRect3.Name = "BlueRect3"
         Me.BlueRect3.Size = New System.Drawing.Size(578, 98)
         Me.BlueRect3.TabIndex = 415
+        '
+        'btnSaveAllParams
+        '
+        Me.btnSaveAllParams.BackColor = System.Drawing.Color.Blue
+        Me.btnSaveAllParams.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnSaveAllParams.ForeColor = System.Drawing.Color.Blue
+        Me.btnSaveAllParams.Location = New System.Drawing.Point(52, 415)
+        Me.btnSaveAllParams.Name = "btnSaveAllParams"
+        Me.btnSaveAllParams.Size = New System.Drawing.Size(253, 33)
+        Me.btnSaveAllParams.TabIndex = 409
+        Me.btnSaveAllParams.Tag = "1"
+        Me.btnSaveAllParams.Text = "Save All Parameters"
+        Me.btnSaveAllParams.UseVisualStyleBackColor = True
         '
         'btnServiceRestoreFactoryDefaults
         '
@@ -5916,6 +5914,19 @@ Partial Class frmMain
         Me.btnServiceRestoreFactoryDefaults.Tag = "1"
         Me.btnServiceRestoreFactoryDefaults.Text = "Restore Factory Settings"
         Me.btnServiceRestoreFactoryDefaults.UseVisualStyleBackColor = True
+        '
+        'btnDumpData
+        '
+        Me.btnDumpData.BackColor = System.Drawing.Color.Blue
+        Me.btnDumpData.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnDumpData.ForeColor = System.Drawing.Color.Blue
+        Me.btnDumpData.Location = New System.Drawing.Point(52, 406)
+        Me.btnDumpData.Name = "btnDumpData"
+        Me.btnDumpData.Size = New System.Drawing.Size(253, 33)
+        Me.btnDumpData.TabIndex = 409
+        Me.btnDumpData.Tag = "1"
+        Me.btnDumpData.Text = "Dump Data"
+        Me.btnDumpData.UseVisualStyleBackColor = True
         '
         'btnMagnetronConditioning
         '
@@ -5950,10 +5961,12 @@ Partial Class frmMain
         Me.tabPageDeveloper.Controls.Add(Me.Label12)
         Me.tabPageDeveloper.Controls.Add(Me.Label17)
         Me.tabPageDeveloper.Controls.Add(Me.btnZeroOnTime)
+        Me.tabPageDeveloper.Controls.Add(Me.btnRestoreData)
         Me.tabPageDeveloper.Controls.Add(Me.btnServiceReloadInitialDefaults)
         Me.tabPageDeveloper.Controls.Add(Me.btnClearDebugData)
         Me.tabPageDeveloper.Controls.Add(Me.BlueRect17)
         Me.tabPageDeveloper.Controls.Add(Me.btnServiceSaveFactoryDefaults)
+        Me.tabPageDeveloper.Controls.Add(Me.btnDumpData)
         Me.tabPageDeveloper.Location = New System.Drawing.Point(0, 0)
         Me.tabPageDeveloper.Name = "tabPageDeveloper"
         Me.tabPageDeveloper.Size = New System.Drawing.Size(680, 580)
@@ -6067,18 +6080,6 @@ Partial Class frmMain
         Me.BlueRectMain.Name = "BlueRectMain"
         Me.BlueRectMain.Size = New System.Drawing.Size(296, 184)
         Me.BlueRectMain.TabIndex = 80
-        '
-        'lblNoTrigger
-        '
-        Me.lblNoTrigger.BackColor = System.Drawing.Color.White
-        Me.lblNoTrigger.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblNoTrigger.ForeColor = System.Drawing.Color.Black
-        Me.lblNoTrigger.Location = New System.Drawing.Point(174, 356)
-        Me.lblNoTrigger.Name = "lblNoTrigger"
-        Me.lblNoTrigger.Size = New System.Drawing.Size(116, 22)
-        Me.lblNoTrigger.TabIndex = 37
-        Me.lblNoTrigger.Text = "No Trigger"
-        Me.lblNoTrigger.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'frmMain
         '

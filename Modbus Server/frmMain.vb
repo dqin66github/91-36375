@@ -150,9 +150,6 @@ Public Class frmMain
             MessageBox.Show("Exception caught in FormMain.FormMainLoad  " + ex.ToString)
         End Try
 
-        ServerSettings.OpenEventLogFile()
-        ServerSettings.event_log_file.WriteLine("GUI Started at " & Format(DateTime.UtcNow, "yyyy/MM/dd HH:mm:ss"))
-        ServerSettings.CloseEventLogFile()
 
         pwScreen = New frmPassword
         reset_access_level()
@@ -189,8 +186,6 @@ Public Class frmMain
         Try
             TimerUpdate.Enabled = False
             My.Settings.IonPumpLogInterval = Val(txtIonPumpLogInterval.Text)
-            ServerSettings.CloseEventLogFile()
-
             ServerSettings.Close()
         Catch ex As Exception
             MessageBox.Show("Exception caught in FormMain.FormClosed  " + ex.ToString)
@@ -1110,8 +1105,8 @@ Public Class frmMain
 
             Dim dose_rate As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(17)
             lblDoseRate.Text = dose_rate
-            Dim dose_command As Byte = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).log_data(7) And &HFF ' range 0 to 255
-            lblDoseCommand.Text = dose_command
+            Dim dose_command As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).log_data(7)
+            lblDoseCommand.Text = Math.Truncate(dose_command / 256)
             lblBeamDuration.Text = grid_width
 
             If ((ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).logged_bits And &H80) > 0) Then
@@ -3019,11 +3014,11 @@ Public Class frmMain
         If (Directory.Exists(log_path) = False) Then
             Directory.CreateDirectory(log_path)
         End If
-        ion_pump_log_file_name = Path.Combine(log_path, "H" & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(19).ToString("0000") & "_IonPumpLog_" + DateTime.Now.ToString("yyyy_MM_dd_HH_mm") + ".csv")
+        ion_pump_log_file_name = Path.Combine(log_path, "H" & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(19).ToString("0000") & "_IonPumpLog_" + DateTime.UtcNow.ToString("yyyy_MM_dd_HH_mm") + ".csv")
     End Sub
 
     Private Sub logIonPump(item As String)
-        Dim line As String = DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss") + "," + item
+        Dim line As String = DateTime.UtcNow.ToString("yyyy/MM/dd,HH:mm:ss") + "," + item
         Dim sw As StreamWriter
 
         Try
@@ -3099,7 +3094,7 @@ Public Class frmMain
 
 
 #If True Then
-        Dim filename As String = "H" & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(19).ToString("0000") & "_param_" & DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss") & ".log"
+        Dim filename As String = "H" & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(19).ToString("0000") & "_param_" & DateTime.UtcNow.ToString("yyyy_MM_dd_HH_mm_ss") & ".log"
 
         Dim filepath As String = Path.Combine(param_path, filename)
 
