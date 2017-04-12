@@ -111,6 +111,8 @@ Public Class frmMain
     Public form_hidden As Boolean
     Public hidden_wait_count As UInt16
 
+    Private form_force_close As Boolean
+
     Private set_commands(SET_CMDS.LENGTH) As SET_COMMAND_STRUCTURE
 
 
@@ -176,7 +178,10 @@ Public Class frmMain
 
         DisplayBoardSpecificData(False)
 
-        form_hidden = False
+        form_hidden = True
+        Me.Visible = False
+        form_force_close = False
+
         hidden_wait_count = 10
 
     End Sub
@@ -225,7 +230,6 @@ Public Class frmMain
         End Try
 
 
-
         ServerSettings.board_to_monitor = CByte(board_index)
 
         ivalue = ServerSettings.get_modbus_status()
@@ -234,14 +238,16 @@ Public Class frmMain
             connected = False
             Me.Text = "2.5MeV Linac GUI(Linac Disconnected)"
            ' blank all display
-            reset_access_level()
-            DisplayMainPane(True)
-            DisplayBoardSpecificData(True)
+            '   reset_access_level()
+            DisplayMainPane(ServerSettings.show_dump_data = False)
+            DisplayBoardSpecificData(ServerSettings.show_dump_data = False)
 
         Else
 #End If
         connected = True
-        ServerSettings.event_log_enabled = True
+            ServerSettings.event_log_enabled = True
+            lblShowDumpData.Visible = False
+
         Me.Text = "2.5MeV Linac GUI"
         '   Splitter1.BackColor = Color.LightSteelBlue
 
@@ -684,6 +690,7 @@ Public Class frmMain
                     lblAfcFilteredError.Text = blank_string
                     lblAfcPreAsample.Text = blank_string
                     lblAfcPreBsample.Text = blank_string
+                    lblAfcManualPosition.Text = blank_string
 
                     btnAfcHomePosSet.Text = "Home Pos Set  " & blank_string
                     btnAfcCargoCtrlVSet.Text = "Cargo Ctrl V Set  " & blank_string & " V"
@@ -831,7 +838,7 @@ Public Class frmMain
                     ledServicePulseLogActive.FillColor = Color.Transparent
                     '           ledServiceRestoreDefaults.FillColor = Color.Transparent
 
-                    btnServiceModeChange.Enabled = False
+                    '     btnServiceModeChange.Enabled = False
                     btnServiceStartLog.Enabled = False
                     btnServiceSaveFactoryDefaults.Enabled = False
                     btnServiceReloadInitialDefaults.Enabled = False
@@ -928,15 +935,15 @@ Public Class frmMain
                 Format(ServerSettings.ETMEthernetBoardLoggingData(board_index).agile_dash, "000") & "  Rev-" &
                 Convert.ToChar(ServerSettings.ETMEthernetBoardLoggingData(board_index).agile_rev_ascii) & "  SN-" &
                 ServerSettings.ETMEthernetBoardLoggingData(board_index).serial_number 'Dparker need to add in the first Char
-            LabelFirmwareVerssion.Text = "Firmware Version " &
+            LabelFirmwareVersion.Text = "Firmware Version " &
                 ServerSettings.ETMEthernetBoardLoggingData(board_index).firmware_agile_rev & "." &
                 ServerSettings.ETMEthernetBoardLoggingData(board_index).firmware_branch & "." &
                 ServerSettings.ETMEthernetBoardLoggingData(board_index).firmware_branch_rev
             LabelAgileInfo.Visible = True
-            LabelFirmwareVerssion.Visible = True
+            LabelFirmwareVersion.Visible = True
         Else
             LabelAgileInfo.Visible = False
-            LabelFirmwareVerssion.Visible = False
+            LabelFirmwareVersion.Visible = False
         End If
 
 
@@ -987,10 +994,15 @@ Public Class frmMain
             PanelRadLeft.Visible = False 'flash_toggle
             PanelRadRight.Visible = False ' flash_toggle
 
-            lblAccessLevel.Text = "Access Level: Normal"
+            '   lblAccessLevel.Text = "Access Level: Normal"
             lblNoTrigger.Visible = False
 
         Else
+            If (ServerSettings.show_dump_data) Then
+                lblShowDumpData.Visible = flash_toggle
+            Else
+                lblShowDumpData.Visible = False
+            End If
 
             Select Case ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(0)
                 Case &H10
@@ -1146,17 +1158,18 @@ Public Class frmMain
             For i = 1 To 9
                 dispLeds(i - 1).FillColor = IIf((ServerSettings.ETMEthernetBoardLoggingData(board_indexes(i)).control_notice_bits And &H1) > 0, Color.Red, Color.LawnGreen)
             Next
-            Select Case access_level
-                Case 0
-                    lblAccessLevel.Text = "Access Level: Normal"
-                Case 1
-                    lblAccessLevel.Text = "Access Level: Service"
-                Case 2
-                    lblAccessLevel.Text = "Access Level: Developer"
-                Case Else
-
-            End Select
         End If ' blanking
+
+        Select Case access_level
+            Case 0
+                lblAccessLevel.Text = "Access Level: Normal"
+            Case 1
+                lblAccessLevel.Text = "Access Level: Service"
+            Case 2
+                lblAccessLevel.Text = "Access Level: Developer"
+            Case Else
+
+        End Select
 
     End Sub
 
@@ -2831,7 +2844,7 @@ Public Class frmMain
         btnDispServicePanel.Visible = False
         btnDispDeveloperPanel.Visible = False
         LabelAgileInfo.Visible = False
-        LabelFirmwareVerssion.Visible = False
+        LabelFirmwareVersion.Visible = False
 
         lblDoseRate.Visible = False
         lblDoseRateTitle.Visible = False
@@ -2850,6 +2863,9 @@ Public Class frmMain
             dispLeds(i - 1).Visible = False
         Next
 
+        ServerSettings.show_dump_data = False
+        lblShowDumpData.Visible = False
+
     End Sub
     Private Sub btnServiceModeChange_Click(sender As Object, e As EventArgs) Handles btnServiceModeChange.Click
         If (access_level > 0) Then
@@ -2866,7 +2882,7 @@ Public Class frmMain
                 btnDispDeveloperPanel.Visible = IIf(access_level > 1, True, False)
 
                 LabelAgileInfo.Visible = True
-                LabelFirmwareVerssion.Visible = True
+                LabelFirmwareVersion.Visible = True
                 PanelArcCounts.Visible = True
                 BlueRectMagnetron.Height = 258
                 PanelMagnetronLeds.Location = New Point(PanelMagnetronLeds.Location.X, 374)
@@ -3345,7 +3361,42 @@ Public Class frmMain
     End Sub
 
     Private Sub btnRestoreData_Click(sender As Object, e As EventArgs) Handles btnRestoreData.Click
-        ServerSettings.restore_dumped_data()
+        If (ServerSettings.get_modbus_status() <= 2) Then
+            ServerSettings.restore_dumped_data()
+            ServerSettings.show_dump_data = True
+            ' lblShowDumpData.Visible = True
+        Else
+            MessageBox.Show("Disconnect Ethernet to view dump data")
+        End If
+    End Sub
+
+    Private Sub frmMain_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+        Me.Visible = Not form_hidden ' load hidden form initially
+    End Sub
+
+    Private Sub frmMain_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
+        If form_force_close = False Then
+            form_hidden = True
+            Me.Visible = Not form_hidden
+            e.Cancel = True
+        End If
+    End Sub
+
+    
+
+    Private Sub frmMain_keyup(sender As Object, e As KeyEventArgs) Handles MyBase.KeyUp
+        Try
+            If e.KeyCode = Keys.F8 And e.Alt Then
+                form_force_close = True
+                Me.Close()
+            End If
+
+        Catch Ex As Exception
+            MessageBox.Show("key up handler error! " & Ex.Message)
+        Finally
+
+            Me.KeyPreview = True
+        End Try
 
     End Sub
 End Class

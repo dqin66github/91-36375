@@ -26,8 +26,30 @@ Partial Class frmMain
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmMain))
         Me.TimerUpdate = New System.Windows.Forms.Timer(Me.components)
         Me.LabelAgileInfo = New System.Windows.Forms.Label()
-        Me.LabelFirmwareVerssion = New System.Windows.Forms.Label()
+        Me.LabelFirmwareVersion = New System.Windows.Forms.Label()
         Me.panelDispButtons = New System.Windows.Forms.Panel()
+        Me.btnDispAFC = New CustomControls.ButtonSelected()
+        Me.btnDispCoolSF6 = New CustomControls.ButtonSelected()
+        Me.btnDispDeveloperPanel = New CustomControls.ButtonSelected()
+        Me.btnDispServicePanel = New CustomControls.ButtonSelected()
+        Me.ledReadyIonpump = New CustomControls.OvalLed()
+        Me.btnDispService = New CustomControls.ButtonSelected()
+        Me.btnDispMagnetron = New CustomControls.ButtonSelected()
+        Me.ledReadyMagnetHtr = New CustomControls.OvalLed()
+        Me.btnDispGunDriver = New CustomControls.ButtonSelected()
+        Me.btnDispIonPump = New CustomControls.ButtonSelected()
+        Me.ledReadyAfc = New CustomControls.OvalLed()
+        Me.btnDispHV = New CustomControls.ButtonSelected()
+        Me.btnDispSysCPU = New CustomControls.ButtonSelected()
+        Me.ledReadyMagnetron = New CustomControls.OvalLed()
+        Me.btnDispMagHtr = New CustomControls.ButtonSelected()
+        Me.btnDispPulseSync = New CustomControls.ButtonSelected()
+        Me.ledReadyHV = New CustomControls.OvalLed()
+        Me.btnDispOverview = New CustomControls.ButtonSelected()
+        Me.ledReadyCpu = New CustomControls.OvalLed()
+        Me.ledReadyPulseSync = New CustomControls.OvalLed()
+        Me.ledReadyGunDriver = New CustomControls.OvalLed()
+        Me.ledReadyCooling = New CustomControls.OvalLed()
         Me.PictureBoxLogo = New System.Windows.Forms.PictureBox()
         Me.lblSystem = New System.Windows.Forms.Label()
         Me.LabelECBState = New System.Windows.Forms.Label()
@@ -61,28 +83,6 @@ Partial Class frmMain
         Me.lblIonIi2Title = New System.Windows.Forms.Label()
         Me.lblIonIi2 = New System.Windows.Forms.Label()
         Me.lblNoTrigger = New System.Windows.Forms.Label()
-        Me.btnDispAFC = New CustomControls.ButtonSelected()
-        Me.btnDispCoolSF6 = New CustomControls.ButtonSelected()
-        Me.btnDispDeveloperPanel = New CustomControls.ButtonSelected()
-        Me.btnDispServicePanel = New CustomControls.ButtonSelected()
-        Me.ledReadyIonpump = New CustomControls.OvalLed()
-        Me.btnDispService = New CustomControls.ButtonSelected()
-        Me.btnDispMagnetron = New CustomControls.ButtonSelected()
-        Me.ledReadyMagnetHtr = New CustomControls.OvalLed()
-        Me.btnDispGunDriver = New CustomControls.ButtonSelected()
-        Me.btnDispIonPump = New CustomControls.ButtonSelected()
-        Me.ledReadyAfc = New CustomControls.OvalLed()
-        Me.btnDispHV = New CustomControls.ButtonSelected()
-        Me.btnDispSysCPU = New CustomControls.ButtonSelected()
-        Me.ledReadyMagnetron = New CustomControls.OvalLed()
-        Me.btnDispMagHtr = New CustomControls.ButtonSelected()
-        Me.btnDispPulseSync = New CustomControls.ButtonSelected()
-        Me.ledReadyHV = New CustomControls.OvalLed()
-        Me.btnDispOverview = New CustomControls.ButtonSelected()
-        Me.ledReadyCpu = New CustomControls.OvalLed()
-        Me.ledReadyPulseSync = New CustomControls.OvalLed()
-        Me.ledReadyGunDriver = New CustomControls.OvalLed()
-        Me.ledReadyCooling = New CustomControls.OvalLed()
         Me.TabBoards = New CustomControls.RightSideTab()
         Me.TabPageOverview = New System.Windows.Forms.TabPage()
         Me.Label283 = New System.Windows.Forms.Label()
@@ -459,11 +459,9 @@ Partial Class frmMain
         Me.Label3 = New System.Windows.Forms.Label()
         Me.Label9 = New System.Windows.Forms.Label()
         Me.btnLoadParameters = New System.Windows.Forms.Button()
-        Me.btnRestoreData = New System.Windows.Forms.Button()
         Me.BlueRect3 = New CustomControls.BlueRect()
         Me.btnSaveAllParams = New System.Windows.Forms.Button()
         Me.btnServiceRestoreFactoryDefaults = New System.Windows.Forms.Button()
-        Me.btnDumpData = New System.Windows.Forms.Button()
         Me.btnMagnetronConditioning = New System.Windows.Forms.Button()
         Me.btnZeroArcPulseCounters = New System.Windows.Forms.Button()
         Me.tabPageDeveloper = New System.Windows.Forms.TabPage()
@@ -471,11 +469,14 @@ Partial Class frmMain
         Me.Label12 = New System.Windows.Forms.Label()
         Me.Label17 = New System.Windows.Forms.Label()
         Me.btnZeroOnTime = New System.Windows.Forms.Button()
+        Me.btnRestoreData = New System.Windows.Forms.Button()
         Me.btnServiceReloadInitialDefaults = New System.Windows.Forms.Button()
         Me.btnClearDebugData = New System.Windows.Forms.Button()
         Me.BlueRect17 = New CustomControls.BlueRect()
         Me.btnServiceSaveFactoryDefaults = New System.Windows.Forms.Button()
+        Me.btnDumpData = New System.Windows.Forms.Button()
         Me.BlueRectMain = New CustomControls.BlueRect()
+        Me.lblShowDumpData = New System.Windows.Forms.Label()
         Me.panelDispButtons.SuspendLayout()
         CType(Me.PictureBoxLogo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel2.SuspendLayout()
@@ -519,18 +520,18 @@ Partial Class frmMain
         Me.LabelAgileInfo.Text = "A12345-000 rev 000 SN 6789"
         Me.LabelAgileInfo.Visible = False
         '
-        'LabelFirmwareVerssion
+        'LabelFirmwareVersion
         '
-        Me.LabelFirmwareVerssion.AutoSize = True
-        Me.LabelFirmwareVerssion.BackColor = System.Drawing.Color.White
-        Me.LabelFirmwareVerssion.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LabelFirmwareVerssion.ForeColor = System.Drawing.Color.Black
-        Me.LabelFirmwareVerssion.Location = New System.Drawing.Point(697, 463)
-        Me.LabelFirmwareVerssion.Name = "LabelFirmwareVerssion"
-        Me.LabelFirmwareVerssion.Size = New System.Drawing.Size(144, 13)
-        Me.LabelFirmwareVerssion.TabIndex = 1
-        Me.LabelFirmwareVerssion.Text = "Firmware Version  12.11.20"
-        Me.LabelFirmwareVerssion.Visible = False
+        Me.LabelFirmwareVersion.AutoSize = True
+        Me.LabelFirmwareVersion.BackColor = System.Drawing.Color.White
+        Me.LabelFirmwareVersion.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LabelFirmwareVersion.ForeColor = System.Drawing.Color.Black
+        Me.LabelFirmwareVersion.Location = New System.Drawing.Point(697, 463)
+        Me.LabelFirmwareVersion.Name = "LabelFirmwareVersion"
+        Me.LabelFirmwareVersion.Size = New System.Drawing.Size(144, 13)
+        Me.LabelFirmwareVersion.TabIndex = 1
+        Me.LabelFirmwareVersion.Text = "Firmware Version  12.11.20"
+        Me.LabelFirmwareVersion.Visible = False
         '
         'panelDispButtons
         '
@@ -562,393 +563,6 @@ Partial Class frmMain
         Me.panelDispButtons.Name = "panelDispButtons"
         Me.panelDispButtons.Size = New System.Drawing.Size(252, 412)
         Me.panelDispButtons.TabIndex = 5
-        '
-        'PictureBoxLogo
-        '
-        Me.PictureBoxLogo.BackColor = System.Drawing.Color.White
-        Me.PictureBoxLogo.Image = CType(resources.GetObject("PictureBoxLogo.Image"), System.Drawing.Image)
-        Me.PictureBoxLogo.InitialImage = CType(resources.GetObject("PictureBoxLogo.InitialImage"), System.Drawing.Image)
-        Me.PictureBoxLogo.Location = New System.Drawing.Point(28, 42)
-        Me.PictureBoxLogo.Margin = New System.Windows.Forms.Padding(2)
-        Me.PictureBoxLogo.Name = "PictureBoxLogo"
-        Me.PictureBoxLogo.Size = New System.Drawing.Size(281, 85)
-        Me.PictureBoxLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.PictureBoxLogo.TabIndex = 31
-        Me.PictureBoxLogo.TabStop = False
-        '
-        'lblSystem
-        '
-        Me.lblSystem.AutoSize = True
-        Me.lblSystem.BackColor = System.Drawing.Color.White
-        Me.lblSystem.Font = New System.Drawing.Font("Segoe UI", 30.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblSystem.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(110, Byte), Integer), CType(CType(199, Byte), Integer))
-        Me.lblSystem.Location = New System.Drawing.Point(479, 49)
-        Me.lblSystem.Name = "lblSystem"
-        Me.lblSystem.Size = New System.Drawing.Size(422, 54)
-        Me.lblSystem.TabIndex = 3
-        Me.lblSystem.Text = "2.5MeV Linac System"
-        Me.lblSystem.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        '
-        'LabelECBState
-        '
-        Me.LabelECBState.AutoSize = True
-        Me.LabelECBState.BackColor = System.Drawing.Color.White
-        Me.LabelECBState.Font = New System.Drawing.Font("Segoe UI", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LabelECBState.ForeColor = System.Drawing.Color.Red
-        Me.LabelECBState.Location = New System.Drawing.Point(35, 210)
-        Me.LabelECBState.Name = "LabelECBState"
-        Me.LabelECBState.Size = New System.Drawing.Size(255, 32)
-        Me.LabelECBState.TabIndex = 1
-        Me.LabelECBState.Text = "State: Warmup 10:05"
-        '
-        'lblSN
-        '
-        Me.lblSN.AutoSize = True
-        Me.lblSN.BackColor = System.Drawing.Color.White
-        Me.lblSN.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblSN.ForeColor = System.Drawing.Color.Black
-        Me.lblSN.Location = New System.Drawing.Point(697, 492)
-        Me.lblSN.Name = "lblSN"
-        Me.lblSN.Size = New System.Drawing.Size(141, 21)
-        Me.lblSN.TabIndex = 1
-        Me.lblSN.Text = "System SN  H6699"
-        '
-        'btnResetFault
-        '
-        Me.btnResetFault.BackColor = System.Drawing.Color.Blue
-        Me.btnResetFault.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnResetFault.ForeColor = System.Drawing.Color.Blue
-        Me.btnResetFault.Location = New System.Drawing.Point(189, 249)
-        Me.btnResetFault.Name = "btnResetFault"
-        Me.btnResetFault.Size = New System.Drawing.Size(103, 40)
-        Me.btnResetFault.TabIndex = 104
-        Me.btnResetFault.Tag = "1"
-        Me.btnResetFault.Text = "RESET"
-        Me.btnResetFault.UseVisualStyleBackColor = True
-        Me.btnResetFault.Visible = False
-        '
-        'LabelGUIVersion
-        '
-        Me.LabelGUIVersion.AutoSize = True
-        Me.LabelGUIVersion.BackColor = System.Drawing.Color.White
-        Me.LabelGUIVersion.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LabelGUIVersion.ForeColor = System.Drawing.Color.Black
-        Me.LabelGUIVersion.Location = New System.Drawing.Point(696, 525)
-        Me.LabelGUIVersion.Name = "LabelGUIVersion"
-        Me.LabelGUIVersion.Size = New System.Drawing.Size(127, 21)
-        Me.LabelGUIVersion.TabIndex = 101
-        Me.LabelGUIVersion.Text = "GUI Version 1.00"
-        '
-        'Panel2
-        '
-        Me.Panel2.BackColor = System.Drawing.Color.White
-        Me.Panel2.Controls.Add(Me.LabelGUIVersion)
-        Me.Panel2.Controls.Add(Me.lblSN)
-        Me.Panel2.Controls.Add(Me.LabelFirmwareVerssion)
-        Me.Panel2.Controls.Add(Me.LabelAgileInfo)
-        Me.Panel2.Location = New System.Drawing.Point(350, 138)
-        Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(947, 652)
-        Me.Panel2.TabIndex = 105
-        '
-        'lblAccessLevel
-        '
-        Me.lblAccessLevel.AutoSize = True
-        Me.lblAccessLevel.BackColor = System.Drawing.Color.White
-        Me.lblAccessLevel.Font = New System.Drawing.Font("Segoe UI", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblAccessLevel.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(110, Byte), Integer), CType(CType(199, Byte), Integer))
-        Me.lblAccessLevel.Location = New System.Drawing.Point(35, 627)
-        Me.lblAccessLevel.Name = "lblAccessLevel"
-        Me.lblAccessLevel.Size = New System.Drawing.Size(197, 25)
-        Me.lblAccessLevel.TabIndex = 3
-        Me.lblAccessLevel.Text = "Access Level:  Service"
-        Me.lblAccessLevel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        '
-        'PanelRadLeft
-        '
-        Me.PanelRadLeft.BackColor = System.Drawing.Color.White
-        Me.PanelRadLeft.Controls.Add(Me.PictureBox2)
-        Me.PanelRadLeft.Controls.Add(Me.Label106)
-        Me.PanelRadLeft.Controls.Add(Me.Label108)
-        Me.PanelRadLeft.ForeColor = System.Drawing.Color.White
-        Me.PanelRadLeft.Location = New System.Drawing.Point(372, 22)
-        Me.PanelRadLeft.Name = "PanelRadLeft"
-        Me.PanelRadLeft.Size = New System.Drawing.Size(96, 110)
-        Me.PanelRadLeft.TabIndex = 30
-        Me.PanelRadLeft.Visible = False
-        '
-        'PictureBox2
-        '
-        Me.PictureBox2.Image = Global.WindowsApplication1.My.Resources.Resources.__FINAL__Radiation_Mono_256
-        Me.PictureBox2.Location = New System.Drawing.Point(16, 27)
-        Me.PictureBox2.Name = "PictureBox2"
-        Me.PictureBox2.Size = New System.Drawing.Size(59, 59)
-        Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
-        Me.PictureBox2.TabIndex = 29
-        Me.PictureBox2.TabStop = False
-        '
-        'Label106
-        '
-        Me.Label106.AutoSize = True
-        Me.Label106.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label106.ForeColor = System.Drawing.Color.Red
-        Me.Label106.Location = New System.Drawing.Point(13, 84)
-        Me.Label106.Name = "Label106"
-        Me.Label106.Size = New System.Drawing.Size(64, 21)
-        Me.Label106.TabIndex = 30
-        Me.Label106.Text = "Hazard"
-        '
-        'Label108
-        '
-        Me.Label108.AutoSize = True
-        Me.Label108.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label108.ForeColor = System.Drawing.Color.Red
-        Me.Label108.Location = New System.Drawing.Point(3, 6)
-        Me.Label108.Name = "Label108"
-        Me.Label108.Size = New System.Drawing.Size(84, 21)
-        Me.Label108.TabIndex = 30
-        Me.Label108.Text = "Radiation"
-        '
-        'PanelRadRight
-        '
-        Me.PanelRadRight.BackColor = System.Drawing.Color.White
-        Me.PanelRadRight.Controls.Add(Me.PictureBox3)
-        Me.PanelRadRight.Controls.Add(Me.Label128)
-        Me.PanelRadRight.Controls.Add(Me.Label129)
-        Me.PanelRadRight.ForeColor = System.Drawing.Color.White
-        Me.PanelRadRight.Location = New System.Drawing.Point(907, 22)
-        Me.PanelRadRight.Name = "PanelRadRight"
-        Me.PanelRadRight.Size = New System.Drawing.Size(96, 110)
-        Me.PanelRadRight.TabIndex = 30
-        Me.PanelRadRight.Visible = False
-        '
-        'PictureBox3
-        '
-        Me.PictureBox3.Image = Global.WindowsApplication1.My.Resources.Resources.__FINAL__Radiation_Mono_256
-        Me.PictureBox3.Location = New System.Drawing.Point(16, 27)
-        Me.PictureBox3.Name = "PictureBox3"
-        Me.PictureBox3.Size = New System.Drawing.Size(59, 59)
-        Me.PictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
-        Me.PictureBox3.TabIndex = 29
-        Me.PictureBox3.TabStop = False
-        '
-        'Label128
-        '
-        Me.Label128.AutoSize = True
-        Me.Label128.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label128.ForeColor = System.Drawing.Color.Red
-        Me.Label128.Location = New System.Drawing.Point(13, 84)
-        Me.Label128.Name = "Label128"
-        Me.Label128.Size = New System.Drawing.Size(64, 21)
-        Me.Label128.TabIndex = 30
-        Me.Label128.Text = "Hazard"
-        '
-        'Label129
-        '
-        Me.Label129.AutoSize = True
-        Me.Label129.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label129.ForeColor = System.Drawing.Color.Red
-        Me.Label129.Location = New System.Drawing.Point(3, 6)
-        Me.Label129.Name = "Label129"
-        Me.Label129.Size = New System.Drawing.Size(84, 21)
-        Me.Label129.TabIndex = 30
-        Me.Label129.Text = "Radiation"
-        '
-        'lblScanMode
-        '
-        Me.lblScanMode.AutoSize = True
-        Me.lblScanMode.BackColor = System.Drawing.Color.White
-        Me.lblScanMode.Font = New System.Drawing.Font("Segoe UI", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblScanMode.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(110, Byte), Integer), CType(CType(199, Byte), Integer))
-        Me.lblScanMode.Location = New System.Drawing.Point(35, 303)
-        Me.lblScanMode.Name = "lblScanMode"
-        Me.lblScanMode.Size = New System.Drawing.Size(198, 32)
-        Me.lblScanMode.TabIndex = 1
-        Me.lblScanMode.Text = "Mode: Cab Scan"
-        '
-        'Label29
-        '
-        Me.Label29.AutoSize = True
-        Me.Label29.BackColor = System.Drawing.Color.White
-        Me.Label29.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label29.ForeColor = System.Drawing.Color.Black
-        Me.Label29.Location = New System.Drawing.Point(245, 522)
-        Me.Label29.Name = "Label29"
-        Me.Label29.Size = New System.Drawing.Size(27, 21)
-        Me.Label29.TabIndex = 34
-        Me.Label29.Text = "ns"
-        '
-        'lblDoseRateUnit
-        '
-        Me.lblDoseRateUnit.AutoSize = True
-        Me.lblDoseRateUnit.BackColor = System.Drawing.Color.White
-        Me.lblDoseRateUnit.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblDoseRateUnit.ForeColor = System.Drawing.Color.Black
-        Me.lblDoseRateUnit.Location = New System.Drawing.Point(245, 432)
-        Me.lblDoseRateUnit.Name = "lblDoseRateUnit"
-        Me.lblDoseRateUnit.Size = New System.Drawing.Size(67, 21)
-        Me.lblDoseRateUnit.TabIndex = 34
-        Me.lblDoseRateUnit.Text = "Gy/min"
-        Me.lblDoseRateUnit.Visible = False
-        '
-        'lblDoseRate
-        '
-        Me.lblDoseRate.BackColor = System.Drawing.Color.White
-        Me.lblDoseRate.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblDoseRate.ForeColor = System.Drawing.Color.Black
-        Me.lblDoseRate.Location = New System.Drawing.Point(181, 432)
-        Me.lblDoseRate.Name = "lblDoseRate"
-        Me.lblDoseRate.Size = New System.Drawing.Size(58, 20)
-        Me.lblDoseRate.TabIndex = 37
-        Me.lblDoseRate.Text = "0"
-        Me.lblDoseRate.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.lblDoseRate.Visible = False
-        '
-        'lblPulseFreq
-        '
-        Me.lblPulseFreq.BackColor = System.Drawing.Color.White
-        Me.lblPulseFreq.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblPulseFreq.ForeColor = System.Drawing.Color.Black
-        Me.lblPulseFreq.Location = New System.Drawing.Point(181, 462)
-        Me.lblPulseFreq.Name = "lblPulseFreq"
-        Me.lblPulseFreq.Size = New System.Drawing.Size(58, 20)
-        Me.lblPulseFreq.TabIndex = 37
-        Me.lblPulseFreq.Text = "0"
-        Me.lblPulseFreq.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'lblDoseCommand
-        '
-        Me.lblDoseCommand.BackColor = System.Drawing.Color.White
-        Me.lblDoseCommand.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblDoseCommand.ForeColor = System.Drawing.Color.Black
-        Me.lblDoseCommand.Location = New System.Drawing.Point(181, 492)
-        Me.lblDoseCommand.Name = "lblDoseCommand"
-        Me.lblDoseCommand.Size = New System.Drawing.Size(58, 20)
-        Me.lblDoseCommand.TabIndex = 37
-        Me.lblDoseCommand.Text = "0"
-        Me.lblDoseCommand.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'Label32
-        '
-        Me.Label32.AutoSize = True
-        Me.Label32.BackColor = System.Drawing.Color.White
-        Me.Label32.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label32.ForeColor = System.Drawing.Color.Black
-        Me.Label32.Location = New System.Drawing.Point(245, 462)
-        Me.Label32.Name = "Label32"
-        Me.Label32.Size = New System.Drawing.Size(30, 21)
-        Me.Label32.TabIndex = 34
-        Me.Label32.Text = "Hz"
-        '
-        'Label19
-        '
-        Me.Label19.AutoSize = True
-        Me.Label19.BackColor = System.Drawing.Color.White
-        Me.Label19.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label19.ForeColor = System.Drawing.Color.Black
-        Me.Label19.Location = New System.Drawing.Point(41, 522)
-        Me.Label19.Name = "Label19"
-        Me.Label19.Size = New System.Drawing.Size(125, 21)
-        Me.Label19.TabIndex = 40
-        Me.Label19.Text = "Beam Duration"
-        '
-        'lblBeamDuration
-        '
-        Me.lblBeamDuration.BackColor = System.Drawing.Color.White
-        Me.lblBeamDuration.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblBeamDuration.ForeColor = System.Drawing.Color.Black
-        Me.lblBeamDuration.Location = New System.Drawing.Point(181, 522)
-        Me.lblBeamDuration.Name = "lblBeamDuration"
-        Me.lblBeamDuration.Size = New System.Drawing.Size(58, 20)
-        Me.lblBeamDuration.TabIndex = 37
-        Me.lblBeamDuration.Text = "0"
-        Me.lblBeamDuration.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'Label22
-        '
-        Me.Label22.AutoSize = True
-        Me.Label22.BackColor = System.Drawing.Color.White
-        Me.Label22.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label22.ForeColor = System.Drawing.Color.Black
-        Me.Label22.Location = New System.Drawing.Point(41, 492)
-        Me.Label22.Name = "Label22"
-        Me.Label22.Size = New System.Drawing.Size(131, 21)
-        Me.Label22.TabIndex = 40
-        Me.Label22.Text = "Dose Command"
-        '
-        'Label23
-        '
-        Me.Label23.AutoSize = True
-        Me.Label23.BackColor = System.Drawing.Color.White
-        Me.Label23.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label23.ForeColor = System.Drawing.Color.Black
-        Me.Label23.Location = New System.Drawing.Point(41, 462)
-        Me.Label23.Name = "Label23"
-        Me.Label23.Size = New System.Drawing.Size(134, 21)
-        Me.Label23.TabIndex = 40
-        Me.Label23.Text = "Pulse Frequency"
-        '
-        'lblDoseRateTitle
-        '
-        Me.lblDoseRateTitle.AutoSize = True
-        Me.lblDoseRateTitle.BackColor = System.Drawing.Color.White
-        Me.lblDoseRateTitle.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblDoseRateTitle.ForeColor = System.Drawing.Color.Black
-        Me.lblDoseRateTitle.Location = New System.Drawing.Point(41, 432)
-        Me.lblDoseRateTitle.Name = "lblDoseRateTitle"
-        Me.lblDoseRateTitle.Size = New System.Drawing.Size(86, 21)
-        Me.lblDoseRateTitle.TabIndex = 40
-        Me.lblDoseRateTitle.Text = "Dose Rate"
-        Me.lblDoseRateTitle.Visible = False
-        '
-        'lblIonIi2Unit
-        '
-        Me.lblIonIi2Unit.AutoSize = True
-        Me.lblIonIi2Unit.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblIonIi2Unit.ForeColor = System.Drawing.Color.Black
-        Me.lblIonIi2Unit.Location = New System.Drawing.Point(245, 552)
-        Me.lblIonIi2Unit.Name = "lblIonIi2Unit"
-        Me.lblIonIi2Unit.Size = New System.Drawing.Size(31, 21)
-        Me.lblIonIi2Unit.TabIndex = 164
-        Me.lblIonIi2Unit.Text = "uA"
-        Me.lblIonIi2Unit.Visible = False
-        '
-        'lblIonIi2Title
-        '
-        Me.lblIonIi2Title.AutoSize = True
-        Me.lblIonIi2Title.BackColor = System.Drawing.Color.White
-        Me.lblIonIi2Title.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblIonIi2Title.ForeColor = System.Drawing.Color.Black
-        Me.lblIonIi2Title.Location = New System.Drawing.Point(41, 552)
-        Me.lblIonIi2Title.Name = "lblIonIi2Title"
-        Me.lblIonIi2Title.Size = New System.Drawing.Size(145, 21)
-        Me.lblIonIi2Title.TabIndex = 40
-        Me.lblIonIi2Title.Text = "Ion Pump Current"
-        Me.lblIonIi2Title.Visible = False
-        '
-        'lblIonIi2
-        '
-        Me.lblIonIi2.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblIonIi2.ForeColor = System.Drawing.Color.Black
-        Me.lblIonIi2.Location = New System.Drawing.Point(185, 552)
-        Me.lblIonIi2.Name = "lblIonIi2"
-        Me.lblIonIi2.Size = New System.Drawing.Size(54, 20)
-        Me.lblIonIi2.TabIndex = 170
-        Me.lblIonIi2.Text = "0"
-        Me.lblIonIi2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.lblIonIi2.Visible = False
-        '
-        'lblNoTrigger
-        '
-        Me.lblNoTrigger.BackColor = System.Drawing.Color.White
-        Me.lblNoTrigger.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblNoTrigger.ForeColor = System.Drawing.Color.Black
-        Me.lblNoTrigger.Location = New System.Drawing.Point(174, 356)
-        Me.lblNoTrigger.Name = "lblNoTrigger"
-        Me.lblNoTrigger.Size = New System.Drawing.Size(116, 22)
-        Me.lblNoTrigger.TabIndex = 37
-        Me.lblNoTrigger.Text = "No Trigger"
-        Me.lblNoTrigger.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'btnDispAFC
         '
@@ -1267,6 +881,393 @@ Partial Class frmMain
         Me.ledReadyCooling.Size = New System.Drawing.Size(18, 20)
         Me.ledReadyCooling.TabIndex = 101
         Me.ledReadyCooling.Visible = False
+        '
+        'PictureBoxLogo
+        '
+        Me.PictureBoxLogo.BackColor = System.Drawing.Color.White
+        Me.PictureBoxLogo.Image = CType(resources.GetObject("PictureBoxLogo.Image"), System.Drawing.Image)
+        Me.PictureBoxLogo.InitialImage = CType(resources.GetObject("PictureBoxLogo.InitialImage"), System.Drawing.Image)
+        Me.PictureBoxLogo.Location = New System.Drawing.Point(28, 42)
+        Me.PictureBoxLogo.Margin = New System.Windows.Forms.Padding(2)
+        Me.PictureBoxLogo.Name = "PictureBoxLogo"
+        Me.PictureBoxLogo.Size = New System.Drawing.Size(281, 85)
+        Me.PictureBoxLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.PictureBoxLogo.TabIndex = 31
+        Me.PictureBoxLogo.TabStop = False
+        '
+        'lblSystem
+        '
+        Me.lblSystem.AutoSize = True
+        Me.lblSystem.BackColor = System.Drawing.Color.White
+        Me.lblSystem.Font = New System.Drawing.Font("Segoe UI", 30.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblSystem.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(110, Byte), Integer), CType(CType(199, Byte), Integer))
+        Me.lblSystem.Location = New System.Drawing.Point(479, 49)
+        Me.lblSystem.Name = "lblSystem"
+        Me.lblSystem.Size = New System.Drawing.Size(422, 54)
+        Me.lblSystem.TabIndex = 3
+        Me.lblSystem.Text = "2.5MeV Linac System"
+        Me.lblSystem.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'LabelECBState
+        '
+        Me.LabelECBState.AutoSize = True
+        Me.LabelECBState.BackColor = System.Drawing.Color.White
+        Me.LabelECBState.Font = New System.Drawing.Font("Segoe UI", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LabelECBState.ForeColor = System.Drawing.Color.Red
+        Me.LabelECBState.Location = New System.Drawing.Point(35, 210)
+        Me.LabelECBState.Name = "LabelECBState"
+        Me.LabelECBState.Size = New System.Drawing.Size(255, 32)
+        Me.LabelECBState.TabIndex = 1
+        Me.LabelECBState.Text = "State: Warmup 10:05"
+        '
+        'lblSN
+        '
+        Me.lblSN.AutoSize = True
+        Me.lblSN.BackColor = System.Drawing.Color.White
+        Me.lblSN.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblSN.ForeColor = System.Drawing.Color.Black
+        Me.lblSN.Location = New System.Drawing.Point(697, 492)
+        Me.lblSN.Name = "lblSN"
+        Me.lblSN.Size = New System.Drawing.Size(141, 21)
+        Me.lblSN.TabIndex = 1
+        Me.lblSN.Text = "System SN  H6699"
+        '
+        'btnResetFault
+        '
+        Me.btnResetFault.BackColor = System.Drawing.Color.Blue
+        Me.btnResetFault.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnResetFault.ForeColor = System.Drawing.Color.Blue
+        Me.btnResetFault.Location = New System.Drawing.Point(189, 249)
+        Me.btnResetFault.Name = "btnResetFault"
+        Me.btnResetFault.Size = New System.Drawing.Size(103, 40)
+        Me.btnResetFault.TabIndex = 104
+        Me.btnResetFault.Tag = "1"
+        Me.btnResetFault.Text = "RESET"
+        Me.btnResetFault.UseVisualStyleBackColor = True
+        Me.btnResetFault.Visible = False
+        '
+        'LabelGUIVersion
+        '
+        Me.LabelGUIVersion.AutoSize = True
+        Me.LabelGUIVersion.BackColor = System.Drawing.Color.White
+        Me.LabelGUIVersion.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LabelGUIVersion.ForeColor = System.Drawing.Color.Black
+        Me.LabelGUIVersion.Location = New System.Drawing.Point(696, 525)
+        Me.LabelGUIVersion.Name = "LabelGUIVersion"
+        Me.LabelGUIVersion.Size = New System.Drawing.Size(127, 21)
+        Me.LabelGUIVersion.TabIndex = 101
+        Me.LabelGUIVersion.Text = "GUI Version 1.00"
+        '
+        'Panel2
+        '
+        Me.Panel2.BackColor = System.Drawing.Color.White
+        Me.Panel2.Controls.Add(Me.LabelGUIVersion)
+        Me.Panel2.Controls.Add(Me.lblSN)
+        Me.Panel2.Controls.Add(Me.LabelFirmwareVersion)
+        Me.Panel2.Controls.Add(Me.LabelAgileInfo)
+        Me.Panel2.Location = New System.Drawing.Point(350, 138)
+        Me.Panel2.Name = "Panel2"
+        Me.Panel2.Size = New System.Drawing.Size(947, 652)
+        Me.Panel2.TabIndex = 105
+        '
+        'lblAccessLevel
+        '
+        Me.lblAccessLevel.AutoSize = True
+        Me.lblAccessLevel.BackColor = System.Drawing.Color.White
+        Me.lblAccessLevel.Font = New System.Drawing.Font("Segoe UI", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblAccessLevel.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(110, Byte), Integer), CType(CType(199, Byte), Integer))
+        Me.lblAccessLevel.Location = New System.Drawing.Point(35, 627)
+        Me.lblAccessLevel.Name = "lblAccessLevel"
+        Me.lblAccessLevel.Size = New System.Drawing.Size(197, 25)
+        Me.lblAccessLevel.TabIndex = 3
+        Me.lblAccessLevel.Text = "Access Level:  Service"
+        Me.lblAccessLevel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'PanelRadLeft
+        '
+        Me.PanelRadLeft.BackColor = System.Drawing.Color.White
+        Me.PanelRadLeft.Controls.Add(Me.PictureBox2)
+        Me.PanelRadLeft.Controls.Add(Me.Label106)
+        Me.PanelRadLeft.Controls.Add(Me.Label108)
+        Me.PanelRadLeft.ForeColor = System.Drawing.Color.White
+        Me.PanelRadLeft.Location = New System.Drawing.Point(372, 22)
+        Me.PanelRadLeft.Name = "PanelRadLeft"
+        Me.PanelRadLeft.Size = New System.Drawing.Size(96, 110)
+        Me.PanelRadLeft.TabIndex = 30
+        Me.PanelRadLeft.Visible = False
+        '
+        'PictureBox2
+        '
+        Me.PictureBox2.Image = Global.WindowsApplication1.My.Resources.Resources.__FINAL__Radiation_Mono_256
+        Me.PictureBox2.Location = New System.Drawing.Point(16, 27)
+        Me.PictureBox2.Name = "PictureBox2"
+        Me.PictureBox2.Size = New System.Drawing.Size(59, 59)
+        Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+        Me.PictureBox2.TabIndex = 29
+        Me.PictureBox2.TabStop = False
+        '
+        'Label106
+        '
+        Me.Label106.AutoSize = True
+        Me.Label106.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label106.ForeColor = System.Drawing.Color.Red
+        Me.Label106.Location = New System.Drawing.Point(13, 84)
+        Me.Label106.Name = "Label106"
+        Me.Label106.Size = New System.Drawing.Size(64, 21)
+        Me.Label106.TabIndex = 30
+        Me.Label106.Text = "Hazard"
+        '
+        'Label108
+        '
+        Me.Label108.AutoSize = True
+        Me.Label108.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label108.ForeColor = System.Drawing.Color.Red
+        Me.Label108.Location = New System.Drawing.Point(3, 6)
+        Me.Label108.Name = "Label108"
+        Me.Label108.Size = New System.Drawing.Size(84, 21)
+        Me.Label108.TabIndex = 30
+        Me.Label108.Text = "Radiation"
+        '
+        'PanelRadRight
+        '
+        Me.PanelRadRight.BackColor = System.Drawing.Color.White
+        Me.PanelRadRight.Controls.Add(Me.PictureBox3)
+        Me.PanelRadRight.Controls.Add(Me.Label128)
+        Me.PanelRadRight.Controls.Add(Me.Label129)
+        Me.PanelRadRight.ForeColor = System.Drawing.Color.White
+        Me.PanelRadRight.Location = New System.Drawing.Point(907, 22)
+        Me.PanelRadRight.Name = "PanelRadRight"
+        Me.PanelRadRight.Size = New System.Drawing.Size(96, 110)
+        Me.PanelRadRight.TabIndex = 30
+        Me.PanelRadRight.Visible = False
+        '
+        'PictureBox3
+        '
+        Me.PictureBox3.Image = Global.WindowsApplication1.My.Resources.Resources.__FINAL__Radiation_Mono_256
+        Me.PictureBox3.Location = New System.Drawing.Point(16, 27)
+        Me.PictureBox3.Name = "PictureBox3"
+        Me.PictureBox3.Size = New System.Drawing.Size(59, 59)
+        Me.PictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+        Me.PictureBox3.TabIndex = 29
+        Me.PictureBox3.TabStop = False
+        '
+        'Label128
+        '
+        Me.Label128.AutoSize = True
+        Me.Label128.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label128.ForeColor = System.Drawing.Color.Red
+        Me.Label128.Location = New System.Drawing.Point(13, 84)
+        Me.Label128.Name = "Label128"
+        Me.Label128.Size = New System.Drawing.Size(64, 21)
+        Me.Label128.TabIndex = 30
+        Me.Label128.Text = "Hazard"
+        '
+        'Label129
+        '
+        Me.Label129.AutoSize = True
+        Me.Label129.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label129.ForeColor = System.Drawing.Color.Red
+        Me.Label129.Location = New System.Drawing.Point(3, 6)
+        Me.Label129.Name = "Label129"
+        Me.Label129.Size = New System.Drawing.Size(84, 21)
+        Me.Label129.TabIndex = 30
+        Me.Label129.Text = "Radiation"
+        '
+        'lblScanMode
+        '
+        Me.lblScanMode.AutoSize = True
+        Me.lblScanMode.BackColor = System.Drawing.Color.White
+        Me.lblScanMode.Font = New System.Drawing.Font("Segoe UI", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblScanMode.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(110, Byte), Integer), CType(CType(199, Byte), Integer))
+        Me.lblScanMode.Location = New System.Drawing.Point(35, 303)
+        Me.lblScanMode.Name = "lblScanMode"
+        Me.lblScanMode.Size = New System.Drawing.Size(198, 32)
+        Me.lblScanMode.TabIndex = 1
+        Me.lblScanMode.Text = "Mode: Cab Scan"
+        '
+        'Label29
+        '
+        Me.Label29.AutoSize = True
+        Me.Label29.BackColor = System.Drawing.Color.White
+        Me.Label29.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label29.ForeColor = System.Drawing.Color.Black
+        Me.Label29.Location = New System.Drawing.Point(245, 522)
+        Me.Label29.Name = "Label29"
+        Me.Label29.Size = New System.Drawing.Size(27, 21)
+        Me.Label29.TabIndex = 34
+        Me.Label29.Text = "ns"
+        '
+        'lblDoseRateUnit
+        '
+        Me.lblDoseRateUnit.AutoSize = True
+        Me.lblDoseRateUnit.BackColor = System.Drawing.Color.White
+        Me.lblDoseRateUnit.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblDoseRateUnit.ForeColor = System.Drawing.Color.Black
+        Me.lblDoseRateUnit.Location = New System.Drawing.Point(245, 432)
+        Me.lblDoseRateUnit.Name = "lblDoseRateUnit"
+        Me.lblDoseRateUnit.Size = New System.Drawing.Size(67, 21)
+        Me.lblDoseRateUnit.TabIndex = 34
+        Me.lblDoseRateUnit.Text = "Gy/min"
+        Me.lblDoseRateUnit.Visible = False
+        '
+        'lblDoseRate
+        '
+        Me.lblDoseRate.BackColor = System.Drawing.Color.White
+        Me.lblDoseRate.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblDoseRate.ForeColor = System.Drawing.Color.Black
+        Me.lblDoseRate.Location = New System.Drawing.Point(181, 432)
+        Me.lblDoseRate.Name = "lblDoseRate"
+        Me.lblDoseRate.Size = New System.Drawing.Size(58, 20)
+        Me.lblDoseRate.TabIndex = 37
+        Me.lblDoseRate.Text = "0"
+        Me.lblDoseRate.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.lblDoseRate.Visible = False
+        '
+        'lblPulseFreq
+        '
+        Me.lblPulseFreq.BackColor = System.Drawing.Color.White
+        Me.lblPulseFreq.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblPulseFreq.ForeColor = System.Drawing.Color.Black
+        Me.lblPulseFreq.Location = New System.Drawing.Point(181, 462)
+        Me.lblPulseFreq.Name = "lblPulseFreq"
+        Me.lblPulseFreq.Size = New System.Drawing.Size(58, 20)
+        Me.lblPulseFreq.TabIndex = 37
+        Me.lblPulseFreq.Text = "0"
+        Me.lblPulseFreq.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'lblDoseCommand
+        '
+        Me.lblDoseCommand.BackColor = System.Drawing.Color.White
+        Me.lblDoseCommand.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblDoseCommand.ForeColor = System.Drawing.Color.Black
+        Me.lblDoseCommand.Location = New System.Drawing.Point(181, 492)
+        Me.lblDoseCommand.Name = "lblDoseCommand"
+        Me.lblDoseCommand.Size = New System.Drawing.Size(58, 20)
+        Me.lblDoseCommand.TabIndex = 37
+        Me.lblDoseCommand.Text = "0"
+        Me.lblDoseCommand.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'Label32
+        '
+        Me.Label32.AutoSize = True
+        Me.Label32.BackColor = System.Drawing.Color.White
+        Me.Label32.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label32.ForeColor = System.Drawing.Color.Black
+        Me.Label32.Location = New System.Drawing.Point(245, 462)
+        Me.Label32.Name = "Label32"
+        Me.Label32.Size = New System.Drawing.Size(30, 21)
+        Me.Label32.TabIndex = 34
+        Me.Label32.Text = "Hz"
+        '
+        'Label19
+        '
+        Me.Label19.AutoSize = True
+        Me.Label19.BackColor = System.Drawing.Color.White
+        Me.Label19.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label19.ForeColor = System.Drawing.Color.Black
+        Me.Label19.Location = New System.Drawing.Point(41, 522)
+        Me.Label19.Name = "Label19"
+        Me.Label19.Size = New System.Drawing.Size(125, 21)
+        Me.Label19.TabIndex = 40
+        Me.Label19.Text = "Beam Duration"
+        '
+        'lblBeamDuration
+        '
+        Me.lblBeamDuration.BackColor = System.Drawing.Color.White
+        Me.lblBeamDuration.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblBeamDuration.ForeColor = System.Drawing.Color.Black
+        Me.lblBeamDuration.Location = New System.Drawing.Point(181, 522)
+        Me.lblBeamDuration.Name = "lblBeamDuration"
+        Me.lblBeamDuration.Size = New System.Drawing.Size(58, 20)
+        Me.lblBeamDuration.TabIndex = 37
+        Me.lblBeamDuration.Text = "0"
+        Me.lblBeamDuration.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'Label22
+        '
+        Me.Label22.AutoSize = True
+        Me.Label22.BackColor = System.Drawing.Color.White
+        Me.Label22.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label22.ForeColor = System.Drawing.Color.Black
+        Me.Label22.Location = New System.Drawing.Point(41, 492)
+        Me.Label22.Name = "Label22"
+        Me.Label22.Size = New System.Drawing.Size(131, 21)
+        Me.Label22.TabIndex = 40
+        Me.Label22.Text = "Dose Command"
+        '
+        'Label23
+        '
+        Me.Label23.AutoSize = True
+        Me.Label23.BackColor = System.Drawing.Color.White
+        Me.Label23.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label23.ForeColor = System.Drawing.Color.Black
+        Me.Label23.Location = New System.Drawing.Point(41, 462)
+        Me.Label23.Name = "Label23"
+        Me.Label23.Size = New System.Drawing.Size(134, 21)
+        Me.Label23.TabIndex = 40
+        Me.Label23.Text = "Pulse Frequency"
+        '
+        'lblDoseRateTitle
+        '
+        Me.lblDoseRateTitle.AutoSize = True
+        Me.lblDoseRateTitle.BackColor = System.Drawing.Color.White
+        Me.lblDoseRateTitle.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblDoseRateTitle.ForeColor = System.Drawing.Color.Black
+        Me.lblDoseRateTitle.Location = New System.Drawing.Point(41, 432)
+        Me.lblDoseRateTitle.Name = "lblDoseRateTitle"
+        Me.lblDoseRateTitle.Size = New System.Drawing.Size(86, 21)
+        Me.lblDoseRateTitle.TabIndex = 40
+        Me.lblDoseRateTitle.Text = "Dose Rate"
+        Me.lblDoseRateTitle.Visible = False
+        '
+        'lblIonIi2Unit
+        '
+        Me.lblIonIi2Unit.AutoSize = True
+        Me.lblIonIi2Unit.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblIonIi2Unit.ForeColor = System.Drawing.Color.Black
+        Me.lblIonIi2Unit.Location = New System.Drawing.Point(245, 552)
+        Me.lblIonIi2Unit.Name = "lblIonIi2Unit"
+        Me.lblIonIi2Unit.Size = New System.Drawing.Size(31, 21)
+        Me.lblIonIi2Unit.TabIndex = 164
+        Me.lblIonIi2Unit.Text = "uA"
+        Me.lblIonIi2Unit.Visible = False
+        '
+        'lblIonIi2Title
+        '
+        Me.lblIonIi2Title.AutoSize = True
+        Me.lblIonIi2Title.BackColor = System.Drawing.Color.White
+        Me.lblIonIi2Title.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblIonIi2Title.ForeColor = System.Drawing.Color.Black
+        Me.lblIonIi2Title.Location = New System.Drawing.Point(41, 552)
+        Me.lblIonIi2Title.Name = "lblIonIi2Title"
+        Me.lblIonIi2Title.Size = New System.Drawing.Size(145, 21)
+        Me.lblIonIi2Title.TabIndex = 40
+        Me.lblIonIi2Title.Text = "Ion Pump Current"
+        Me.lblIonIi2Title.Visible = False
+        '
+        'lblIonIi2
+        '
+        Me.lblIonIi2.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblIonIi2.ForeColor = System.Drawing.Color.Black
+        Me.lblIonIi2.Location = New System.Drawing.Point(185, 552)
+        Me.lblIonIi2.Name = "lblIonIi2"
+        Me.lblIonIi2.Size = New System.Drawing.Size(54, 20)
+        Me.lblIonIi2.TabIndex = 170
+        Me.lblIonIi2.Text = "0"
+        Me.lblIonIi2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.lblIonIi2.Visible = False
+        '
+        'lblNoTrigger
+        '
+        Me.lblNoTrigger.BackColor = System.Drawing.Color.White
+        Me.lblNoTrigger.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblNoTrigger.ForeColor = System.Drawing.Color.Black
+        Me.lblNoTrigger.Location = New System.Drawing.Point(174, 356)
+        Me.lblNoTrigger.Name = "lblNoTrigger"
+        Me.lblNoTrigger.Size = New System.Drawing.Size(116, 22)
+        Me.lblNoTrigger.TabIndex = 37
+        Me.lblNoTrigger.Text = "No Trigger"
+        Me.lblNoTrigger.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'TabBoards
         '
@@ -4646,6 +4647,7 @@ Partial Class frmMain
         Me.lblAfcManualPosition.TabIndex = 112
         Me.lblAfcManualPosition.Text = "0"
         Me.lblAfcManualPosition.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.lblAfcManualPosition.Visible = False
         '
         'Label249
         '
@@ -5865,20 +5867,6 @@ Partial Class frmMain
         Me.btnLoadParameters.Text = "Load All Parameters"
         Me.btnLoadParameters.UseVisualStyleBackColor = True
         '
-        'btnRestoreData
-        '
-        Me.btnRestoreData.BackColor = System.Drawing.Color.Blue
-        Me.btnRestoreData.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnRestoreData.ForeColor = System.Drawing.Color.Blue
-        Me.btnRestoreData.Location = New System.Drawing.Point(52, 461)
-        Me.btnRestoreData.Name = "btnRestoreData"
-        Me.btnRestoreData.Size = New System.Drawing.Size(253, 33)
-        Me.btnRestoreData.TabIndex = 409
-        Me.btnRestoreData.Tag = "1"
-        Me.btnRestoreData.Text = "Restore Dumped Data"
-        Me.btnRestoreData.UseVisualStyleBackColor = True
-        Me.btnRestoreData.Visible = False
-        '
         'BlueRect3
         '
         Me.BlueRect3.Enabled = False
@@ -5914,19 +5902,6 @@ Partial Class frmMain
         Me.btnServiceRestoreFactoryDefaults.Tag = "1"
         Me.btnServiceRestoreFactoryDefaults.Text = "Restore Factory Settings"
         Me.btnServiceRestoreFactoryDefaults.UseVisualStyleBackColor = True
-        '
-        'btnDumpData
-        '
-        Me.btnDumpData.BackColor = System.Drawing.Color.Blue
-        Me.btnDumpData.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnDumpData.ForeColor = System.Drawing.Color.Blue
-        Me.btnDumpData.Location = New System.Drawing.Point(52, 406)
-        Me.btnDumpData.Name = "btnDumpData"
-        Me.btnDumpData.Size = New System.Drawing.Size(253, 33)
-        Me.btnDumpData.TabIndex = 409
-        Me.btnDumpData.Tag = "1"
-        Me.btnDumpData.Text = "Dump Data"
-        Me.btnDumpData.UseVisualStyleBackColor = True
         '
         'btnMagnetronConditioning
         '
@@ -6022,6 +5997,19 @@ Partial Class frmMain
         Me.btnZeroOnTime.Text = "Zero On Time Counters"
         Me.btnZeroOnTime.UseVisualStyleBackColor = True
         '
+        'btnRestoreData
+        '
+        Me.btnRestoreData.BackColor = System.Drawing.Color.Blue
+        Me.btnRestoreData.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnRestoreData.ForeColor = System.Drawing.Color.Blue
+        Me.btnRestoreData.Location = New System.Drawing.Point(52, 461)
+        Me.btnRestoreData.Name = "btnRestoreData"
+        Me.btnRestoreData.Size = New System.Drawing.Size(253, 33)
+        Me.btnRestoreData.TabIndex = 409
+        Me.btnRestoreData.Tag = "1"
+        Me.btnRestoreData.Text = "Restore Dumped Data"
+        Me.btnRestoreData.UseVisualStyleBackColor = True
+        '
         'btnServiceReloadInitialDefaults
         '
         Me.btnServiceReloadInitialDefaults.BackColor = System.Drawing.Color.Blue
@@ -6071,6 +6059,19 @@ Partial Class frmMain
         Me.btnServiceSaveFactoryDefaults.Text = "Save Factory Settings"
         Me.btnServiceSaveFactoryDefaults.UseVisualStyleBackColor = True
         '
+        'btnDumpData
+        '
+        Me.btnDumpData.BackColor = System.Drawing.Color.Blue
+        Me.btnDumpData.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnDumpData.ForeColor = System.Drawing.Color.Blue
+        Me.btnDumpData.Location = New System.Drawing.Point(52, 406)
+        Me.btnDumpData.Name = "btnDumpData"
+        Me.btnDumpData.Size = New System.Drawing.Size(253, 33)
+        Me.btnDumpData.TabIndex = 409
+        Me.btnDumpData.Tag = "1"
+        Me.btnDumpData.Text = "Dump Data"
+        Me.btnDumpData.UseVisualStyleBackColor = True
+        '
         'BlueRectMain
         '
         Me.BlueRectMain.Enabled = False
@@ -6081,13 +6082,25 @@ Partial Class frmMain
         Me.BlueRectMain.Size = New System.Drawing.Size(296, 184)
         Me.BlueRectMain.TabIndex = 80
         '
+        'lblShowDumpData
+        '
+        Me.lblShowDumpData.AutoSize = True
+        Me.lblShowDumpData.BackColor = System.Drawing.Color.White
+        Me.lblShowDumpData.Font = New System.Drawing.Font("Segoe UI", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblShowDumpData.ForeColor = System.Drawing.Color.Red
+        Me.lblShowDumpData.Location = New System.Drawing.Point(35, 161)
+        Me.lblShowDumpData.Name = "lblShowDumpData"
+        Me.lblShowDumpData.Size = New System.Drawing.Size(291, 32)
+        Me.lblShowDumpData.TabIndex = 1
+        Me.lblShowDumpData.Text = "Show Dump Data Active"
+        Me.lblShowDumpData.Visible = False
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.White
         Me.ClientSize = New System.Drawing.Size(1304, 721)
-        Me.ControlBox = False
         Me.Controls.Add(Me.lblDoseRateTitle)
         Me.Controls.Add(Me.Label23)
         Me.Controls.Add(Me.PanelRadRight)
@@ -6113,11 +6126,13 @@ Partial Class frmMain
         Me.Controls.Add(Me.Panel2)
         Me.Controls.Add(Me.Label29)
         Me.Controls.Add(Me.lblScanMode)
+        Me.Controls.Add(Me.lblShowDumpData)
         Me.Controls.Add(Me.LabelECBState)
         Me.Controls.Add(Me.BlueRectMain)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "frmMain"
@@ -6171,7 +6186,7 @@ Partial Class frmMain
     End Sub
     Friend WithEvents TimerUpdate As System.Windows.Forms.Timer
     Friend WithEvents LabelAgileInfo As System.Windows.Forms.Label
-    Friend WithEvents LabelFirmwareVerssion As System.Windows.Forms.Label
+    Friend WithEvents LabelFirmwareVersion As System.Windows.Forms.Label
     Friend WithEvents TabBoards As CustomControls.RightSideTab
     Friend WithEvents TabPageCPU As System.Windows.Forms.TabPage
     Friend WithEvents btnDispOverview As CustomControls.ButtonSelected
@@ -6621,4 +6636,5 @@ Partial Class frmMain
     Friend WithEvents btnSaveAllParams As System.Windows.Forms.Button
     Friend WithEvents btnRestoreData As System.Windows.Forms.Button
     Friend WithEvents btnDumpData As System.Windows.Forms.Button
+    Friend WithEvents lblShowDumpData As System.Windows.Forms.Label
 End Class

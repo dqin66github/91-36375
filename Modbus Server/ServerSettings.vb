@@ -41,6 +41,8 @@ Public Class ServerSettings
     Private event_ethernet_just_connected As Boolean = False
     Private Const MODBUS_COMMAND_REFRESH_TOTAL = 2
 
+    Public show_dump_data As Boolean = False
+
 
     Public Const MAX_BOARD_ADDRESSES = 16
     Public ETMEthernetBoardLoggingData(MAX_BOARD_ADDRESSES) As ETM_CAN_BOARD_DATA
@@ -211,6 +213,7 @@ Public Class ServerSettings
                         End If
                         If (event_ethernet_just_connected = False And update_loop_count >= 2) Then
                             event_ethernet_just_connected = True
+                            show_dump_data = False                            
                             OpenEventLogFile()
                             event_log_file.WriteLine("Ethernet Connected at " & Format(DateTime.UtcNow, "yyyy/MM/dd HH:mm:ss"))
                             CloseEventLogFile()
@@ -440,8 +443,6 @@ Public Class ServerSettings
 
     Private Sub TimerUpdate_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TimerUpdate.Tick
         Dim tmpstr As String
-
-        Me.Visible = False
 
 
         Select Case connect_status
@@ -815,4 +816,8 @@ Public Class ServerSettings
 
 
 
+    Private Sub ServerSettings_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+        Me.Visible = False
+
+    End Sub
 End Class
