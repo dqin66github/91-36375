@@ -55,8 +55,8 @@ Partial Class frmMain
         Me.LabelECBState = New System.Windows.Forms.Label()
         Me.lblSN = New System.Windows.Forms.Label()
         Me.btnResetFault = New System.Windows.Forms.Button()
-        Me.LabelGUIVersion = New System.Windows.Forms.Label()
         Me.Panel2 = New System.Windows.Forms.Panel()
+        Me.lblGUIVersionAgile = New System.Windows.Forms.Label()
         Me.lblAccessLevel = New System.Windows.Forms.Label()
         Me.PanelRadLeft = New System.Windows.Forms.Panel()
         Me.PictureBox2 = New System.Windows.Forms.PictureBox()
@@ -83,6 +83,7 @@ Partial Class frmMain
         Me.lblIonIi2Title = New System.Windows.Forms.Label()
         Me.lblIonIi2 = New System.Windows.Forms.Label()
         Me.lblNoTrigger = New System.Windows.Forms.Label()
+        Me.lblShowDumpData = New System.Windows.Forms.Label()
         Me.TabBoards = New CustomControls.RightSideTab()
         Me.TabPageOverview = New System.Windows.Forms.TabPage()
         Me.Label283 = New System.Windows.Forms.Label()
@@ -466,6 +467,7 @@ Partial Class frmMain
         Me.btnZeroArcPulseCounters = New System.Windows.Forms.Button()
         Me.tabPageDeveloper = New System.Windows.Forms.TabPage()
         Me.Label11 = New System.Windows.Forms.Label()
+        Me.LabelGUIVersionDeploy = New System.Windows.Forms.Label()
         Me.Label12 = New System.Windows.Forms.Label()
         Me.Label17 = New System.Windows.Forms.Label()
         Me.btnZeroOnTime = New System.Windows.Forms.Button()
@@ -476,7 +478,6 @@ Partial Class frmMain
         Me.btnServiceSaveFactoryDefaults = New System.Windows.Forms.Button()
         Me.btnDumpData = New System.Windows.Forms.Button()
         Me.BlueRectMain = New CustomControls.BlueRect()
-        Me.lblShowDumpData = New System.Windows.Forms.Label()
         Me.panelDispButtons.SuspendLayout()
         CType(Me.PictureBoxLogo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel2.SuspendLayout()
@@ -946,22 +947,10 @@ Partial Class frmMain
         Me.btnResetFault.UseVisualStyleBackColor = True
         Me.btnResetFault.Visible = False
         '
-        'LabelGUIVersion
-        '
-        Me.LabelGUIVersion.AutoSize = True
-        Me.LabelGUIVersion.BackColor = System.Drawing.Color.White
-        Me.LabelGUIVersion.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LabelGUIVersion.ForeColor = System.Drawing.Color.Black
-        Me.LabelGUIVersion.Location = New System.Drawing.Point(696, 525)
-        Me.LabelGUIVersion.Name = "LabelGUIVersion"
-        Me.LabelGUIVersion.Size = New System.Drawing.Size(127, 21)
-        Me.LabelGUIVersion.TabIndex = 101
-        Me.LabelGUIVersion.Text = "GUI Version 1.00"
-        '
         'Panel2
         '
         Me.Panel2.BackColor = System.Drawing.Color.White
-        Me.Panel2.Controls.Add(Me.LabelGUIVersion)
+        Me.Panel2.Controls.Add(Me.lblGUIVersionAgile)
         Me.Panel2.Controls.Add(Me.lblSN)
         Me.Panel2.Controls.Add(Me.LabelFirmwareVersion)
         Me.Panel2.Controls.Add(Me.LabelAgileInfo)
@@ -969,6 +958,18 @@ Partial Class frmMain
         Me.Panel2.Name = "Panel2"
         Me.Panel2.Size = New System.Drawing.Size(947, 652)
         Me.Panel2.TabIndex = 105
+        '
+        'lblGUIVersionAgile
+        '
+        Me.lblGUIVersionAgile.AutoSize = True
+        Me.lblGUIVersionAgile.BackColor = System.Drawing.Color.White
+        Me.lblGUIVersionAgile.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblGUIVersionAgile.ForeColor = System.Drawing.Color.Black
+        Me.lblGUIVersionAgile.Location = New System.Drawing.Point(697, 533)
+        Me.lblGUIVersionAgile.Name = "lblGUIVersionAgile"
+        Me.lblGUIVersionAgile.Size = New System.Drawing.Size(115, 21)
+        Me.lblGUIVersionAgile.TabIndex = 101
+        Me.lblGUIVersionAgile.Text = "GUI Version 02"
         '
         'lblAccessLevel
         '
@@ -1268,6 +1269,19 @@ Partial Class frmMain
         Me.lblNoTrigger.TabIndex = 37
         Me.lblNoTrigger.Text = "No Trigger"
         Me.lblNoTrigger.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'lblShowDumpData
+        '
+        Me.lblShowDumpData.AutoSize = True
+        Me.lblShowDumpData.BackColor = System.Drawing.Color.White
+        Me.lblShowDumpData.Font = New System.Drawing.Font("Segoe UI", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblShowDumpData.ForeColor = System.Drawing.Color.Red
+        Me.lblShowDumpData.Location = New System.Drawing.Point(35, 161)
+        Me.lblShowDumpData.Name = "lblShowDumpData"
+        Me.lblShowDumpData.Size = New System.Drawing.Size(291, 32)
+        Me.lblShowDumpData.TabIndex = 1
+        Me.lblShowDumpData.Text = "Show Dump Data Active"
+        Me.lblShowDumpData.Visible = False
         '
         'TabBoards
         '
@@ -4647,7 +4661,6 @@ Partial Class frmMain
         Me.lblAfcManualPosition.TabIndex = 112
         Me.lblAfcManualPosition.Text = "0"
         Me.lblAfcManualPosition.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.lblAfcManualPosition.Visible = False
         '
         'Label249
         '
@@ -5933,6 +5946,7 @@ Partial Class frmMain
         '
         Me.tabPageDeveloper.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.tabPageDeveloper.Controls.Add(Me.Label11)
+        Me.tabPageDeveloper.Controls.Add(Me.LabelGUIVersionDeploy)
         Me.tabPageDeveloper.Controls.Add(Me.Label12)
         Me.tabPageDeveloper.Controls.Add(Me.Label17)
         Me.tabPageDeveloper.Controls.Add(Me.btnZeroOnTime)
@@ -5959,6 +5973,18 @@ Partial Class frmMain
         Me.Label11.Size = New System.Drawing.Size(69, 21)
         Me.Label11.TabIndex = 412
         Me.Label11.Text = "Label11"
+        '
+        'LabelGUIVersionDeploy
+        '
+        Me.LabelGUIVersionDeploy.AutoSize = True
+        Me.LabelGUIVersionDeploy.BackColor = System.Drawing.SystemColors.Control
+        Me.LabelGUIVersionDeploy.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LabelGUIVersionDeploy.ForeColor = System.Drawing.Color.Black
+        Me.LabelGUIVersionDeploy.Location = New System.Drawing.Point(373, 529)
+        Me.LabelGUIVersionDeploy.Name = "LabelGUIVersionDeploy"
+        Me.LabelGUIVersionDeploy.Size = New System.Drawing.Size(127, 21)
+        Me.LabelGUIVersionDeploy.TabIndex = 101
+        Me.LabelGUIVersionDeploy.Text = "GUI Version 1.00"
         '
         'Label12
         '
@@ -6082,25 +6108,12 @@ Partial Class frmMain
         Me.BlueRectMain.Size = New System.Drawing.Size(296, 184)
         Me.BlueRectMain.TabIndex = 80
         '
-        'lblShowDumpData
-        '
-        Me.lblShowDumpData.AutoSize = True
-        Me.lblShowDumpData.BackColor = System.Drawing.Color.White
-        Me.lblShowDumpData.Font = New System.Drawing.Font("Segoe UI", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblShowDumpData.ForeColor = System.Drawing.Color.Red
-        Me.lblShowDumpData.Location = New System.Drawing.Point(35, 161)
-        Me.lblShowDumpData.Name = "lblShowDumpData"
-        Me.lblShowDumpData.Size = New System.Drawing.Size(291, 32)
-        Me.lblShowDumpData.TabIndex = 1
-        Me.lblShowDumpData.Text = "Show Dump Data Active"
-        Me.lblShowDumpData.Visible = False
-        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.White
-        Me.ClientSize = New System.Drawing.Size(1304, 721)
+        Me.ClientSize = New System.Drawing.Size(1280, 721)
         Me.Controls.Add(Me.lblDoseRateTitle)
         Me.Controls.Add(Me.Label23)
         Me.Controls.Add(Me.PanelRadRight)
@@ -6534,7 +6547,7 @@ Partial Class frmMain
     Friend WithEvents btnChangeSettingMode As System.Windows.Forms.Button
     Friend WithEvents lblModeSettings As System.Windows.Forms.Label
     Friend WithEvents Panel2 As System.Windows.Forms.Panel
-    Friend WithEvents LabelGUIVersion As System.Windows.Forms.Label
+    Friend WithEvents LabelGUIVersionDeploy As System.Windows.Forms.Label
     Friend WithEvents lblAccessLevel As System.Windows.Forms.Label
     Friend WithEvents PanelRadLeft As System.Windows.Forms.Panel
     Friend WithEvents PictureBox2 As System.Windows.Forms.PictureBox
@@ -6637,4 +6650,5 @@ Partial Class frmMain
     Friend WithEvents btnRestoreData As System.Windows.Forms.Button
     Friend WithEvents btnDumpData As System.Windows.Forms.Button
     Friend WithEvents lblShowDumpData As System.Windows.Forms.Label
+    Friend WithEvents lblGUIVersionAgile As System.Windows.Forms.Label
 End Class

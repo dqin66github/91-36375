@@ -163,9 +163,9 @@ Public Class frmMain
 
         If (System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed) Then
             Dim verDeployed As System.Version = My.Application.Deployment.CurrentVersion
-            LabelGUIVersion.Text = "GUI Version " & verDeployed.ToString
+            LabelGUIVersionDeploy.Text = "GUI Deploy Rev " & verDeployed.ToString
         Else
-            LabelGUIVersion.Text = "GUI Version 1.00"  '"GUI Version not Available in Debug Mode"
+            LabelGUIVersionDeploy.Text = "GUI Deploy Rev 1.00"  '"GUI Version not Available in Debug Mode"
         End If
 
         LoadLogRegisterText()
@@ -179,7 +179,7 @@ Public Class frmMain
         DisplayBoardSpecificData(False)
 
         form_hidden = True
-        Me.Visible = False
+        Me.Visible = Not form_hidden
         form_force_close = False
 
         hidden_wait_count = 10
