@@ -238,7 +238,7 @@ Public Class frmMain
             connected = False
             Me.Text = "2.5MeV Linac GUI(Linac Disconnected)"
            ' blank all display
-            '   reset_access_level()
+            reset_access_level()
             DisplayMainPane(ServerSettings.show_dump_data = False)
             DisplayBoardSpecificData(ServerSettings.show_dump_data = False)
 
@@ -3376,6 +3376,7 @@ Public Class frmMain
 
     Private Sub frmMain_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         If form_force_close = False Then
+            reset_access_level()  ' logout when hiding
             form_hidden = True
             Me.Visible = Not form_hidden
             e.Cancel = True
