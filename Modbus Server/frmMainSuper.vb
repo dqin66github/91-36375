@@ -3571,4 +3571,10 @@
     Private Sub ButtonLoadFactorySettings_Click(sender As System.Object, e As System.EventArgs) Handles ButtonLoadFactorySettings.Click
         ServerSettings.put_modbus_commands(REGISTER_SPECIAL_ECB_LOAD_SETTINGS_FROM_EEPROM_MIRROR_AND_REBOOT, 0, 0, 0)
     End Sub
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+              ServerSettings.restore_dumped_data()
+            ServerSettings.show_dump_data = True
+            ' lblShowDumpData.Visible = True
+     End Sub
 End Class

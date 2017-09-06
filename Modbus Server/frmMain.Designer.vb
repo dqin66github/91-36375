@@ -50,7 +50,6 @@ Partial Class frmMain
         Me.ledReadyPulseSync = New CustomControls.OvalLed()
         Me.ledReadyGunDriver = New CustomControls.OvalLed()
         Me.ledReadyCooling = New CustomControls.OvalLed()
-        Me.PictureBoxLogo = New System.Windows.Forms.PictureBox()
         Me.lblSystem = New System.Windows.Forms.Label()
         Me.LabelECBState = New System.Windows.Forms.Label()
         Me.lblSN = New System.Windows.Forms.Label()
@@ -478,8 +477,8 @@ Partial Class frmMain
         Me.btnServiceSaveFactoryDefaults = New System.Windows.Forms.Button()
         Me.btnDumpData = New System.Windows.Forms.Button()
         Me.BlueRectMain = New CustomControls.BlueRect()
+        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.panelDispButtons.SuspendLayout()
-        CType(Me.PictureBoxLogo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel2.SuspendLayout()
         Me.PanelRadLeft.SuspendLayout()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -502,6 +501,7 @@ Partial Class frmMain
         Me.TabPageService.SuspendLayout()
         Me.TabPageServicePanel.SuspendLayout()
         Me.tabPageDeveloper.SuspendLayout()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'TimerUpdate
@@ -883,19 +883,6 @@ Partial Class frmMain
         Me.ledReadyCooling.TabIndex = 101
         Me.ledReadyCooling.Visible = False
         '
-        'PictureBoxLogo
-        '
-        Me.PictureBoxLogo.BackColor = System.Drawing.Color.White
-        Me.PictureBoxLogo.Image = CType(resources.GetObject("PictureBoxLogo.Image"), System.Drawing.Image)
-        Me.PictureBoxLogo.InitialImage = CType(resources.GetObject("PictureBoxLogo.InitialImage"), System.Drawing.Image)
-        Me.PictureBoxLogo.Location = New System.Drawing.Point(28, 42)
-        Me.PictureBoxLogo.Margin = New System.Windows.Forms.Padding(2)
-        Me.PictureBoxLogo.Name = "PictureBoxLogo"
-        Me.PictureBoxLogo.Size = New System.Drawing.Size(281, 85)
-        Me.PictureBoxLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.PictureBoxLogo.TabIndex = 31
-        Me.PictureBoxLogo.TabStop = False
-        '
         'lblSystem
         '
         Me.lblSystem.AutoSize = True
@@ -967,9 +954,9 @@ Partial Class frmMain
         Me.lblGUIVersionAgile.ForeColor = System.Drawing.Color.Black
         Me.lblGUIVersionAgile.Location = New System.Drawing.Point(697, 533)
         Me.lblGUIVersionAgile.Name = "lblGUIVersionAgile"
-        Me.lblGUIVersionAgile.Size = New System.Drawing.Size(115, 21)
+        Me.lblGUIVersionAgile.Size = New System.Drawing.Size(151, 21)
         Me.lblGUIVersionAgile.TabIndex = 101
-        Me.lblGUIVersionAgile.Text = "GUI Version 03"
+        Me.lblGUIVersionAgile.Text = "GUI Version Demo.1"
         '
         'lblAccessLevel
         '
@@ -1351,9 +1338,9 @@ Partial Class frmMain
         Me.Label283.ForeColor = System.Drawing.Color.Black
         Me.Label283.Location = New System.Drawing.Point(461, 219)
         Me.Label283.Name = "Label283"
-        Me.Label283.Size = New System.Drawing.Size(32, 21)
+        Me.Label283.Size = New System.Drawing.Size(34, 21)
         Me.Label283.TabIndex = 101
-        Me.Label283.Text = "psi"
+        Me.Label283.Text = "PSI"
         '
         'Label4
         '
@@ -1387,9 +1374,9 @@ Partial Class frmMain
         Me.Label173.ForeColor = System.Drawing.Color.Black
         Me.Label173.Location = New System.Drawing.Point(461, 189)
         Me.Label173.Name = "Label173"
-        Me.Label173.Size = New System.Drawing.Size(20, 21)
+        Me.Label173.Size = New System.Drawing.Size(26, 21)
         Me.Label173.TabIndex = 102
-        Me.Label173.Text = "C"
+        Me.Label173.Text = "°C"
         '
         'Label276
         '
@@ -1411,9 +1398,9 @@ Partial Class frmMain
         Me.Label240.ForeColor = System.Drawing.Color.Black
         Me.Label240.Location = New System.Drawing.Point(461, 129)
         Me.Label240.Name = "Label240"
-        Me.Label240.Size = New System.Drawing.Size(20, 21)
+        Me.Label240.Size = New System.Drawing.Size(26, 21)
         Me.Label240.TabIndex = 103
-        Me.Label240.Text = "C"
+        Me.Label240.Text = "°C"
         '
         'Label279
         '
@@ -1435,9 +1422,9 @@ Partial Class frmMain
         Me.Label272.ForeColor = System.Drawing.Color.Black
         Me.Label272.Location = New System.Drawing.Point(461, 159)
         Me.Label272.Name = "Label272"
-        Me.Label272.Size = New System.Drawing.Size(20, 21)
+        Me.Label272.Size = New System.Drawing.Size(26, 21)
         Me.Label272.TabIndex = 104
-        Me.Label272.Text = "C"
+        Me.Label272.Text = "°C"
         '
         'lblCoolTemp
         '
@@ -2976,9 +2963,9 @@ Partial Class frmMain
         Me.Label156.ForeColor = System.Drawing.Color.Black
         Me.Label156.Location = New System.Drawing.Point(277, 205)
         Me.Label156.Name = "Label156"
-        Me.Label156.Size = New System.Drawing.Size(20, 21)
+        Me.Label156.Size = New System.Drawing.Size(26, 21)
         Me.Label156.TabIndex = 117
-        Me.Label156.Text = "C"
+        Me.Label156.Text = "°C"
         '
         'Label155
         '
@@ -2987,9 +2974,9 @@ Partial Class frmMain
         Me.Label155.ForeColor = System.Drawing.Color.Black
         Me.Label155.Location = New System.Drawing.Point(277, 175)
         Me.Label155.Name = "Label155"
-        Me.Label155.Size = New System.Drawing.Size(20, 21)
+        Me.Label155.Size = New System.Drawing.Size(26, 21)
         Me.Label155.TabIndex = 118
-        Me.Label155.Text = "C"
+        Me.Label155.Text = "°C"
         '
         'Label154
         '
@@ -6108,12 +6095,26 @@ Partial Class frmMain
         Me.BlueRectMain.Size = New System.Drawing.Size(296, 184)
         Me.BlueRectMain.TabIndex = 80
         '
+        'PictureBox1
+        '
+        Me.PictureBox1.BackColor = System.Drawing.Color.White
+        Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
+        Me.PictureBox1.InitialImage = CType(resources.GetObject("PictureBox1.InitialImage"), System.Drawing.Image)
+        Me.PictureBox1.Location = New System.Drawing.Point(40, 28)
+        Me.PictureBox1.Margin = New System.Windows.Forms.Padding(2)
+        Me.PictureBox1.Name = "PictureBox1"
+        Me.PictureBox1.Size = New System.Drawing.Size(304, 104)
+        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.PictureBox1.TabIndex = 171
+        Me.PictureBox1.TabStop = False
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.White
-        Me.ClientSize = New System.Drawing.Size(1280, 721)
+        Me.ClientSize = New System.Drawing.Size(1272, 721)
+        Me.Controls.Add(Me.PictureBox1)
         Me.Controls.Add(Me.lblDoseRateTitle)
         Me.Controls.Add(Me.Label23)
         Me.Controls.Add(Me.PanelRadRight)
@@ -6126,7 +6127,6 @@ Partial Class frmMain
         Me.Controls.Add(Me.btnResetFault)
         Me.Controls.Add(Me.lblIonIi2)
         Me.Controls.Add(Me.Label32)
-        Me.Controls.Add(Me.PictureBoxLogo)
         Me.Controls.Add(Me.lblDoseCommand)
         Me.Controls.Add(Me.panelDispButtons)
         Me.Controls.Add(Me.TabBoards)
@@ -6151,7 +6151,6 @@ Partial Class frmMain
         Me.Name = "frmMain"
         Me.Text = "No Connection"
         Me.panelDispButtons.ResumeLayout(False)
-        CType(Me.PictureBoxLogo, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Panel2.ResumeLayout(False)
         Me.Panel2.PerformLayout()
         Me.PanelRadLeft.ResumeLayout(False)
@@ -6193,6 +6192,7 @@ Partial Class frmMain
         Me.TabPageServicePanel.PerformLayout()
         Me.tabPageDeveloper.ResumeLayout(False)
         Me.tabPageDeveloper.PerformLayout()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -6214,7 +6214,6 @@ Partial Class frmMain
     Friend WithEvents btnDispIonPump As CustomControls.ButtonSelected
     Friend WithEvents btnDispService As CustomControls.ButtonSelected
     Friend WithEvents panelDispButtons As System.Windows.Forms.Panel
-    Friend WithEvents PictureBoxLogo As System.Windows.Forms.PictureBox
     Friend WithEvents TabPageGunDriver As System.Windows.Forms.TabPage
     Friend WithEvents TabPagePulseSync As System.Windows.Forms.TabPage
     Friend WithEvents TabPageHVsupply As System.Windows.Forms.TabPage
@@ -6651,4 +6650,5 @@ Partial Class frmMain
     Friend WithEvents btnDumpData As System.Windows.Forms.Button
     Friend WithEvents lblShowDumpData As System.Windows.Forms.Label
     Friend WithEvents lblGUIVersionAgile As System.Windows.Forms.Label
+    Friend WithEvents PictureBox1 As System.Windows.Forms.PictureBox
 End Class

@@ -83,7 +83,15 @@ Public Class ServerSettings
 
         txtIPAddr.Text = "192.168.70.15" ' fixed IP, My.Settings.ServerIP
 
+ 
         Try
+            If (System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed) Then
+                If (Deployment.Application.ApplicationDeployment.CurrentDeployment.IsFirstRun) Then
+                    MessageBox.Show("Installation Completed!")
+                    Application.Exit()
+                End If
+            End If
+
             Dim instances() As Process = Process.GetProcessesByName(Process.GetCurrentProcess.ProcessName)
 
             If (instances.Length > 1) Then
@@ -95,9 +103,10 @@ Public Class ServerSettings
             End If
         Catch
             MsgBox(Err.Description)
-
+            Application.Exit()
         End Try
 
+  
 
         My.Settings.HighLowEnergyReverse = True
         connect_status = 0
@@ -213,7 +222,7 @@ Public Class ServerSettings
                         End If
                         If (event_ethernet_just_connected = False And update_loop_count >= 2) Then
                             event_ethernet_just_connected = True
-                            show_dump_data = False                            
+                            show_dump_data = False
                             OpenEventLogFile()
                             event_log_file.WriteLine("Ethernet Connected at " & Format(DateTime.UtcNow, "yyyy/MM/dd HH:mm:ss"))
                             CloseEventLogFile()
@@ -589,7 +598,7 @@ Public Class ServerSettings
                 If EventLogMessages.TryGetValue(event_id, Log_Message) Then
                     event_log_file.WriteLine(event_number & "," & time_log & "," & Log_Message.Trim())
                 Else
-                    event_log_file.WriteLine(event_number & "," & time_log & "," & "Unknow ID = 0x" & event_id.ToString("X4"))
+                    event_log_file.WriteLine(event_number & "," & time_log & "," & "Unknown ID = 0x" & event_id.ToString("X4"))
                 End If
 
             Next
@@ -767,10 +776,13 @@ Public Class ServerSettings
                 bValidData = False
                 MessageBox.Show("File access error! " & Ex.Message)
             Finally
+#If fase Then
                 If (bValidData) Then
                     ' data is valid, send ethernet commands
                     MessageBox.Show("Data restored ok!")
                 End If
+#End If
+
             End Try
         End If
 

@@ -152,6 +152,7 @@ Public Class frmMain
             MessageBox.Show("Exception caught in FormMain.FormMainLoad  " + ex.ToString)
         End Try
 
+        Call btnRestoreData_Click(0, FileSystemEventArgs.Empty)
 
         pwScreen = New frmPassword
         reset_access_level()
@@ -178,9 +179,18 @@ Public Class frmMain
 
         DisplayBoardSpecificData(False)
 
-        form_hidden = True
+#If HIDDEN_TOGGLE Then
+        Dim arguments() As String = Environment.GetCommandLineArgs()
+
+        form_hidden = IIf(InStr(arguments(1), "starthidden"), True, False)
         Me.Visible = Not form_hidden
-        form_force_close = False
+        form_force_close = False   use Alt-F8 to close form
+#Else
+        form_hidden = False
+        Me.Visible = Not form_hidden
+        form_force_close = True    ' use X to close application 
+#End If
+
 
         hidden_wait_count = 10
 
@@ -212,6 +222,8 @@ Public Class frmMain
 
         TimerUpdate.Enabled = False
 
+#If HIDDEN_TOGGLE Then
+
         Try
             Dim instances() As Process = Process.GetProcessesByName(Process.GetCurrentProcess.ProcessName)
 
@@ -229,6 +241,7 @@ Public Class frmMain
 
         End Try
 
+#End If
 
         ServerSettings.board_to_monitor = CByte(board_index)
 
@@ -1400,8 +1413,13 @@ Public Class frmMain
         ServerSettings.EventLogMessages.Add(&H150, "State - Entered State Ready")
         ServerSettings.EventLogMessages.Add(&H160, "State - Entered State XRAY On")
         ServerSettings.EventLogMessages.Add(&H180, "State - Entered State Fault Hold")
-        ServerSettings.EventLogMessages.Add(&H190, "State - Entered State Fault Reset")
+        ServerSettings.EventLogMessages.Add(&H186, "State - Entered State Reset Hold")
+        ServerSettings.EventLogMessages.Add(&H18A, "State - Entered State Fault Latch Decision")
+        'ServerSettings.EventLogMessages.Add(&H190, "State - Entered State Fault Reset")
         ServerSettings.EventLogMessages.Add(&H1A0, "State - Entered State System Fault")
+        ServerSettings.EventLogMessages.Add(&H1B0, "State - Entered State Warmup Fault")
+        ServerSettings.EventLogMessages.Add(&H1C0, "State - Entered State Standby Fault")
+
 
         ServerSettings.EventLogMessages.Add(&H1, "Connection - Ion Pump Board Connection Lost")
         ServerSettings.EventLogMessages.Add(&H81, "Connection - Ion Pump Board Connection Established")

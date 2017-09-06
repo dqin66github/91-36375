@@ -241,6 +241,7 @@ Partial Class frmMainSuper
         Me.ButtonSetRevSN = New System.Windows.Forms.Button()
         Me.ButtonSaveFactorySettings = New System.Windows.Forms.Button()
         Me.ButtonLoadFactorySettings = New System.Windows.Forms.Button()
+        Me.Button2 = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'TimerUpdate
@@ -2670,12 +2671,22 @@ Partial Class frmMainSuper
         Me.ButtonLoadFactorySettings.Text = "Load Factory"
         Me.ButtonLoadFactorySettings.UseVisualStyleBackColor = False
         '
+        'Button2
+        '
+        Me.Button2.Location = New System.Drawing.Point(148, 96)
+        Me.Button2.Name = "Button2"
+        Me.Button2.Size = New System.Drawing.Size(109, 23)
+        Me.Button2.TabIndex = 422
+        Me.Button2.Text = "Restore Dump"
+        Me.Button2.UseVisualStyleBackColor = True
+        '
         'frmMainSuper
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(1028, 609)
+        Me.Controls.Add(Me.Button2)
         Me.Controls.Add(Me.ButtonLoadFactorySettings)
         Me.Controls.Add(Me.ButtonSaveFactorySettings)
         Me.Controls.Add(Me.ButtonSetRevSN)
@@ -3117,4 +3128,5 @@ Partial Class frmMainSuper
     Friend WithEvents ButtonSetRevSN As System.Windows.Forms.Button
     Friend WithEvents ButtonSaveFactorySettings As System.Windows.Forms.Button
     Friend WithEvents ButtonLoadFactorySettings As System.Windows.Forms.Button
+    Friend WithEvents Button2 As System.Windows.Forms.Button
 End Class
