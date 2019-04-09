@@ -71,8 +71,9 @@ Public Class frmMain
     Public Const REGISTER_SYSTEM_ECB_LOAD_FACTORY_SETTINGS_FROM_EEPROM_MIRROR_AND_REBOOT As UInt16 = &HE303
     ' reserved for future changes
     Public Const REGISTER_SYSTEM_ECB_MAGNETRON_CONDITIONING As UInt16 = &HE304
-
-
+    Public Const REGISTER_SYSTEM_LOCK_AFC_TO_HOME_POSITION As UInt16 = &HE305
+    Public Const REGISTER_SYSTEM_ALLOW_AFC_OPERATION As UInt16 = &HE306
+ 
     Public Const REGISTER_ETM_ECB_RESET_ARC_AND_PULSE_COUNT As UInt16 = &HE400
     Public Const REGISTER_ETM_ECB_RESET_SECONDS_POWERED_HV_ON_XRAY_ON As UInt16 = &HE401
     Public Const REGISTER_ETM_ECB_SEND_SLAVE_RELOAD_EEPROM_WITH_DEFAULTS As UInt16 = &HE402
@@ -178,9 +179,18 @@ Public Class frmMain
 
         DisplayBoardSpecificData(False)
 
-        form_hidden = True
+#If HIDDEN_TOGGLE Then
+        Dim arguments() As String = Environment.GetCommandLineArgs()
+
+        form_hidden = IIf(InStr(arguments(1), "starthidden"), True, False)
         Me.Visible = Not form_hidden
-        form_force_close = False
+        form_force_close = False   use Alt-F8 to close form
+#Else
+        form_hidden = False
+        Me.Visible = Not form_hidden
+        form_force_close = True    ' use X to close application 
+#End If
+
 
         hidden_wait_count = 10
 
@@ -212,6 +222,8 @@ Public Class frmMain
 
         TimerUpdate.Enabled = False
 
+#If HIDDEN_TOGGLE Then
+
         Try
             Dim instances() As Process = Process.GetProcessesByName(Process.GetCurrentProcess.ProcessName)
 
@@ -229,6 +241,7 @@ Public Class frmMain
 
         End Try
 
+#End If
 
         ServerSettings.board_to_monitor = CByte(board_index)
 
@@ -925,6 +938,10 @@ Public Class frmMain
 #End If
 
                 End If
+            Case 11 ' service panel
+                Dim logged_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).logged_bits
+                btnLockAFCtoHomePos.Text = IIf(logged_bits And &H8000, "Allow AFC Operation", "Lock AFC to HOME POSITION")
+
             Case Else
                 ' shouldn't happen
 
@@ -979,7 +996,6 @@ Public Class frmMain
 
             lblScanMode.Text = "Mode: " & blank_string & blank_string
             btnResetFault.Visible = False
-            lblDoseRate.Text = blank_string
             lblPulseFreq.Text = blank_string
             lblDoseCommand.Text = blank_string
             lblBeamDuration.Text = blank_string
@@ -1116,7 +1132,6 @@ Public Class frmMain
 #End If
 
             Dim dose_rate As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(17)
-            lblDoseRate.Text = dose_rate
             Dim dose_command As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_PULSE_SYNC).log_data(7)
             lblDoseCommand.Text = Math.Truncate(dose_command / 256)
             lblBeamDuration.Text = grid_width
@@ -2846,9 +2861,6 @@ Public Class frmMain
         LabelAgileInfo.Visible = False
         LabelFirmwareVersion.Visible = False
 
-        lblDoseRate.Visible = False
-        lblDoseRateTitle.Visible = False
-        lblDoseRateUnit.Visible = False
 
         PanelArcCounts.Visible = False
         BlueRectMagnetron.Height = 180 '168
@@ -2892,9 +2904,6 @@ Public Class frmMain
                 Next
 
                 If (access_level > 1) Then
-                    lblDoseRate.Visible = True
-                    lblDoseRateTitle.Visible = True
-                    lblDoseRateUnit.Visible = True
 
                     panelIonPumpLogger.Visible = True
                 End If
@@ -3398,6 +3407,19 @@ Public Class frmMain
 
             Me.KeyPreview = True
         End Try
+
+    End Sub
+
+    Private Sub btnLockAFCtoHomePos_Click(sender As Object, e As EventArgs) Handles btnLockAFCtoHomePos.Click
+        Dim logged_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).logged_bits
+        Dim AFC_lock_to_home_pos As Boolean = ((logged_bits And &H8000) = 0)
+        Dim strTitle As String = IIf(AFC_lock_to_home_pos, "Lock AFC to HOME POSITION?", "Allow AFC Operation?")
+
+        Dim response As MsgBoxResult = MsgBox(strTitle, MsgBoxStyle.OkCancel)
+
+        If (response = MsgBoxResult.Ok) Then
+            ServerSettings.put_modbus_commands(IIf(AFC_lock_to_home_pos, REGISTER_SYSTEM_LOCK_AFC_TO_HOME_POSITION, REGISTER_SYSTEM_ALLOW_AFC_OPERATION), 0, 0, 0)
+        End If
 
     End Sub
 End Class

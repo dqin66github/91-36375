@@ -83,7 +83,15 @@ Public Class ServerSettings
 
         txtIPAddr.Text = "192.168.70.15" ' fixed IP, My.Settings.ServerIP
 
+ 
         Try
+            If (System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed) Then
+                If (Deployment.Application.ApplicationDeployment.CurrentDeployment.IsFirstRun) Then
+                    MessageBox.Show("Installation Completed!")
+                    Application.Exit()
+                End If
+            End If
+
             Dim instances() As Process = Process.GetProcessesByName(Process.GetCurrentProcess.ProcessName)
 
             If (instances.Length > 1) Then
@@ -95,9 +103,10 @@ Public Class ServerSettings
             End If
         Catch
             MsgBox(Err.Description)
-
+            Application.Exit()
         End Try
 
+  
 
         My.Settings.HighLowEnergyReverse = True
         connect_status = 0
