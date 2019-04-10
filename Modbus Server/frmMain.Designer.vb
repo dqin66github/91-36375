@@ -360,7 +360,7 @@ Partial Class frmMain
         Me.lblAfcHomePosition = New System.Windows.Forms.Label()
         Me.Label251 = New System.Windows.Forms.Label()
         Me.lblAfcPhaseCtrlV = New System.Windows.Forms.Label()
-        Me.Label70 = New System.Windows.Forms.Label()
+        Me.lblAFCtitle = New System.Windows.Forms.Label()
         Me.BlueRect11 = New CustomControls.BlueRect()
         Me.TabPageMagnetrHtr = New System.Windows.Forms.TabPage()
         Me.btnMagIfSet = New System.Windows.Forms.Button()
@@ -461,6 +461,7 @@ Partial Class frmMain
         Me.btnSaveAllParams = New System.Windows.Forms.Button()
         Me.btnServiceRestoreFactoryDefaults = New System.Windows.Forms.Button()
         Me.btnMagnetronConditioning = New System.Windows.Forms.Button()
+        Me.btnLockAFCtoHomePos = New System.Windows.Forms.Button()
         Me.btnZeroArcPulseCounters = New System.Windows.Forms.Button()
         Me.tabPageDeveloper = New System.Windows.Forms.TabPage()
         Me.Label11 = New System.Windows.Forms.Label()
@@ -475,7 +476,6 @@ Partial Class frmMain
         Me.btnServiceSaveFactoryDefaults = New System.Windows.Forms.Button()
         Me.btnDumpData = New System.Windows.Forms.Button()
         Me.BlueRectMain = New CustomControls.BlueRect()
-        Me.btnLockAFCtoHomePos = New System.Windows.Forms.Button()
         Me.panelDispButtons.SuspendLayout()
         CType(Me.PictureBoxLogo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel2.SuspendLayout()
@@ -4411,7 +4411,7 @@ Partial Class frmMain
         Me.TabPageAFC.Controls.Add(Me.lblAfcHomePosition)
         Me.TabPageAFC.Controls.Add(Me.Label251)
         Me.TabPageAFC.Controls.Add(Me.lblAfcPhaseCtrlV)
-        Me.TabPageAFC.Controls.Add(Me.Label70)
+        Me.TabPageAFC.Controls.Add(Me.lblAFCtitle)
         Me.TabPageAFC.Controls.Add(Me.BlueRect11)
         Me.TabPageAFC.ForeColor = System.Drawing.Color.Black
         Me.TabPageAFC.Location = New System.Drawing.Point(0, 0)
@@ -4672,17 +4672,17 @@ Partial Class frmMain
         Me.lblAfcPhaseCtrlV.Text = "0"
         Me.lblAfcPhaseCtrlV.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'Label70
+        'lblAFCtitle
         '
-        Me.Label70.AutoSize = True
-        Me.Label70.BackColor = System.Drawing.SystemColors.Control
-        Me.Label70.Font = New System.Drawing.Font("Segoe UI Semibold", 24.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label70.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(110, Byte), Integer), CType(CType(199, Byte), Integer))
-        Me.Label70.Location = New System.Drawing.Point(298, 11)
-        Me.Label70.Name = "Label70"
-        Me.Label70.Size = New System.Drawing.Size(77, 45)
-        Me.Label70.TabIndex = 2
-        Me.Label70.Text = "AFC"
+        Me.lblAFCtitle.AutoSize = True
+        Me.lblAFCtitle.BackColor = System.Drawing.SystemColors.Control
+        Me.lblAFCtitle.Font = New System.Drawing.Font("Segoe UI Semibold", 24.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblAFCtitle.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(110, Byte), Integer), CType(CType(199, Byte), Integer))
+        Me.lblAFCtitle.Location = New System.Drawing.Point(298, 11)
+        Me.lblAFCtitle.Name = "lblAFCtitle"
+        Me.lblAFCtitle.Size = New System.Drawing.Size(77, 45)
+        Me.lblAFCtitle.TabIndex = 2
+        Me.lblAFCtitle.Text = "AFC"
         '
         'BlueRect11
         '
@@ -5896,6 +5896,19 @@ Partial Class frmMain
         Me.btnMagnetronConditioning.Text = "Magnetron Conditioning"
         Me.btnMagnetronConditioning.UseVisualStyleBackColor = True
         '
+        'btnLockAFCtoHomePos
+        '
+        Me.btnLockAFCtoHomePos.BackColor = System.Drawing.Color.Blue
+        Me.btnLockAFCtoHomePos.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnLockAFCtoHomePos.ForeColor = System.Drawing.Color.Blue
+        Me.btnLockAFCtoHomePos.Location = New System.Drawing.Point(377, 300)
+        Me.btnLockAFCtoHomePos.Name = "btnLockAFCtoHomePos"
+        Me.btnLockAFCtoHomePos.Size = New System.Drawing.Size(253, 33)
+        Me.btnLockAFCtoHomePos.TabIndex = 409
+        Me.btnLockAFCtoHomePos.Tag = "1"
+        Me.btnLockAFCtoHomePos.Text = "Lock AFC to Home Position"
+        Me.btnLockAFCtoHomePos.UseVisualStyleBackColor = True
+        '
         'btnZeroArcPulseCounters
         '
         Me.btnZeroArcPulseCounters.BackColor = System.Drawing.Color.Blue
@@ -6075,19 +6088,6 @@ Partial Class frmMain
         Me.BlueRectMain.Size = New System.Drawing.Size(296, 154)
         Me.BlueRectMain.TabIndex = 80
         '
-        'btnLockAFCtoHomePos
-        '
-        Me.btnLockAFCtoHomePos.BackColor = System.Drawing.Color.Blue
-        Me.btnLockAFCtoHomePos.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnLockAFCtoHomePos.ForeColor = System.Drawing.Color.Blue
-        Me.btnLockAFCtoHomePos.Location = New System.Drawing.Point(377, 300)
-        Me.btnLockAFCtoHomePos.Name = "btnLockAFCtoHomePos"
-        Me.btnLockAFCtoHomePos.Size = New System.Drawing.Size(253, 33)
-        Me.btnLockAFCtoHomePos.TabIndex = 409
-        Me.btnLockAFCtoHomePos.Tag = "1"
-        Me.btnLockAFCtoHomePos.Text = "Lock AFC to Home Position"
-        Me.btnLockAFCtoHomePos.UseVisualStyleBackColor = True
-        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -6232,7 +6232,7 @@ Partial Class frmMain
     Friend WithEvents Label67 As System.Windows.Forms.Label
     Friend WithEvents Label68 As System.Windows.Forms.Label
     Friend WithEvents Label69 As System.Windows.Forms.Label
-    Friend WithEvents Label70 As System.Windows.Forms.Label
+    Friend WithEvents lblAFCtitle As System.Windows.Forms.Label
     Friend WithEvents Label71 As System.Windows.Forms.Label
     Friend WithEvents Label72 As System.Windows.Forms.Label
     Friend WithEvents Label74 As System.Windows.Forms.Label

@@ -4,6 +4,10 @@ Imports System.IO
 Imports CustomControls
 
 Public Class frmMain
+    Public Const AFC_TITLE_LOCATION_X_LOCKED As UInt16 = 70
+    Public Const AFC_TITLE_LOCATION_X_NORMAL As UInt16 = 298
+    Public Const AFC_TITLE_LOCATION_Y As UInt16 = 11
+
 
     Public Const TAB_LOCATION_X_LARGE As UInt16 = 12
     Public Const TAB_LOCATION_X_SMALL As UInt16 = 350
@@ -73,7 +77,7 @@ Public Class frmMain
     Public Const REGISTER_SYSTEM_ECB_MAGNETRON_CONDITIONING As UInt16 = &HE304
     Public Const REGISTER_SYSTEM_LOCK_AFC_TO_HOME_POSITION As UInt16 = &HE305
     Public Const REGISTER_SYSTEM_ALLOW_AFC_OPERATION As UInt16 = &HE306
- 
+
     Public Const REGISTER_ETM_ECB_RESET_ARC_AND_PULSE_COUNT As UInt16 = &HE400
     Public Const REGISTER_ETM_ECB_RESET_SECONDS_POWERED_HV_ON_XRAY_ON As UInt16 = &HE401
     Public Const REGISTER_ETM_ECB_SEND_SLAVE_RELOAD_EEPROM_WITH_DEFAULTS As UInt16 = &HE402
@@ -135,7 +139,7 @@ Public Class frmMain
             Application.DoEvents()
 
             txtIonPumpLogInterval.Text = My.Settings.IonPumpLogInterval
- 
+
 
             '     TextBoxIPAddress.Text = ServerSettings.txtIPAddr.Text
             '     ModBusPort = 502      'Modbus = 502 , Explicit Ethernet/IP = 44818 (TCP) , Implicit Ethernet/IP = 2222 (UDP)
@@ -258,8 +262,8 @@ Public Class frmMain
         Else
 #End If
         connected = True
-            ServerSettings.event_log_enabled = True
-            lblShowDumpData.Visible = False
+        ServerSettings.event_log_enabled = True
+        lblShowDumpData.Visible = False
 
         Me.Text = "2.5MeV Linac GUI"
         '   Splitter1.BackColor = Color.LightSteelBlue
@@ -719,7 +723,16 @@ Public Class frmMain
 
                     ledAfcCanFault.FillColor = Color.Red
                     ledWAfcManualMode.FillColor = Color.Transparent
+
+                    lblAFCtitle.Text = "AFC"
+                    lblAFCtitle.Location = New Point(AFC_TITLE_LOCATION_X_NORMAL, AFC_TITLE_LOCATION_Y)
                 Else
+                    Dim logged_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).logged_bits
+                    Dim AFC_lock_to_home_pos As Boolean = ((logged_bits And &H8000) = 0)
+                    Dim strTitle As String = IIf(AFC_lock_to_home_pos, "AFC", "AFC - LOCKED TO HOME POSITION")
+                    lblAFCtitle.Text = strTitle
+                    lblAFCtitle.Location = New Point(IIf(AFC_lock_to_home_pos, AFC_TITLE_LOCATION_X_NORMAL, AFC_TITLE_LOCATION_X_LOCKED), AFC_TITLE_LOCATION_Y)
+
                     Dim filtered_error As Long = CLng(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).log_data(4))
 
                     If filtered_error > 2 ^ 15 Then
@@ -747,7 +760,7 @@ Public Class frmMain
 
                     '    Dim control_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(board_index).control_notice_bits
                     Dim fault_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).fault_bits
-                    Dim logged_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).logged_bits
+                    '     Dim logged_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).logged_bits
 
                     btnAfcManualMode.Text = IIf(logged_bits And &H1, "AFC Mode", "Manual Mode")
                     ledAfcCanFault.FillColor = IIf(fault_bits And &H1, Color.Red, Color.LawnGreen)
@@ -939,7 +952,7 @@ Public Class frmMain
 
                 End If
             Case 11 ' service panel
-                Dim logged_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).logged_bits
+                Dim logged_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).logged_bits
                 btnLockAFCtoHomePos.Text = IIf(logged_bits And &H8000, "Allow AFC Operation", "Lock AFC to HOME POSITION")
 
             Case Else
@@ -3278,7 +3291,7 @@ Public Class frmMain
             Case REGISTER_AFC_AFT_CONTROL_VOLTAGE_LOW_ENERGY
                 uRetData = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).ecb_local_data(2)
             Case REGISTER_CMD_AFC_SELECT_AFC_MODE
-                uRetData = IIF((ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).logged_bits And &H1) > 0, 0, 1)
+                uRetData = IIf((ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).logged_bits And &H1) > 0, 0, 1)
             Case REGISTER_CMD_AFC_SELECT_MANUAL_MODE
                 uRetData = (ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).logged_bits And &H1)
             Case REGISTER_CMD_AFC_MANUAL_TARGET_POSITION
@@ -3392,7 +3405,7 @@ Public Class frmMain
         End If
     End Sub
 
-    
+
 
     Private Sub frmMain_keyup(sender As Object, e As KeyEventArgs) Handles MyBase.KeyUp
         Try
@@ -3411,7 +3424,7 @@ Public Class frmMain
     End Sub
 
     Private Sub btnLockAFCtoHomePos_Click(sender As Object, e As EventArgs) Handles btnLockAFCtoHomePos.Click
-        Dim logged_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).logged_bits
+        Dim logged_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).logged_bits
         Dim AFC_lock_to_home_pos As Boolean = ((logged_bits And &H8000) = 0)
         Dim strTitle As String = IIf(AFC_lock_to_home_pos, "Lock AFC to HOME POSITION?", "Allow AFC Operation?")
 
