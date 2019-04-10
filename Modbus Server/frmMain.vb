@@ -5,9 +5,9 @@ Imports CustomControls
 
 Public Class frmMain
     Public Const AFC_TITLE_LOCATION_X_LOCKED As UInt16 = 70
+    Public Const AFC_TITLE_LOCATION_X_MANUAL_MODE As UInt16 = 165
     Public Const AFC_TITLE_LOCATION_X_NORMAL As UInt16 = 298
     Public Const AFC_TITLE_LOCATION_Y As UInt16 = 11
-
 
     Public Const TAB_LOCATION_X_LARGE As UInt16 = 12
     Public Const TAB_LOCATION_X_SMALL As UInt16 = 350
@@ -728,10 +728,24 @@ Public Class frmMain
                     lblAFCtitle.Location = New Point(AFC_TITLE_LOCATION_X_NORMAL, AFC_TITLE_LOCATION_Y)
                 Else
                     Dim logged_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).logged_bits
-                    Dim AFC_lock_to_home_pos As Boolean = ((logged_bits And &H8000) = 0)
-                    Dim strTitle As String = IIf(AFC_lock_to_home_pos, "AFC", "AFC - LOCKED TO HOME POSITION")
-                    lblAFCtitle.Text = strTitle
-                    lblAFCtitle.Location = New Point(IIf(AFC_lock_to_home_pos, AFC_TITLE_LOCATION_X_NORMAL, AFC_TITLE_LOCATION_X_LOCKED), AFC_TITLE_LOCATION_Y)
+                    If (logged_bits And &H1) > 0 Then
+                        ' manual moode
+                        btnAfcManualMode.Text = "AFC Mode"
+                        ledWAfcManualMode.FillColor = Color.Black
+                        btnAfcManualPosition.Visible = True
+
+                        lblAFCtitle.Text = "AFC - MANUAL MODE"
+                        lblAFCtitle.Location = New Point(AFC_TITLE_LOCATION_X_MANUAL_MODE, AFC_TITLE_LOCATION_Y)
+                    Else
+                        btnAfcManualMode.Text = "Manual Mode"
+                        ledWAfcManualMode.FillColor = Color.Transparent
+                        btnAfcManualPosition.Visible = False
+
+                        Dim AFC_lock_to_home_pos As Boolean = ((logged_bits And &H8000) = 0)
+                        Dim strTitle As String = IIf(AFC_lock_to_home_pos, "AFC", "AFC - LOCKED TO HOME POSITION")
+                        lblAFCtitle.Text = strTitle
+                        lblAFCtitle.Location = New Point(IIf(AFC_lock_to_home_pos, AFC_TITLE_LOCATION_X_NORMAL, AFC_TITLE_LOCATION_X_LOCKED), AFC_TITLE_LOCATION_Y)
+                    End If
 
                     Dim filtered_error As Long = CLng(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).log_data(4))
 
@@ -759,13 +773,8 @@ Public Class frmMain
                     '     btnAfcManualPosition.Text = "Manual Pos  " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).log_data(2)
 
                     '    Dim control_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(board_index).control_notice_bits
-                    Dim fault_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).fault_bits
-                    '     Dim logged_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).logged_bits
-
-                    btnAfcManualMode.Text = IIf(logged_bits And &H1, "AFC Mode", "Manual Mode")
+                    Dim fault_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).fault_bits 
                     ledAfcCanFault.FillColor = IIf(fault_bits And &H1, Color.Red, Color.LawnGreen)
-                    ledWAfcManualMode.FillColor = IIf(logged_bits And &H1, Color.Black, Color.Transparent)
-                    btnAfcManualPosition.Visible = (logged_bits And &H1) > 0
 
                 End If
             Case 8 ' Magnet & heater
@@ -952,7 +961,7 @@ Public Class frmMain
 
                 End If
             Case 11 ' service panel
-                Dim logged_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).logged_bits
+                Dim logged_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).logged_bits
                 btnLockAFCtoHomePos.Text = IIf(logged_bits And &H8000, "Allow AFC Operation", "Lock AFC to HOME POSITION")
 
             Case Else
@@ -3424,7 +3433,7 @@ Public Class frmMain
     End Sub
 
     Private Sub btnLockAFCtoHomePos_Click(sender As Object, e As EventArgs) Handles btnLockAFCtoHomePos.Click
-        Dim logged_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).logged_bits
+        Dim logged_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).logged_bits
         Dim AFC_lock_to_home_pos As Boolean = ((logged_bits And &H8000) = 0)
         Dim strTitle As String = IIf(AFC_lock_to_home_pos, "Lock AFC to HOME POSITION?", "Allow AFC Operation?")
 
