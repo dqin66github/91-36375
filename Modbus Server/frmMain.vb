@@ -62,6 +62,7 @@ Public Class frmMain
     Public Const REGISTER_CMD_AFC_SELECT_AFC_MODE As UInt16 = &H5202
     Public Const REGISTER_CMD_AFC_SELECT_MANUAL_MODE As UInt16 = &H5203
     Public Const REGISTER_CMD_AFC_MANUAL_TARGET_POSITION As UInt16 = &H5204
+    Public Const REGISTER_CMD_AFC_CALIBRATE_HOME_POSITION As UInt16 = &H5205
 
     Public Const REGISTER_CMD_COOLANT_INTERFACE_ALLOW_25_MORE_SF6_PULSES As UInt16 = &H6200
     Public Const REGISTER_CMD_COOLANT_INTERFACE_ALLOW_SF6_PULSES_WHEN_PRESSURE_BELOW_LIMIT As UInt16 = &H6201
@@ -851,6 +852,9 @@ Public Class frmMain
                     ledIonCanFault.FillColor = Color.Red
                     ledIonOC.FillColor = Color.Red
                     ledIonUV.FillColor = Color.Red
+                    ledIonPowerFailure.FillColor = Color.Red
+                    ledIonLinacWGArc.FillColor = Color.Red
+                    ledIonMagnetronWGArc.FillColor = Color.Red
                 Else
                     lblIonEi.Text = Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ION_PUMP).log_data(2) / 1000, "0.000")
                     lblIonIi.Text = Format(ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ION_PUMP).log_data(3) / 100, "0.00")
@@ -862,6 +866,9 @@ Public Class frmMain
                     ledIonCanFault.FillColor = IIf(fault_bits And &H1, Color.Red, Color.LawnGreen)
                     ledIonOC.FillColor = IIf(fault_bits And &H2, Color.Red, Color.LawnGreen)
                     ledIonUV.FillColor = IIf(fault_bits And &H8, Color.Red, Color.LawnGreen)
+                    ledIonPowerFailure.FillColor = IIf(fault_bits And &H10, Color.Red, Color.LawnGreen)
+                    ledIonLinacWGArc.FillColor = IIf(fault_bits And &H20, Color.Red, Color.LawnGreen)
+                    ledIonMagnetronWGArc.FillColor = IIf(fault_bits And &H40, Color.Red, Color.LawnGreen)
                 End If
             Case 10 ' service
                 LabelComputerTime.Text = "Computer UTC = 20" & Format(DateTime.UtcNow, "yy/MM/dd HH:mm:ss")
@@ -3442,6 +3449,17 @@ Public Class frmMain
         If (response = MsgBoxResult.Ok) Then
             ServerSettings.put_modbus_commands(IIf(AFC_lock_to_home_pos, REGISTER_SYSTEM_LOCK_AFC_TO_HOME_POSITION, REGISTER_SYSTEM_ALLOW_AFC_OPERATION), 0, 0, 0)
         End If
+
+    End Sub
+
+    Private Sub btnAfcHomePosAutoCalib_Click(sender As Object, e As EventArgs) Handles btnAfcHomePosAutoCalib.Click
+
+        Dim response As MsgBoxResult = MsgBox("Automatically calibrate home position?", MsgBoxStyle.OkCancel, "AFC")
+
+        If (response = MsgBoxResult.Ok) Then
+            ServerSettings.put_modbus_commands(REGISTER_CMD_AFC_CALIBRATE_HOME_POSITION, 0, 0, 0)
+        End If
+
 
     End Sub
 End Class

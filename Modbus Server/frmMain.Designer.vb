@@ -476,6 +476,13 @@ Partial Class frmMain
         Me.btnServiceSaveFactoryDefaults = New System.Windows.Forms.Button()
         Me.btnDumpData = New System.Windows.Forms.Button()
         Me.BlueRectMain = New CustomControls.BlueRect()
+        Me.Label7 = New System.Windows.Forms.Label()
+        Me.Label8 = New System.Windows.Forms.Label()
+        Me.ledIonLinacWGArc = New CustomControls.OvalLed()
+        Me.ledIonMagnetronWGArc = New CustomControls.OvalLed()
+        Me.Label10 = New System.Windows.Forms.Label()
+        Me.ledIonPowerFailure = New CustomControls.OvalLed()
+        Me.btnAfcHomePosAutoCalib = New System.Windows.Forms.Button()
         Me.panelDispButtons.SuspendLayout()
         CType(Me.PictureBoxLogo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel2.SuspendLayout()
@@ -527,7 +534,7 @@ Partial Class frmMain
         Me.LabelFirmwareVersion.ForeColor = System.Drawing.Color.Black
         Me.LabelFirmwareVersion.Location = New System.Drawing.Point(697, 463)
         Me.LabelFirmwareVersion.Name = "LabelFirmwareVersion"
-        Me.LabelFirmwareVersion.Size = New System.Drawing.Size(144, 13)
+        Me.LabelFirmwareVersion.Size = New System.Drawing.Size(143, 13)
         Me.LabelFirmwareVersion.TabIndex = 1
         Me.LabelFirmwareVersion.Text = "Firmware Version  12.11.20"
         Me.LabelFirmwareVersion.Visible = False
@@ -902,7 +909,7 @@ Partial Class frmMain
         Me.lblSystem.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(110, Byte), Integer), CType(CType(199, Byte), Integer))
         Me.lblSystem.Location = New System.Drawing.Point(479, 49)
         Me.lblSystem.Name = "lblSystem"
-        Me.lblSystem.Size = New System.Drawing.Size(422, 54)
+        Me.lblSystem.Size = New System.Drawing.Size(421, 54)
         Me.lblSystem.TabIndex = 3
         Me.lblSystem.Text = "2.5MeV Linac System"
         Me.lblSystem.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -915,7 +922,7 @@ Partial Class frmMain
         Me.LabelECBState.ForeColor = System.Drawing.Color.Red
         Me.LabelECBState.Location = New System.Drawing.Point(35, 210)
         Me.LabelECBState.Name = "LabelECBState"
-        Me.LabelECBState.Size = New System.Drawing.Size(255, 32)
+        Me.LabelECBState.Size = New System.Drawing.Size(253, 32)
         Me.LabelECBState.TabIndex = 1
         Me.LabelECBState.Text = "State: Warmup 10:05"
         '
@@ -965,9 +972,9 @@ Partial Class frmMain
         Me.lblGUIVersionAgile.ForeColor = System.Drawing.Color.Black
         Me.lblGUIVersionAgile.Location = New System.Drawing.Point(697, 533)
         Me.lblGUIVersionAgile.Name = "lblGUIVersionAgile"
-        Me.lblGUIVersionAgile.Size = New System.Drawing.Size(115, 21)
+        Me.lblGUIVersionAgile.Size = New System.Drawing.Size(114, 21)
         Me.lblGUIVersionAgile.TabIndex = 101
-        Me.lblGUIVersionAgile.Text = "GUI Version 04"
+        Me.lblGUIVersionAgile.Text = "GUI Version 05"
         '
         'lblAccessLevel
         '
@@ -977,7 +984,7 @@ Partial Class frmMain
         Me.lblAccessLevel.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(110, Byte), Integer), CType(CType(199, Byte), Integer))
         Me.lblAccessLevel.Location = New System.Drawing.Point(35, 627)
         Me.lblAccessLevel.Name = "lblAccessLevel"
-        Me.lblAccessLevel.Size = New System.Drawing.Size(197, 25)
+        Me.lblAccessLevel.Size = New System.Drawing.Size(198, 25)
         Me.lblAccessLevel.TabIndex = 3
         Me.lblAccessLevel.Text = "Access Level:  Service"
         Me.lblAccessLevel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -1322,7 +1329,7 @@ Partial Class frmMain
         Me.Label4.ForeColor = System.Drawing.Color.Black
         Me.Label4.Location = New System.Drawing.Point(194, 129)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(117, 21)
+        Me.Label4.Size = New System.Drawing.Size(116, 21)
         Me.Label4.TabIndex = 111
         Me.Label4.Text = "Coolant Temp"
         '
@@ -1334,7 +1341,7 @@ Partial Class frmMain
         Me.Label277.ForeColor = System.Drawing.Color.Black
         Me.Label277.Location = New System.Drawing.Point(194, 159)
         Me.Label277.Name = "Label277"
-        Me.Label277.Size = New System.Drawing.Size(116, 21)
+        Me.Label277.Size = New System.Drawing.Size(115, 21)
         Me.Label277.TabIndex = 112
         Me.Label277.Text = "Cabinet Temp"
         '
@@ -1358,7 +1365,7 @@ Partial Class frmMain
         Me.Label276.ForeColor = System.Drawing.Color.Black
         Me.Label276.Location = New System.Drawing.Point(194, 189)
         Me.Label276.Name = "Label276"
-        Me.Label276.Size = New System.Drawing.Size(139, 21)
+        Me.Label276.Size = New System.Drawing.Size(138, 21)
         Me.Label276.TabIndex = 109
         Me.Label276.Text = "Gun Driver Temp"
         '
@@ -1708,7 +1715,7 @@ Partial Class frmMain
         Me.Label34.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(110, Byte), Integer), CType(CType(199, Byte), Integer))
         Me.Label34.Location = New System.Drawing.Point(242, 11)
         Me.Label34.Name = "Label34"
-        Me.Label34.Size = New System.Drawing.Size(195, 45)
+        Me.Label34.Size = New System.Drawing.Size(194, 45)
         Me.Label34.TabIndex = 1
         Me.Label34.Text = "System CPU"
         '
@@ -1719,7 +1726,7 @@ Partial Class frmMain
         Me.Label57.ForeColor = System.Drawing.Color.Black
         Me.Label57.Location = New System.Drawing.Point(112, 187)
         Me.Label57.Name = "Label57"
-        Me.Label57.Size = New System.Drawing.Size(242, 21)
+        Me.Label57.Size = New System.Drawing.Size(241, 21)
         Me.Label57.TabIndex = 40
         Me.Label57.Text = "Thyratron Warmup Remaining"
         '
@@ -1741,7 +1748,7 @@ Partial Class frmMain
         Me.Label51.ForeColor = System.Drawing.Color.Black
         Me.Label51.Location = New System.Drawing.Point(112, 237)
         Me.Label51.Name = "Label51"
-        Me.Label51.Size = New System.Drawing.Size(249, 21)
+        Me.Label51.Size = New System.Drawing.Size(248, 21)
         Me.Label51.TabIndex = 40
         Me.Label51.Text = "Gun Driver Warmup Remaining"
         '
@@ -1818,7 +1825,7 @@ Partial Class frmMain
         Me.Label52.ForeColor = System.Drawing.Color.Black
         Me.Label52.Location = New System.Drawing.Point(112, 212)
         Me.Label52.Name = "Label52"
-        Me.Label52.Size = New System.Drawing.Size(252, 21)
+        Me.Label52.Size = New System.Drawing.Size(251, 21)
         Me.Label52.TabIndex = 40
         Me.Label52.Text = "Magnetron Warmup Remaining"
         '
@@ -2197,7 +2204,7 @@ Partial Class frmMain
         Me.Label95.ForeColor = System.Drawing.Color.Black
         Me.Label95.Location = New System.Drawing.Point(147, 449)
         Me.Label95.Name = "Label95"
-        Me.Label95.Size = New System.Drawing.Size(133, 21)
+        Me.Label95.Size = New System.Drawing.Size(132, 21)
         Me.Label95.TabIndex = 41
         Me.Label95.Text = "Bias Vmon Fault"
         '
@@ -2208,7 +2215,7 @@ Partial Class frmMain
         Me.Label100.ForeColor = System.Drawing.Color.Black
         Me.Label100.Location = New System.Drawing.Point(408, 349)
         Me.Label100.Name = "Label100"
-        Me.Label100.Size = New System.Drawing.Size(93, 21)
+        Me.Label100.Size = New System.Drawing.Size(92, 21)
         Me.Label100.TabIndex = 41
         Me.Label100.Text = "Over Temp"
         '
@@ -2219,7 +2226,7 @@ Partial Class frmMain
         Me.Label94.ForeColor = System.Drawing.Color.Black
         Me.Label94.Location = New System.Drawing.Point(147, 424)
         Me.Label94.Name = "Label94"
-        Me.Label94.Size = New System.Drawing.Size(131, 21)
+        Me.Label94.Size = New System.Drawing.Size(129, 21)
         Me.Label94.TabIndex = 41
         Me.Label94.Text = "Top Vmon Fault"
         '
@@ -2241,7 +2248,7 @@ Partial Class frmMain
         Me.Label91.ForeColor = System.Drawing.Color.Black
         Me.Label91.Location = New System.Drawing.Point(147, 374)
         Me.Label91.Name = "Label91"
-        Me.Label91.Size = New System.Drawing.Size(153, 21)
+        Me.Label91.Size = New System.Drawing.Size(152, 21)
         Me.Label91.TabIndex = 41
         Me.Label91.Text = "Heater Vmon Fault"
         '
@@ -2274,7 +2281,7 @@ Partial Class frmMain
         Me.Label90.ForeColor = System.Drawing.Color.Black
         Me.Label90.Location = New System.Drawing.Point(147, 349)
         Me.Label90.Name = "Label90"
-        Me.Label90.Size = New System.Drawing.Size(125, 21)
+        Me.Label90.Size = New System.Drawing.Size(124, 21)
         Me.Label90.TabIndex = 41
         Me.Label90.Text = "HV Vmon Fault"
         '
@@ -2810,7 +2817,7 @@ Partial Class frmMain
         Me.Label110.ForeColor = System.Drawing.Color.Black
         Me.Label110.Location = New System.Drawing.Point(136, 452)
         Me.Label110.Name = "Label110"
-        Me.Label110.Size = New System.Drawing.Size(156, 21)
+        Me.Label110.Size = New System.Drawing.Size(155, 21)
         Me.Label110.TabIndex = 85
         Me.Label110.Text = "Cabinet Over Temp"
         '
@@ -2821,7 +2828,7 @@ Partial Class frmMain
         Me.Label113.ForeColor = System.Drawing.Color.Black
         Me.Label113.Location = New System.Drawing.Point(136, 426)
         Me.Label113.Name = "Label113"
-        Me.Label113.Size = New System.Drawing.Size(171, 21)
+        Me.Label113.Size = New System.Drawing.Size(170, 21)
         Me.Label113.TabIndex = 85
         Me.Label113.Text = "Cabinet Temp Switch"
         '
@@ -2843,7 +2850,7 @@ Partial Class frmMain
         Me.Label114.ForeColor = System.Drawing.Color.Black
         Me.Label114.Location = New System.Drawing.Point(397, 348)
         Me.Label114.Name = "Label114"
-        Me.Label114.Size = New System.Drawing.Size(154, 21)
+        Me.Label114.Size = New System.Drawing.Size(152, 21)
         Me.Label114.TabIndex = 86
         Me.Label114.Text = "SF6 Too Low To Fill"
         '
@@ -2865,7 +2872,7 @@ Partial Class frmMain
         Me.Label116.ForeColor = System.Drawing.Color.Black
         Me.Label116.Location = New System.Drawing.Point(398, 322)
         Me.Label116.Name = "Label116"
-        Me.Label116.Size = New System.Drawing.Size(142, 21)
+        Me.Label116.Size = New System.Drawing.Size(141, 21)
         Me.Label116.TabIndex = 83
         Me.Label116.Text = "Coolant Too Cold"
         '
@@ -2909,7 +2916,7 @@ Partial Class frmMain
         Me.Label124.ForeColor = System.Drawing.Color.Black
         Me.Label124.Location = New System.Drawing.Point(136, 478)
         Me.Label124.Name = "Label124"
-        Me.Label124.Size = New System.Drawing.Size(155, 21)
+        Me.Label124.Size = New System.Drawing.Size(154, 21)
         Me.Label124.TabIndex = 95
         Me.Label124.Text = "Coolant Temp OOR"
         '
@@ -3008,7 +3015,7 @@ Partial Class frmMain
         Me.Label147.ForeColor = System.Drawing.Color.Black
         Me.Label147.Location = New System.Drawing.Point(70, 175)
         Me.Label147.Name = "Label147"
-        Me.Label147.Size = New System.Drawing.Size(117, 21)
+        Me.Label147.Size = New System.Drawing.Size(116, 21)
         Me.Label147.TabIndex = 128
         Me.Label147.Text = "Coolant Temp"
         '
@@ -3019,7 +3026,7 @@ Partial Class frmMain
         Me.Label148.ForeColor = System.Drawing.Color.Black
         Me.Label148.Location = New System.Drawing.Point(70, 205)
         Me.Label148.Name = "Label148"
-        Me.Label148.Size = New System.Drawing.Size(116, 21)
+        Me.Label148.Size = New System.Drawing.Size(115, 21)
         Me.Label148.TabIndex = 128
         Me.Label148.Text = "Cabinet Temp"
         '
@@ -3499,7 +3506,7 @@ Partial Class frmMain
         Me.Label1.ForeColor = System.Drawing.Color.Black
         Me.Label1.Location = New System.Drawing.Point(156, 481)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(147, 21)
+        Me.Label1.Size = New System.Drawing.Size(146, 21)
         Me.Label1.TabIndex = 88
         Me.Label1.Text = "Trigger Stayed On"
         '
@@ -3510,7 +3517,7 @@ Partial Class frmMain
         Me.Label165.ForeColor = System.Drawing.Color.Black
         Me.Label165.Location = New System.Drawing.Point(380, 482)
         Me.Label165.Name = "Label165"
-        Me.Label165.Size = New System.Drawing.Size(107, 21)
+        Me.Label165.Size = New System.Drawing.Size(106, 21)
         Me.Label165.TabIndex = 87
         Me.Label165.Text = "Trigger Fault"
         '
@@ -3633,7 +3640,7 @@ Partial Class frmMain
         Me.Label67.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(110, Byte), Integer), CType(CType(199, Byte), Integer))
         Me.Label67.Location = New System.Drawing.Point(253, 11)
         Me.Label67.Name = "Label67"
-        Me.Label67.Size = New System.Drawing.Size(173, 45)
+        Me.Label67.Size = New System.Drawing.Size(172, 45)
         Me.Label67.TabIndex = 2
         Me.Label67.Text = "Pulse Sync"
         '
@@ -3818,7 +3825,7 @@ Partial Class frmMain
         Me.Label158.ForeColor = System.Drawing.Color.Black
         Me.Label158.Location = New System.Drawing.Point(398, 375)
         Me.Label158.Name = "Label158"
-        Me.Label158.Size = New System.Drawing.Size(93, 21)
+        Me.Label158.Size = New System.Drawing.Size(92, 21)
         Me.Label158.TabIndex = 90
         Me.Label158.Text = "Over Temp"
         '
@@ -3961,7 +3968,7 @@ Partial Class frmMain
         Me.Label210.ForeColor = System.Drawing.Color.Black
         Me.Label210.Location = New System.Drawing.Point(65, 104)
         Me.Label210.Name = "Label210"
-        Me.Label210.Size = New System.Drawing.Size(140, 21)
+        Me.Label210.Size = New System.Drawing.Size(139, 21)
         Me.Label210.TabIndex = 119
         Me.Label210.Text = "PrePulse Voltage"
         '
@@ -3984,7 +3991,7 @@ Partial Class frmMain
         Me.Label68.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(110, Byte), Integer), CType(CType(199, Byte), Integer))
         Me.Label68.Location = New System.Drawing.Point(204, 11)
         Me.Label68.Name = "Label68"
-        Me.Label68.Size = New System.Drawing.Size(272, 45)
+        Me.Label68.Size = New System.Drawing.Size(271, 45)
         Me.Label68.TabIndex = 2
         Me.Label68.Text = "HV Power Supply"
         '
@@ -4148,7 +4155,7 @@ Partial Class frmMain
         Me.Label212.ForeColor = System.Drawing.Color.Black
         Me.Label212.Location = New System.Drawing.Point(332, 54)
         Me.Label212.Name = "Label212"
-        Me.Label212.Size = New System.Drawing.Size(107, 21)
+        Me.Label212.Size = New System.Drawing.Size(106, 21)
         Me.Label212.TabIndex = 84
         Me.Label212.Text = "False Trigger"
         '
@@ -4227,7 +4234,7 @@ Partial Class frmMain
         Me.Label226.ForeColor = System.Drawing.Color.Black
         Me.Label226.Location = New System.Drawing.Point(21, 31)
         Me.Label226.Name = "Label226"
-        Me.Label226.Size = New System.Drawing.Size(85, 21)
+        Me.Label226.Size = New System.Drawing.Size(84, 21)
         Me.Label226.TabIndex = 118
         Me.Label226.Text = "Arcs Total"
         '
@@ -4326,7 +4333,7 @@ Partial Class frmMain
         Me.Label228.ForeColor = System.Drawing.Color.Black
         Me.Label228.Location = New System.Drawing.Point(161, 178)
         Me.Label228.Name = "Label228"
-        Me.Label228.Size = New System.Drawing.Size(94, 21)
+        Me.Label228.Size = New System.Drawing.Size(93, 21)
         Me.Label228.TabIndex = 120
         Me.Label228.Text = "Pulse Total"
         '
@@ -4391,6 +4398,7 @@ Partial Class frmMain
         Me.TabPageAFC.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.TabPageAFC.Controls.Add(Me.btnAfcManualPosition)
         Me.TabPageAFC.Controls.Add(Me.btnAfcManualMode)
+        Me.TabPageAFC.Controls.Add(Me.btnAfcHomePosAutoCalib)
         Me.TabPageAFC.Controls.Add(Me.btnAfcHomePosSet)
         Me.TabPageAFC.Controls.Add(Me.btnAfcCabCtrlVSet)
         Me.TabPageAFC.Controls.Add(Me.btnAfcCargoCtrlVSet)
@@ -4425,7 +4433,7 @@ Partial Class frmMain
         Me.btnAfcManualPosition.BackColor = System.Drawing.Color.Blue
         Me.btnAfcManualPosition.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnAfcManualPosition.ForeColor = System.Drawing.Color.Blue
-        Me.btnAfcManualPosition.Location = New System.Drawing.Point(370, 276)
+        Me.btnAfcManualPosition.Location = New System.Drawing.Point(370, 329)
         Me.btnAfcManualPosition.Name = "btnAfcManualPosition"
         Me.btnAfcManualPosition.Size = New System.Drawing.Size(236, 33)
         Me.btnAfcManualPosition.TabIndex = 124
@@ -4438,7 +4446,7 @@ Partial Class frmMain
         Me.btnAfcManualMode.BackColor = System.Drawing.Color.Blue
         Me.btnAfcManualMode.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnAfcManualMode.ForeColor = System.Drawing.Color.Blue
-        Me.btnAfcManualMode.Location = New System.Drawing.Point(370, 237)
+        Me.btnAfcManualMode.Location = New System.Drawing.Point(370, 290)
         Me.btnAfcManualMode.Name = "btnAfcManualMode"
         Me.btnAfcManualMode.Size = New System.Drawing.Size(236, 33)
         Me.btnAfcManualMode.TabIndex = 124
@@ -4657,7 +4665,7 @@ Partial Class frmMain
         Me.Label251.ForeColor = System.Drawing.Color.Black
         Me.Label251.Location = New System.Drawing.Point(67, 108)
         Me.Label251.Name = "Label251"
-        Me.Label251.Size = New System.Drawing.Size(180, 21)
+        Me.Label251.Size = New System.Drawing.Size(179, 21)
         Me.Label251.TabIndex = 119
         Me.Label251.Text = "Phase Control Voltage"
         '
@@ -4691,7 +4699,7 @@ Partial Class frmMain
         Me.BlueRect11.MyBorderColor = System.Drawing.Color.Black
         Me.BlueRect11.MyBorderWidth = 0.001!
         Me.BlueRect11.Name = "BlueRect11"
-        Me.BlueRect11.Size = New System.Drawing.Size(598, 296)
+        Me.BlueRect11.Size = New System.Drawing.Size(598, 326)
         Me.BlueRect11.TabIndex = 80
         '
         'TabPageMagnetrHtr
@@ -5020,7 +5028,7 @@ Partial Class frmMain
         Me.Label218.ForeColor = System.Drawing.Color.Black
         Me.Label218.Location = New System.Drawing.Point(137, 459)
         Me.Label218.Name = "Label218"
-        Me.Label218.Size = New System.Drawing.Size(108, 21)
+        Me.Label218.Size = New System.Drawing.Size(107, 21)
         Me.Label218.TabIndex = 90
         Me.Label218.Text = "Temp Switch"
         '
@@ -5042,7 +5050,7 @@ Partial Class frmMain
         Me.Label117.ForeColor = System.Drawing.Color.Black
         Me.Label117.Location = New System.Drawing.Point(397, 407)
         Me.Label117.Name = "Label117"
-        Me.Label117.Size = New System.Drawing.Size(145, 21)
+        Me.Label117.Size = New System.Drawing.Size(144, 21)
         Me.Label117.TabIndex = 80
         Me.Label117.Text = "Over Temp Active"
         '
@@ -5218,7 +5226,7 @@ Partial Class frmMain
         Me.Label266.ForeColor = System.Drawing.Color.Black
         Me.Label266.Location = New System.Drawing.Point(82, 158)
         Me.Label266.Name = "Label266"
-        Me.Label266.Size = New System.Drawing.Size(125, 21)
+        Me.Label266.Size = New System.Drawing.Size(124, 21)
         Me.Label266.TabIndex = 128
         Me.Label266.Text = "Heater Voltage"
         '
@@ -5240,7 +5248,7 @@ Partial Class frmMain
         Me.Label268.ForeColor = System.Drawing.Color.Black
         Me.Label268.Location = New System.Drawing.Point(82, 128)
         Me.Label268.Name = "Label268"
-        Me.Label268.Size = New System.Drawing.Size(133, 21)
+        Me.Label268.Size = New System.Drawing.Size(132, 21)
         Me.Label268.TabIndex = 129
         Me.Label268.Text = "Magnet Voltage"
         '
@@ -5304,9 +5312,15 @@ Partial Class frmMain
         Me.TabPageIonPump.BackColor = System.Drawing.SystemColors.Control
         Me.TabPageIonPump.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.TabPageIonPump.Controls.Add(Me.panelIonPumpLogger)
+        Me.TabPageIonPump.Controls.Add(Me.ledIonMagnetronWGArc)
+        Me.TabPageIonPump.Controls.Add(Me.ledIonPowerFailure)
         Me.TabPageIonPump.Controls.Add(Me.ledIonUV)
+        Me.TabPageIonPump.Controls.Add(Me.ledIonLinacWGArc)
         Me.TabPageIonPump.Controls.Add(Me.ledIonOC)
+        Me.TabPageIonPump.Controls.Add(Me.Label8)
         Me.TabPageIonPump.Controls.Add(Me.ledIonCanFault)
+        Me.TabPageIonPump.Controls.Add(Me.Label10)
+        Me.TabPageIonPump.Controls.Add(Me.Label7)
         Me.TabPageIonPump.Controls.Add(Me.Label262)
         Me.TabPageIonPump.Controls.Add(Me.Label280)
         Me.TabPageIonPump.Controls.Add(Me.Label281)
@@ -5381,7 +5395,7 @@ Partial Class frmMain
         '
         Me.ledIonUV.FillColor = System.Drawing.Color.LawnGreen
         Me.ledIonUV.ForeColor = System.Drawing.Color.White
-        Me.ledIonUV.Location = New System.Drawing.Point(343, 389)
+        Me.ledIonUV.Location = New System.Drawing.Point(343, 343)
         Me.ledIonUV.MyBorderColor = System.Drawing.Color.Black
         Me.ledIonUV.MyBorderWidth = 2
         Me.ledIonUV.Name = "ledIonUV"
@@ -5392,7 +5406,7 @@ Partial Class frmMain
         '
         Me.ledIonOC.FillColor = System.Drawing.Color.LawnGreen
         Me.ledIonOC.ForeColor = System.Drawing.Color.White
-        Me.ledIonOC.Location = New System.Drawing.Point(343, 355)
+        Me.ledIonOC.Location = New System.Drawing.Point(343, 309)
         Me.ledIonOC.MyBorderColor = System.Drawing.Color.Black
         Me.ledIonOC.MyBorderWidth = 2
         Me.ledIonOC.Name = "ledIonOC"
@@ -5403,7 +5417,7 @@ Partial Class frmMain
         '
         Me.ledIonCanFault.FillColor = System.Drawing.Color.LawnGreen
         Me.ledIonCanFault.ForeColor = System.Drawing.Color.White
-        Me.ledIonCanFault.Location = New System.Drawing.Point(115, 355)
+        Me.ledIonCanFault.Location = New System.Drawing.Point(115, 309)
         Me.ledIonCanFault.MyBorderColor = System.Drawing.Color.Black
         Me.ledIonCanFault.MyBorderWidth = 2
         Me.ledIonCanFault.Name = "ledIonCanFault"
@@ -5415,9 +5429,9 @@ Partial Class frmMain
         Me.Label262.AutoSize = True
         Me.Label262.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label262.ForeColor = System.Drawing.Color.Black
-        Me.Label262.Location = New System.Drawing.Point(367, 389)
+        Me.Label262.Location = New System.Drawing.Point(367, 343)
         Me.Label262.Name = "Label262"
-        Me.Label262.Size = New System.Drawing.Size(199, 21)
+        Me.Label262.Size = New System.Drawing.Size(198, 21)
         Me.Label262.TabIndex = 143
         Me.Label262.Text = "Ion Pump Under Voltage"
         '
@@ -5426,7 +5440,7 @@ Partial Class frmMain
         Me.Label280.AutoSize = True
         Me.Label280.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label280.ForeColor = System.Drawing.Color.Black
-        Me.Label280.Location = New System.Drawing.Point(367, 355)
+        Me.Label280.Location = New System.Drawing.Point(367, 309)
         Me.Label280.Name = "Label280"
         Me.Label280.Size = New System.Drawing.Size(185, 21)
         Me.Label280.TabIndex = 134
@@ -5437,7 +5451,7 @@ Partial Class frmMain
         Me.Label281.AutoSize = True
         Me.Label281.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label281.ForeColor = System.Drawing.Color.Black
-        Me.Label281.Location = New System.Drawing.Point(139, 355)
+        Me.Label281.Location = New System.Drawing.Point(139, 309)
         Me.Label281.Name = "Label281"
         Me.Label281.Size = New System.Drawing.Size(86, 21)
         Me.Label281.TabIndex = 133
@@ -5483,7 +5497,7 @@ Partial Class frmMain
         Me.Label292.ForeColor = System.Drawing.Color.Black
         Me.Label292.Location = New System.Drawing.Point(115, 136)
         Me.Label292.Name = "Label292"
-        Me.Label292.Size = New System.Drawing.Size(148, 21)
+        Me.Label292.Size = New System.Drawing.Size(147, 21)
         Me.Label292.TabIndex = 173
         Me.Label292.Text = "Ion Pump Voltage"
         '
@@ -5733,7 +5747,7 @@ Partial Class frmMain
         Me.Label254.ForeColor = System.Drawing.Color.Black
         Me.Label254.Location = New System.Drawing.Point(107, 115)
         Me.Label254.Name = "Label254"
-        Me.Label254.Size = New System.Drawing.Size(113, 21)
+        Me.Label254.Size = New System.Drawing.Size(114, 21)
         Me.Label254.TabIndex = 366
         Me.Label254.Text = "Service Mode"
         '
@@ -5745,7 +5759,7 @@ Partial Class frmMain
         Me.Label74.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(110, Byte), Integer), CType(CType(199, Byte), Integer))
         Me.Label74.Location = New System.Drawing.Point(235, 11)
         Me.Label74.Name = "Label74"
-        Me.Label74.Size = New System.Drawing.Size(209, 45)
+        Me.Label74.Size = New System.Drawing.Size(207, 45)
         Me.Label74.TabIndex = 364
         Me.Label74.Text = "Service Tools"
         '
@@ -5962,7 +5976,7 @@ Partial Class frmMain
         Me.LabelGUIVersionDeploy.ForeColor = System.Drawing.Color.Black
         Me.LabelGUIVersionDeploy.Location = New System.Drawing.Point(373, 529)
         Me.LabelGUIVersionDeploy.Name = "LabelGUIVersionDeploy"
-        Me.LabelGUIVersionDeploy.Size = New System.Drawing.Size(127, 21)
+        Me.LabelGUIVersionDeploy.Size = New System.Drawing.Size(126, 21)
         Me.LabelGUIVersionDeploy.TabIndex = 101
         Me.LabelGUIVersionDeploy.Text = "GUI Version 1.00"
         '
@@ -5986,7 +6000,7 @@ Partial Class frmMain
         Me.Label17.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(110, Byte), Integer), CType(CType(199, Byte), Integer))
         Me.Label17.Location = New System.Drawing.Point(217, 11)
         Me.Label17.Name = "Label17"
-        Me.Label17.Size = New System.Drawing.Size(257, 45)
+        Me.Label17.Size = New System.Drawing.Size(256, 45)
         Me.Label17.TabIndex = 417
         Me.Label17.Text = "Developer Panel"
         '
@@ -6087,6 +6101,85 @@ Partial Class frmMain
         Me.BlueRectMain.Name = "BlueRectMain"
         Me.BlueRectMain.Size = New System.Drawing.Size(296, 154)
         Me.BlueRectMain.TabIndex = 80
+        '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label7.ForeColor = System.Drawing.Color.Black
+        Me.Label7.Location = New System.Drawing.Point(139, 343)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(169, 21)
+        Me.Label7.TabIndex = 134
+        Me.Label7.Text = "Linac Waveguide Arc"
+        '
+        'Label8
+        '
+        Me.Label8.AutoSize = True
+        Me.Label8.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label8.ForeColor = System.Drawing.Color.Black
+        Me.Label8.Location = New System.Drawing.Point(139, 377)
+        Me.Label8.Name = "Label8"
+        Me.Label8.Size = New System.Drawing.Size(155, 21)
+        Me.Label8.TabIndex = 143
+        Me.Label8.Text = "Magnetron WG Arc"
+        '
+        'ledIonLinacWGArc
+        '
+        Me.ledIonLinacWGArc.FillColor = System.Drawing.Color.LawnGreen
+        Me.ledIonLinacWGArc.ForeColor = System.Drawing.Color.White
+        Me.ledIonLinacWGArc.Location = New System.Drawing.Point(115, 343)
+        Me.ledIonLinacWGArc.MyBorderColor = System.Drawing.Color.Black
+        Me.ledIonLinacWGArc.MyBorderWidth = 2
+        Me.ledIonLinacWGArc.Name = "ledIonLinacWGArc"
+        Me.ledIonLinacWGArc.Size = New System.Drawing.Size(18, 20)
+        Me.ledIonLinacWGArc.TabIndex = 163
+        '
+        'ledIonMagnetronWGArc
+        '
+        Me.ledIonMagnetronWGArc.FillColor = System.Drawing.Color.LawnGreen
+        Me.ledIonMagnetronWGArc.ForeColor = System.Drawing.Color.White
+        Me.ledIonMagnetronWGArc.Location = New System.Drawing.Point(115, 377)
+        Me.ledIonMagnetronWGArc.MyBorderColor = System.Drawing.Color.Black
+        Me.ledIonMagnetronWGArc.MyBorderWidth = 2
+        Me.ledIonMagnetronWGArc.Name = "ledIonMagnetronWGArc"
+        Me.ledIonMagnetronWGArc.Size = New System.Drawing.Size(18, 20)
+        Me.ledIonMagnetronWGArc.TabIndex = 152
+        '
+        'Label10
+        '
+        Me.Label10.AutoSize = True
+        Me.Label10.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label10.ForeColor = System.Drawing.Color.Black
+        Me.Label10.Location = New System.Drawing.Point(367, 377)
+        Me.Label10.Name = "Label10"
+        Me.Label10.Size = New System.Drawing.Size(192, 21)
+        Me.Label10.TabIndex = 143
+        Me.Label10.Text = "Ion Pump Power Failure"
+        '
+        'ledIonPowerFailure
+        '
+        Me.ledIonPowerFailure.FillColor = System.Drawing.Color.LawnGreen
+        Me.ledIonPowerFailure.ForeColor = System.Drawing.Color.White
+        Me.ledIonPowerFailure.Location = New System.Drawing.Point(343, 377)
+        Me.ledIonPowerFailure.MyBorderColor = System.Drawing.Color.Black
+        Me.ledIonPowerFailure.MyBorderWidth = 2
+        Me.ledIonPowerFailure.Name = "ledIonPowerFailure"
+        Me.ledIonPowerFailure.Size = New System.Drawing.Size(18, 20)
+        Me.ledIonPowerFailure.TabIndex = 152
+        '
+        'btnAfcHomePosAutoCalib
+        '
+        Me.btnAfcHomePosAutoCalib.BackColor = System.Drawing.Color.Blue
+        Me.btnAfcHomePosAutoCalib.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnAfcHomePosAutoCalib.ForeColor = System.Drawing.Color.Blue
+        Me.btnAfcHomePosAutoCalib.Location = New System.Drawing.Point(370, 219)
+        Me.btnAfcHomePosAutoCalib.Name = "btnAfcHomePosAutoCalib"
+        Me.btnAfcHomePosAutoCalib.Size = New System.Drawing.Size(236, 33)
+        Me.btnAfcHomePosAutoCalib.TabIndex = 123
+        Me.btnAfcHomePosAutoCalib.Tag = "1"
+        Me.btnAfcHomePosAutoCalib.Text = "Auto Calib Home Position"
+        Me.btnAfcHomePosAutoCalib.UseVisualStyleBackColor = True
         '
         'frmMain
         '
@@ -6626,4 +6719,11 @@ Partial Class frmMain
     Friend WithEvents lblShowDumpData As System.Windows.Forms.Label
     Friend WithEvents lblGUIVersionAgile As System.Windows.Forms.Label
     Friend WithEvents btnLockAFCtoHomePos As System.Windows.Forms.Button
+    Friend WithEvents ledIonMagnetronWGArc As CustomControls.OvalLed
+    Friend WithEvents ledIonPowerFailure As CustomControls.OvalLed
+    Friend WithEvents ledIonLinacWGArc As CustomControls.OvalLed
+    Friend WithEvents Label8 As System.Windows.Forms.Label
+    Friend WithEvents Label10 As System.Windows.Forms.Label
+    Friend WithEvents Label7 As System.Windows.Forms.Label
+    Friend WithEvents btnAfcHomePosAutoCalib As System.Windows.Forms.Button
 End Class
