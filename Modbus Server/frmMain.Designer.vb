@@ -340,6 +340,7 @@ Partial Class frmMain
         Me.TabPageAFC = New System.Windows.Forms.TabPage()
         Me.btnAfcManualPosition = New System.Windows.Forms.Button()
         Me.btnAfcManualMode = New System.Windows.Forms.Button()
+        Me.btnAfcPosScan = New System.Windows.Forms.Button()
         Me.btnAfcHomePosSet = New System.Windows.Forms.Button()
         Me.btnAfcCabCtrlVSet = New System.Windows.Forms.Button()
         Me.btnAfcCargoCtrlVSet = New System.Windows.Forms.Button()
@@ -418,9 +419,15 @@ Partial Class frmMain
         Me.txtIonPumpLogInterval = New System.Windows.Forms.TextBox()
         Me.lblIonPumpLogName = New System.Windows.Forms.Label()
         Me.btnIonPumpLog = New System.Windows.Forms.Button()
+        Me.ledIonMagnetronWGArc = New CustomControls.OvalLed()
+        Me.ledIonPowerFailure = New CustomControls.OvalLed()
         Me.ledIonUV = New CustomControls.OvalLed()
+        Me.ledIonLinacWGArc = New CustomControls.OvalLed()
         Me.ledIonOC = New CustomControls.OvalLed()
+        Me.Label8 = New System.Windows.Forms.Label()
         Me.ledIonCanFault = New CustomControls.OvalLed()
+        Me.Label10 = New System.Windows.Forms.Label()
+        Me.Label7 = New System.Windows.Forms.Label()
         Me.Label262 = New System.Windows.Forms.Label()
         Me.Label280 = New System.Windows.Forms.Label()
         Me.Label281 = New System.Windows.Forms.Label()
@@ -476,13 +483,6 @@ Partial Class frmMain
         Me.btnServiceSaveFactoryDefaults = New System.Windows.Forms.Button()
         Me.btnDumpData = New System.Windows.Forms.Button()
         Me.BlueRectMain = New CustomControls.BlueRect()
-        Me.Label7 = New System.Windows.Forms.Label()
-        Me.Label8 = New System.Windows.Forms.Label()
-        Me.ledIonLinacWGArc = New CustomControls.OvalLed()
-        Me.ledIonMagnetronWGArc = New CustomControls.OvalLed()
-        Me.Label10 = New System.Windows.Forms.Label()
-        Me.ledIonPowerFailure = New CustomControls.OvalLed()
-        Me.btnAfcHomePosAutoCalib = New System.Windows.Forms.Button()
         Me.panelDispButtons.SuspendLayout()
         CType(Me.PictureBoxLogo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel2.SuspendLayout()
@@ -4398,7 +4398,7 @@ Partial Class frmMain
         Me.TabPageAFC.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.TabPageAFC.Controls.Add(Me.btnAfcManualPosition)
         Me.TabPageAFC.Controls.Add(Me.btnAfcManualMode)
-        Me.TabPageAFC.Controls.Add(Me.btnAfcHomePosAutoCalib)
+        Me.TabPageAFC.Controls.Add(Me.btnAfcPosScan)
         Me.TabPageAFC.Controls.Add(Me.btnAfcHomePosSet)
         Me.TabPageAFC.Controls.Add(Me.btnAfcCabCtrlVSet)
         Me.TabPageAFC.Controls.Add(Me.btnAfcCargoCtrlVSet)
@@ -4453,6 +4453,19 @@ Partial Class frmMain
         Me.btnAfcManualMode.Tag = "1"
         Me.btnAfcManualMode.Text = "Manual Mode"
         Me.btnAfcManualMode.UseVisualStyleBackColor = True
+        '
+        'btnAfcPosScan
+        '
+        Me.btnAfcPosScan.BackColor = System.Drawing.Color.Blue
+        Me.btnAfcPosScan.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnAfcPosScan.ForeColor = System.Drawing.Color.Blue
+        Me.btnAfcPosScan.Location = New System.Drawing.Point(370, 219)
+        Me.btnAfcPosScan.Name = "btnAfcPosScan"
+        Me.btnAfcPosScan.Size = New System.Drawing.Size(236, 33)
+        Me.btnAfcPosScan.TabIndex = 123
+        Me.btnAfcPosScan.Tag = "1"
+        Me.btnAfcPosScan.Text = "Start RevPower-Pos Scan"
+        Me.btnAfcPosScan.UseVisualStyleBackColor = True
         '
         'btnAfcHomePosSet
         '
@@ -5391,6 +5404,28 @@ Partial Class frmMain
         Me.btnIonPumpLog.Text = "Start Ion Pump Logging"
         Me.btnIonPumpLog.UseVisualStyleBackColor = True
         '
+        'ledIonMagnetronWGArc
+        '
+        Me.ledIonMagnetronWGArc.FillColor = System.Drawing.Color.LawnGreen
+        Me.ledIonMagnetronWGArc.ForeColor = System.Drawing.Color.White
+        Me.ledIonMagnetronWGArc.Location = New System.Drawing.Point(115, 377)
+        Me.ledIonMagnetronWGArc.MyBorderColor = System.Drawing.Color.Black
+        Me.ledIonMagnetronWGArc.MyBorderWidth = 2
+        Me.ledIonMagnetronWGArc.Name = "ledIonMagnetronWGArc"
+        Me.ledIonMagnetronWGArc.Size = New System.Drawing.Size(18, 20)
+        Me.ledIonMagnetronWGArc.TabIndex = 152
+        '
+        'ledIonPowerFailure
+        '
+        Me.ledIonPowerFailure.FillColor = System.Drawing.Color.LawnGreen
+        Me.ledIonPowerFailure.ForeColor = System.Drawing.Color.White
+        Me.ledIonPowerFailure.Location = New System.Drawing.Point(343, 377)
+        Me.ledIonPowerFailure.MyBorderColor = System.Drawing.Color.Black
+        Me.ledIonPowerFailure.MyBorderWidth = 2
+        Me.ledIonPowerFailure.Name = "ledIonPowerFailure"
+        Me.ledIonPowerFailure.Size = New System.Drawing.Size(18, 20)
+        Me.ledIonPowerFailure.TabIndex = 152
+        '
         'ledIonUV
         '
         Me.ledIonUV.FillColor = System.Drawing.Color.LawnGreen
@@ -5401,6 +5436,17 @@ Partial Class frmMain
         Me.ledIonUV.Name = "ledIonUV"
         Me.ledIonUV.Size = New System.Drawing.Size(18, 20)
         Me.ledIonUV.TabIndex = 152
+        '
+        'ledIonLinacWGArc
+        '
+        Me.ledIonLinacWGArc.FillColor = System.Drawing.Color.LawnGreen
+        Me.ledIonLinacWGArc.ForeColor = System.Drawing.Color.White
+        Me.ledIonLinacWGArc.Location = New System.Drawing.Point(115, 343)
+        Me.ledIonLinacWGArc.MyBorderColor = System.Drawing.Color.Black
+        Me.ledIonLinacWGArc.MyBorderWidth = 2
+        Me.ledIonLinacWGArc.Name = "ledIonLinacWGArc"
+        Me.ledIonLinacWGArc.Size = New System.Drawing.Size(18, 20)
+        Me.ledIonLinacWGArc.TabIndex = 163
         '
         'ledIonOC
         '
@@ -5413,6 +5459,17 @@ Partial Class frmMain
         Me.ledIonOC.Size = New System.Drawing.Size(18, 20)
         Me.ledIonOC.TabIndex = 163
         '
+        'Label8
+        '
+        Me.Label8.AutoSize = True
+        Me.Label8.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label8.ForeColor = System.Drawing.Color.Black
+        Me.Label8.Location = New System.Drawing.Point(139, 377)
+        Me.Label8.Name = "Label8"
+        Me.Label8.Size = New System.Drawing.Size(155, 21)
+        Me.Label8.TabIndex = 143
+        Me.Label8.Text = "Magnetron WG Arc"
+        '
         'ledIonCanFault
         '
         Me.ledIonCanFault.FillColor = System.Drawing.Color.LawnGreen
@@ -5423,6 +5480,28 @@ Partial Class frmMain
         Me.ledIonCanFault.Name = "ledIonCanFault"
         Me.ledIonCanFault.Size = New System.Drawing.Size(18, 20)
         Me.ledIonCanFault.TabIndex = 160
+        '
+        'Label10
+        '
+        Me.Label10.AutoSize = True
+        Me.Label10.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label10.ForeColor = System.Drawing.Color.Black
+        Me.Label10.Location = New System.Drawing.Point(367, 377)
+        Me.Label10.Name = "Label10"
+        Me.Label10.Size = New System.Drawing.Size(192, 21)
+        Me.Label10.TabIndex = 143
+        Me.Label10.Text = "Ion Pump Power Failure"
+        '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label7.ForeColor = System.Drawing.Color.Black
+        Me.Label7.Location = New System.Drawing.Point(139, 343)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(169, 21)
+        Me.Label7.TabIndex = 134
+        Me.Label7.Text = "Linac Waveguide Arc"
         '
         'Label262
         '
@@ -6102,85 +6181,6 @@ Partial Class frmMain
         Me.BlueRectMain.Size = New System.Drawing.Size(296, 154)
         Me.BlueRectMain.TabIndex = 80
         '
-        'Label7
-        '
-        Me.Label7.AutoSize = True
-        Me.Label7.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label7.ForeColor = System.Drawing.Color.Black
-        Me.Label7.Location = New System.Drawing.Point(139, 343)
-        Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(169, 21)
-        Me.Label7.TabIndex = 134
-        Me.Label7.Text = "Linac Waveguide Arc"
-        '
-        'Label8
-        '
-        Me.Label8.AutoSize = True
-        Me.Label8.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label8.ForeColor = System.Drawing.Color.Black
-        Me.Label8.Location = New System.Drawing.Point(139, 377)
-        Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(155, 21)
-        Me.Label8.TabIndex = 143
-        Me.Label8.Text = "Magnetron WG Arc"
-        '
-        'ledIonLinacWGArc
-        '
-        Me.ledIonLinacWGArc.FillColor = System.Drawing.Color.LawnGreen
-        Me.ledIonLinacWGArc.ForeColor = System.Drawing.Color.White
-        Me.ledIonLinacWGArc.Location = New System.Drawing.Point(115, 343)
-        Me.ledIonLinacWGArc.MyBorderColor = System.Drawing.Color.Black
-        Me.ledIonLinacWGArc.MyBorderWidth = 2
-        Me.ledIonLinacWGArc.Name = "ledIonLinacWGArc"
-        Me.ledIonLinacWGArc.Size = New System.Drawing.Size(18, 20)
-        Me.ledIonLinacWGArc.TabIndex = 163
-        '
-        'ledIonMagnetronWGArc
-        '
-        Me.ledIonMagnetronWGArc.FillColor = System.Drawing.Color.LawnGreen
-        Me.ledIonMagnetronWGArc.ForeColor = System.Drawing.Color.White
-        Me.ledIonMagnetronWGArc.Location = New System.Drawing.Point(115, 377)
-        Me.ledIonMagnetronWGArc.MyBorderColor = System.Drawing.Color.Black
-        Me.ledIonMagnetronWGArc.MyBorderWidth = 2
-        Me.ledIonMagnetronWGArc.Name = "ledIonMagnetronWGArc"
-        Me.ledIonMagnetronWGArc.Size = New System.Drawing.Size(18, 20)
-        Me.ledIonMagnetronWGArc.TabIndex = 152
-        '
-        'Label10
-        '
-        Me.Label10.AutoSize = True
-        Me.Label10.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label10.ForeColor = System.Drawing.Color.Black
-        Me.Label10.Location = New System.Drawing.Point(367, 377)
-        Me.Label10.Name = "Label10"
-        Me.Label10.Size = New System.Drawing.Size(192, 21)
-        Me.Label10.TabIndex = 143
-        Me.Label10.Text = "Ion Pump Power Failure"
-        '
-        'ledIonPowerFailure
-        '
-        Me.ledIonPowerFailure.FillColor = System.Drawing.Color.LawnGreen
-        Me.ledIonPowerFailure.ForeColor = System.Drawing.Color.White
-        Me.ledIonPowerFailure.Location = New System.Drawing.Point(343, 377)
-        Me.ledIonPowerFailure.MyBorderColor = System.Drawing.Color.Black
-        Me.ledIonPowerFailure.MyBorderWidth = 2
-        Me.ledIonPowerFailure.Name = "ledIonPowerFailure"
-        Me.ledIonPowerFailure.Size = New System.Drawing.Size(18, 20)
-        Me.ledIonPowerFailure.TabIndex = 152
-        '
-        'btnAfcHomePosAutoCalib
-        '
-        Me.btnAfcHomePosAutoCalib.BackColor = System.Drawing.Color.Blue
-        Me.btnAfcHomePosAutoCalib.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnAfcHomePosAutoCalib.ForeColor = System.Drawing.Color.Blue
-        Me.btnAfcHomePosAutoCalib.Location = New System.Drawing.Point(370, 219)
-        Me.btnAfcHomePosAutoCalib.Name = "btnAfcHomePosAutoCalib"
-        Me.btnAfcHomePosAutoCalib.Size = New System.Drawing.Size(236, 33)
-        Me.btnAfcHomePosAutoCalib.TabIndex = 123
-        Me.btnAfcHomePosAutoCalib.Tag = "1"
-        Me.btnAfcHomePosAutoCalib.Text = "Auto Calib Home Position"
-        Me.btnAfcHomePosAutoCalib.UseVisualStyleBackColor = True
-        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -6725,5 +6725,5 @@ Partial Class frmMain
     Friend WithEvents Label8 As System.Windows.Forms.Label
     Friend WithEvents Label10 As System.Windows.Forms.Label
     Friend WithEvents Label7 As System.Windows.Forms.Label
-    Friend WithEvents btnAfcHomePosAutoCalib As System.Windows.Forms.Button
+    Friend WithEvents btnAfcPosScan As System.Windows.Forms.Button
 End Class

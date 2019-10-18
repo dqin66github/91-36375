@@ -66,6 +66,14 @@ Public Class ServerSettings
 
     Public QueueCommandToECB As Queue
 
+    Private main_screen As frmMain
+  
+    Public Const MAX_POINTS = 50000
+    Public xvalue(MAX_POINTS) As Integer
+    Public yvalue(MAX_POINTS) As Integer
+    Public total_points As Integer = 0
+
+
 
     Public Sub put_modbus_commands(ByVal index As UInt16, ByVal word2 As UInt16, ByVal word1 As UInt16, ByVal word0 As UInt16)
         Dim command_to_ECB As ETM_ETHERNET_COMMAND_STRUCTURE
@@ -132,7 +140,7 @@ Public Class ServerSettings
 
 
 #If True Then
-        Dim main_screen As frmMain
+
         main_screen = New frmMain
 
 #Else
@@ -451,9 +459,19 @@ Public Class ServerSettings
 
 
     Private Sub TimerUpdate_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TimerUpdate.Tick
+#If DEMO_MODE > 0 Then
+        Static x As Integer = 1
+        If (main_screen.scan_revpower_pos_in_process > 0 And pulse_log_enabled) Then
+            xvalue(total_points) = x
+            yvalue(total_points) = x * x
+            total_points = CInt(total_points + 1)
+            If (total_points >= MAX_POINTS) Then total_points = MAX_POINTS - 1
+            x = x + 5
+        End If
+
+#End If
+
         Dim tmpstr As String
-
-
         Select Case connect_status
             Case 0
                 lblConnectStatus.Text = "Idle"
@@ -657,6 +675,10 @@ Public Class ServerSettings
         pulse_log_file.Write("Pulse PRF (.1Hz), ")
         pulse_log_file.Write("ECB Message Count")
         pulse_log_file.WriteLine("")
+
+        If (main_screen.scan_revpower_pos_in_process > 0) Then
+            total_points = 0
+        End If
     End Sub
 
 
@@ -669,16 +691,25 @@ Public Class ServerSettings
     End Sub
 
     Private Sub save_pulse_data(ByRef bytes As Byte())
-        Static file_index As UInt16 = 0
-        Static file_opened As Boolean = False
+        '   Static file_index As UInt16 = 0
+        '   Static file_opened As Boolean = False
         Dim data_word As Integer
         Dim mem_location As Integer
 
-        If pulse_log_enabled Then
+        If (pulse_log_enabled And main_screen.pulse_log_enabled) Then
             For data_row = 0 To 15
                 For data_column = 0 To 15
                     mem_location = data_row * 38 + data_column * 2 + 2
                     data_word = bytes(mem_location + 1) * 256 + bytes(mem_location)
+                    If (main_screen.scan_revpower_pos_in_process > 0) Then
+                        If (data_column = 9) Then
+                            xvalue(total_points) = data_word
+                        ElseIf (data_column = 10) Then
+                            yvalue(total_points) = data_word
+                            total_points = CInt(total_points + 1)
+                            If (total_points >= MAX_POINTS) Then total_points = MAX_POINTS - 1
+                        End If
+                    End If
                     If data_column = 11 Then
                         If (data_word > &H8000) Then
                             data_word = -(data_word - &H8000)
@@ -817,12 +848,6 @@ Public Class ServerSettings
 
 
     End Sub
-
-
-
-
-
-
 
 
     Private Sub ServerSettings_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown

@@ -62,7 +62,7 @@ Public Class frmMain
     Public Const REGISTER_CMD_AFC_SELECT_AFC_MODE As UInt16 = &H5202
     Public Const REGISTER_CMD_AFC_SELECT_MANUAL_MODE As UInt16 = &H5203
     Public Const REGISTER_CMD_AFC_MANUAL_TARGET_POSITION As UInt16 = &H5204
-    Public Const REGISTER_CMD_AFC_CALIBRATE_HOME_POSITION As UInt16 = &H5205
+    '  Public Const REGISTER_CMD_AFC_CALIBRATE_HOME_POSITION As UInt16 = &H5205
 
     Public Const REGISTER_CMD_COOLANT_INTERFACE_ALLOW_25_MORE_SF6_PULSES As UInt16 = &H6200
     Public Const REGISTER_CMD_COOLANT_INTERFACE_ALLOW_SF6_PULSES_WHEN_PRESSURE_BELOW_LIMIT As UInt16 = &H6201
@@ -109,6 +109,25 @@ Public Class frmMain
     Private show_cargo_settings As Boolean = True  ' for pulse sync screen
 
     Public pulse_log_enabled As Boolean
+
+    Private plot_screen As frmPlot
+
+
+    Enum AFC_SCAN
+        AFC_SCAN_STEP_IDLE = 0
+        AFC_SCAN_STEP_POS1000
+        AFC_SCAN_STEP_POS1000_WAIT
+        AFC_SCAN_STEP_PULSE_LOG_ENABLE
+        AFC_SCAN_STEP_POS28000
+        AFC_SCAN_STEP_POS28000_WAIT
+        AFC_SCAN_STEP_PULSE_LOG_OFF
+        AFC_SCAN_STEP_EXIT
+        AFC_SCAN_STEP_EXIT_WAIT
+    End Enum
+    Public scan_revpower_pos_in_process As Byte = AFC_SCAN.AFC_SCAN_STEP_IDLE
+    Private scan_timer_start As DateTime
+
+
     Dim blank_string As String = "----"
 
     Public ion_pump_log_enabled As Boolean
@@ -161,8 +180,6 @@ Public Class frmMain
 
         pwScreen = New frmPassword
         reset_access_level()
-
-
 
         '  Me.BackColor = Color.LightCoral
         '  Splitter1.BackColor = Color.Coral
@@ -761,7 +778,7 @@ Public Class frmMain
                     lblAfcPreBsample.Text = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).log_data(5)
                     lblAfcManualPosition.Text = get_ref_data(REGISTER_CMD_AFC_MANUAL_TARGET_POSITION)
 
-                    Dim enble_button As Boolean = access_level > 0
+                    Dim enble_button As Boolean = access_level > 0 And scan_revpower_pos_in_process = AFC_SCAN.AFC_SCAN_STEP_IDLE
                     For Each ctrl In TabPageAFC.Controls
                         If (ctrl.GetType = GetType(Button)) Then
                             ctrl.Enabled = enble_button
@@ -992,7 +1009,78 @@ Public Class frmMain
             LabelFirmwareVersion.Visible = False
         End If
 
+        ' AFC revPower vs pos scan
+        If (scan_revpower_pos_in_process <> AFC_SCAN.AFC_SCAN_STEP_IDLE) Then
+            btnAfcPosScan.Text = "Scanning RevPower-Pos " & scan_revpower_pos_in_process
+            Select Case scan_revpower_pos_in_process
+                Case AFC_SCAN.AFC_SCAN_STEP_POS1000
+                    ServerSettings.put_modbus_commands(REGISTER_CMD_AFC_MANUAL_TARGET_POSITION, 1000, 0, 0)
+                    scan_revpower_pos_in_process = AFC_SCAN.AFC_SCAN_STEP_POS1000_WAIT
+                    scan_timer_start = DateTime.Now
+                Case AFC_SCAN.AFC_SCAN_STEP_POS1000_WAIT
+                    If (DateTime.Now - scan_timer_start).TotalSeconds > 5 Then
+                        scan_revpower_pos_in_process = AFC_SCAN.AFC_SCAN_STEP_PULSE_LOG_ENABLE
+                    End If
+                Case AFC_SCAN.AFC_SCAN_STEP_PULSE_LOG_ENABLE
+                    Call btnServiceStartLog_Click(vbNull, EventArgs.Empty)  ' turn on pulse log
+                    scan_revpower_pos_in_process = AFC_SCAN.AFC_SCAN_STEP_POS28000
+                Case AFC_SCAN.AFC_SCAN_STEP_POS28000
+                    ServerSettings.put_modbus_commands(REGISTER_CMD_AFC_MANUAL_TARGET_POSITION, 28000, 0, 0)
+                    scan_timer_start = DateTime.Now
+                    scan_revpower_pos_in_process = AFC_SCAN.AFC_SCAN_STEP_POS28000_WAIT
+                Case AFC_SCAN.AFC_SCAN_STEP_POS28000_WAIT
+                    If (DateTime.Now - scan_timer_start).TotalSeconds > 5 Then
+                        scan_revpower_pos_in_process = AFC_SCAN.AFC_SCAN_STEP_PULSE_LOG_OFF
+                    End If
+                Case AFC_SCAN.AFC_SCAN_STEP_PULSE_LOG_OFF
+                    If (pulse_log_enabled) Then
+                        pulse_log_enabled = False
+                        ServerSettings.ClosePulseLogFile()
+                        ServerSettings.put_modbus_commands(REGISTER_SYSTEM_DISABLE_HIGH_SPEED_LOGGING, 0, 0, 0)
+                        btnServiceStartLog.Text = "Start Pulse Logging"
+                    End If
+                    scan_revpower_pos_in_process = AFC_SCAN.AFC_SCAN_STEP_EXIT
+                Case AFC_SCAN.AFC_SCAN_STEP_EXIT
+                    If (pulse_log_enabled) Then
+                        pulse_log_enabled = False
+                        ServerSettings.ClosePulseLogFile()
+                        ServerSettings.put_modbus_commands(REGISTER_SYSTEM_DISABLE_HIGH_SPEED_LOGGING, 0, 0, 0)
+                        btnServiceStartLog.Text = "Start Pulse Logging"
+                    End If
+                    ' restore to home pos
+                    ServerSettings.put_modbus_commands(REGISTER_CMD_AFC_MANUAL_TARGET_POSITION, ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).log_data(11), 0, 0)
+                    ' init plot to save pos, revPower
+                    plot_screen = New frmPlot
+                    plot_screen.Show()
+                    plot_screen.addDataArray(ServerSettings.xvalue, ServerSettings.yvalue, ServerSettings.total_points)
+                    scan_timer_start = DateTime.Now
+                    scan_revpower_pos_in_process = AFC_SCAN.AFC_SCAN_STEP_EXIT_WAIT  ' wait for home pos
+                Case AFC_SCAN.AFC_SCAN_STEP_EXIT_WAIT
+                    If (DateTime.Now - scan_timer_start).TotalSeconds > 5 Then
+                        ServerSettings.put_modbus_commands(REGISTER_CMD_AFC_SELECT_AFC_MODE, 0, 0, 0)
+                        ' restore front panel controls
+                        For Each ctrl In TabPageAFC.Controls
+                            If (ctrl.GetType = GetType(Button)) Then
+                                Dim btn As Button = CType(ctrl, Button)
+                                btn.Enabled = access_level > 0
+                            End If
+                        Next
+                        For Each ctrl In panelDispButtons.Controls
+                            If (ctrl.GetType = GetType(ButtonSelected)) Then
+                                Dim btn As ButtonSelected = CType(ctrl, ButtonSelected)
+                                btn.Enabled = True
+                            End If
+                        Next
 
+                        btnAfcPosScan.Text = "Start RevPower-Pos Scan"
+                        scan_revpower_pos_in_process = AFC_SCAN.AFC_SCAN_STEP_IDLE
+                    End If
+                Case Else
+                    MsgBox("Unknown Scan State", 48)
+
+            End Select
+
+        End If
     End Sub
 
 
@@ -2765,7 +2853,7 @@ Public Class frmMain
 
     Private Sub btnAfcCargoCtrlVSet_Click(sender As Object, e As EventArgs) Handles btnAfcCargoCtrlVSet.Click
         Dim input_data As Double
-        Dim data_valid = get_set_data("Set Control Voltage for Cargo Mode", "AFC", 1, 10, "V", input_data)
+        Dim data_valid = get_set_data("Set Control Voltage for Cargo Mode", "AFC", 0, 10, "V", input_data)
 
         If data_valid Then
             Dim program_word As UInt16 = input_data * 1000
@@ -2776,7 +2864,7 @@ Public Class frmMain
 
     Private Sub btnAfcCabCtrlVSet_Click(sender As Object, e As EventArgs) Handles btnAfcCabCtrlVSet.Click
         Dim input_data As Double
-        Dim data_valid = get_set_data("Set Control Voltage for Cab Mode", "AFC", 1, 10, "V", input_data)
+        Dim data_valid = get_set_data("Set Control Voltage for Cab Mode", "AFC", 0, 10, "V", input_data)
 
         If data_valid Then
             Dim program_word As UInt16 = input_data * 1000
@@ -3452,14 +3540,40 @@ Public Class frmMain
 
     End Sub
 
-    Private Sub btnAfcHomePosAutoCalib_Click(sender As Object, e As EventArgs) Handles btnAfcHomePosAutoCalib.Click
 
-        Dim response As MsgBoxResult = MsgBox("Automatically calibrate home position?", MsgBoxStyle.OkCancel, "AFC")
+
+    Private Sub btnAfcPosScan_Click(sender As Object, e As EventArgs) Handles btnAfcPosScan.Click
+        Dim response As MsgBoxResult = MsgBox("Start RevPower-Pos Scan?", MsgBoxStyle.OkCancel, "AFC")
 
         If (response = MsgBoxResult.Ok) Then
-            ServerSettings.put_modbus_commands(REGISTER_CMD_AFC_CALIBRATE_HOME_POSITION, 0, 0, 0)
-        End If
+            ' disable all buttons on the front panel
+            For Each ctrl In TabPageAFC.Controls
+                If (ctrl.GetType = GetType(Button)) Then
+                    Dim btn As Button = CType(ctrl, Button)
+                    btn.Enabled = False
+                End If
+            Next
+            For Each ctrl In panelDispButtons.Controls
+                If (ctrl.GetType = GetType(ButtonSelected)) Then
+                    Dim btn As ButtonSelected = CType(ctrl, ButtonSelected)
+                    btn.Enabled = False
+                End If
 
+            Next
+            ' switch to manual mode
+            ServerSettings.put_modbus_commands(REGISTER_CMD_AFC_SELECT_MANUAL_MODE, 0, 0, 0)
+            If (pulse_log_enabled) Then
+                pulse_log_enabled = False
+                ServerSettings.ClosePulseLogFile()
+                ServerSettings.put_modbus_commands(REGISTER_SYSTEM_DISABLE_HIGH_SPEED_LOGGING, 0, 0, 0)
+                btnServiceStartLog.Text = "Start Pulse Logging"
+            End If
+
+            btnAfcPosScan.Enabled = True ' allow to turn scan off
+            btnAfcPosScan.Text = "Scanning RevPower-Pos"
+            scan_revpower_pos_in_process = AFC_SCAN.AFC_SCAN_STEP_POS1000
+
+        End If
 
     End Sub
 End Class
