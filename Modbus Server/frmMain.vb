@@ -281,7 +281,7 @@ Public Class frmMain
 #End If
         connected = True
         ServerSettings.event_log_enabled = True
-        lblShowDumpData.Visible = False
+        lblShowWarningMessage.Visible = False
 
         Me.Text = "2.5MeV Linac GUI"
         '   Splitter1.BackColor = Color.LightSteelBlue
@@ -791,7 +791,7 @@ Public Class frmMain
                     '     btnAfcManualPosition.Text = "Manual Pos  " & ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).log_data(2)
 
                     '    Dim control_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(board_index).control_notice_bits
-                    Dim fault_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).fault_bits 
+                    Dim fault_bits As UInt16 = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_AFC).fault_bits
                     ledAfcCanFault.FillColor = IIf(fault_bits And &H1, Color.Red, Color.LawnGreen)
 
                 End If
@@ -1131,10 +1131,24 @@ Public Class frmMain
             lblNoTrigger.Visible = False
 
         Else
-            If (ServerSettings.show_dump_data) Then
-                lblShowDumpData.Visible = flash_toggle
+            Dim auto_condition_active As UShort = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).ecb_local_data(2)
+            If (auto_condition_active > 0) Then
+                Dim auto_condition_progress As UShort = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).ecb_local_data(3)
+                If auto_condition_progress = 98 Then
+                    lblShowWarningMessage.Text = "Auto Condition Complete"
+                Else
+                    lblShowWarningMessage.Text = "Auto Conditioning Active"
+                End If
+                If (auto_condition_progress <= 98) Then ProgressBarAutoCondition.Value = auto_condition_progress
+                ProgressBarAutoCondition.Visible = True
             Else
-                lblShowDumpData.Visible = False
+                ProgressBarAutoCondition.Visible = False
+            End If
+            If (ServerSettings.show_dump_data Or auto_condition_active > 0) Then
+                lblShowWarningMessage.Visible = flash_toggle
+
+            Else
+                lblShowWarningMessage.Visible = False
             End If
 
             Select Case ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(0)
@@ -2993,7 +3007,7 @@ Public Class frmMain
         Next
 
         ServerSettings.show_dump_data = False
-        lblShowDumpData.Visible = False
+        lblShowWarningMessage.Visible = False
 
     End Sub
     Private Sub btnServiceModeChange_Click(sender As Object, e As EventArgs) Handles btnServiceModeChange.Click
@@ -3216,12 +3230,23 @@ Public Class frmMain
 
 
 
-    Private Sub btnMagnetronConditioning_Click(sender As Object, e As EventArgs) Handles btnMagnetronConditioning.Click
-        Dim response As MsgBoxResult = MsgBox("Do Magnetron Conditioning ?", MsgBoxStyle.OkCancel)
+    Private Sub btnMagnetronConditioning_Click(sender As Object, e As EventArgs) Handles btnStartMagnetronConditioning.Click
+        Dim state As UShort = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(0)
 
-        If (response = MsgBoxResult.Ok) Then
-            ServerSettings.put_modbus_commands(REGISTER_SYSTEM_ECB_MAGNETRON_CONDITIONING, 0, 0, 0)
+        If (state = &H30) Then
+            Dim response As MsgBoxResult = MsgBox("Start Magnetron Auto Conditioning?", MsgBoxStyle.OkCancel)
+
+            If (response = MsgBoxResult.Ok) Then
+                state = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(0)
+                If (state = &H30) Then
+                    ServerSettings.put_modbus_commands(REGISTER_SYSTEM_ECB_MAGNETRON_CONDITIONING, 0, 0, 0)
+                End If
+            End If
         End If
+        If (state <> &H30) Then
+            Dim response As MsgBoxResult = MsgBox("Magnetron Auto Conditioning can only be enabled at Standby State.", MsgBoxStyle.OkOnly)
+        End If
+
     End Sub
 
     Private Sub btnSaveAllParams_Click(sender As Object, e As EventArgs) Handles btnSaveAllParams.Click
@@ -3490,7 +3515,7 @@ Public Class frmMain
         If (ServerSettings.get_modbus_status() <= 2) Then
             ServerSettings.restore_dumped_data()
             ServerSettings.show_dump_data = True
-            ' lblShowDumpData.Visible = True
+            lblShowWarningMessage.Text = "Show Dump Data Active"
         Else
             MessageBox.Show("Disconnect Ethernet to view dump data")
         End If
@@ -3575,5 +3600,45 @@ Public Class frmMain
 
         End If
 
+    End Sub
+
+    Private Sub btnStopMagnetronConditioning_Click(sender As Object, e As EventArgs) Handles btnStopMagnetronConditioning.Click
+
+        Dim response As MsgBoxResult = MsgBox("Stop Magnetron Auto Conditioning?", MsgBoxStyle.OkCancel)
+
+        If (response = MsgBoxResult.Ok) Then
+            ServerSettings.put_modbus_commands(REGISTER_SYSTEM_ECB_MAGNETRON_CONDITIONING, &H1E7, 0, 0)
+        End If
+
+    End Sub
+
+    Private Sub btnStartMagnetronConditioningAtPosition_Click(sender As Object, e As EventArgs) Handles btnStartMagnetronConditioningAtPosition.Click
+        Dim offset As Integer = CBoxAutoStartPos.SelectedIndex
+
+        If (offset < 0 Or offset > 8) Then
+            offset = 0
+            CBoxAutoStartPos.SelectedIndex = 0
+        End If
+        Dim response As MsgBoxResult = MsgBox("Start Magnetron Auto Conditioning at " + CBoxAutoStartPos.SelectedItem.ToString() + "?", MsgBoxStyle.OkCancel)
+
+        If (response = MsgBoxResult.Ok) Then
+            ServerSettings.put_modbus_commands(REGISTER_SYSTEM_ECB_MAGNETRON_CONDITIONING, offset * 11, 0, 0)
+        End If
+
+    End Sub
+
+    Private Sub btnAutoConditioningSimulateArc_Click(sender As Object, e As EventArgs) Handles btnAutoConditioningSimulateArc.Click
+
+        ServerSettings.put_modbus_commands(REGISTER_SYSTEM_ECB_MAGNETRON_CONDITIONING, &H71E, 0, 0)
+ 
+    End Sub
+
+    Private Sub txtAutoConditioningActiveValue_TextChanged(sender As Object, e As EventArgs) Handles txtAutoConditioningActiveValue.TextChanged
+        ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).ecb_local_data(2) = Val(txtAutoConditioningActiveValue.Text)
+
+    End Sub
+
+    Private Sub txtAutoConditioningProgressValue_TextChanged(sender As Object, e As EventArgs) Handles txtAutoConditioningProgressValue.TextChanged
+        ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).ecb_local_data(3) = Val(txtAutoConditioningProgressValue.Text)
     End Sub
 End Class

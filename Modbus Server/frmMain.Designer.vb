@@ -80,7 +80,7 @@ Partial Class frmMain
         Me.lblIonIi2Title = New System.Windows.Forms.Label()
         Me.lblIonIi2 = New System.Windows.Forms.Label()
         Me.lblNoTrigger = New System.Windows.Forms.Label()
-        Me.lblShowDumpData = New System.Windows.Forms.Label()
+        Me.lblShowWarningMessage = New System.Windows.Forms.Label()
         Me.TabBoards = New CustomControls.RightSideTab()
         Me.TabPageOverview = New System.Windows.Forms.TabPage()
         Me.Label283 = New System.Windows.Forms.Label()
@@ -460,20 +460,27 @@ Partial Class frmMain
         Me.BlueRect14 = New CustomControls.BlueRect()
         Me.BlueRect2 = New CustomControls.BlueRect()
         Me.TabPageServicePanel = New System.Windows.Forms.TabPage()
+        Me.GroupBoxTestAutoCondition = New System.Windows.Forms.GroupBox()
+        Me.txtAutoConditioningActiveValue = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
-        Me.Label3 = New System.Windows.Forms.Label()
+        Me.txtAutoConditioningProgressValue = New System.Windows.Forms.TextBox()
+        Me.Label11 = New System.Windows.Forms.Label()
+        Me.ProgressBarAutoCondition = New System.Windows.Forms.ProgressBar()
         Me.Label9 = New System.Windows.Forms.Label()
         Me.btnLoadParameters = New System.Windows.Forms.Button()
-        Me.BlueRect3 = New CustomControls.BlueRect()
         Me.btnSaveAllParams = New System.Windows.Forms.Button()
         Me.btnServiceRestoreFactoryDefaults = New System.Windows.Forms.Button()
-        Me.btnMagnetronConditioning = New System.Windows.Forms.Button()
+        Me.btnStopMagnetronConditioning = New System.Windows.Forms.Button()
+        Me.btnStartMagnetronConditioning = New System.Windows.Forms.Button()
         Me.btnLockAFCtoHomePos = New System.Windows.Forms.Button()
         Me.btnZeroArcPulseCounters = New System.Windows.Forms.Button()
+        Me.BlueRect3 = New CustomControls.BlueRect()
         Me.tabPageDeveloper = New System.Windows.Forms.TabPage()
-        Me.Label11 = New System.Windows.Forms.Label()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.CBoxAutoStartPos = New System.Windows.Forms.ComboBox()
+        Me.btnAutoConditioningSimulateArc = New System.Windows.Forms.Button()
+        Me.btnStartMagnetronConditioningAtPosition = New System.Windows.Forms.Button()
         Me.LabelGUIVersionDeploy = New System.Windows.Forms.Label()
-        Me.Label12 = New System.Windows.Forms.Label()
         Me.Label17 = New System.Windows.Forms.Label()
         Me.btnZeroOnTime = New System.Windows.Forms.Button()
         Me.btnRestoreData = New System.Windows.Forms.Button()
@@ -506,6 +513,7 @@ Partial Class frmMain
         Me.panelIonPumpLogger.SuspendLayout()
         Me.TabPageService.SuspendLayout()
         Me.TabPageServicePanel.SuspendLayout()
+        Me.GroupBoxTestAutoCondition.SuspendLayout()
         Me.tabPageDeveloper.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -974,7 +982,7 @@ Partial Class frmMain
         Me.lblGUIVersionAgile.Name = "lblGUIVersionAgile"
         Me.lblGUIVersionAgile.Size = New System.Drawing.Size(114, 21)
         Me.lblGUIVersionAgile.TabIndex = 101
-        Me.lblGUIVersionAgile.Text = "GUI Version 05"
+        Me.lblGUIVersionAgile.Text = "GUI Version 07"
         '
         'lblAccessLevel
         '
@@ -1236,18 +1244,18 @@ Partial Class frmMain
         Me.lblNoTrigger.Text = "No Trigger"
         Me.lblNoTrigger.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
-        'lblShowDumpData
+        'lblShowWarningMessage
         '
-        Me.lblShowDumpData.AutoSize = True
-        Me.lblShowDumpData.BackColor = System.Drawing.Color.White
-        Me.lblShowDumpData.Font = New System.Drawing.Font("Segoe UI", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblShowDumpData.ForeColor = System.Drawing.Color.Red
-        Me.lblShowDumpData.Location = New System.Drawing.Point(35, 161)
-        Me.lblShowDumpData.Name = "lblShowDumpData"
-        Me.lblShowDumpData.Size = New System.Drawing.Size(291, 32)
-        Me.lblShowDumpData.TabIndex = 1
-        Me.lblShowDumpData.Text = "Show Dump Data Active"
-        Me.lblShowDumpData.Visible = False
+        Me.lblShowWarningMessage.AutoSize = True
+        Me.lblShowWarningMessage.BackColor = System.Drawing.Color.White
+        Me.lblShowWarningMessage.Font = New System.Drawing.Font("Segoe UI", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblShowWarningMessage.ForeColor = System.Drawing.Color.Red
+        Me.lblShowWarningMessage.Location = New System.Drawing.Point(35, 161)
+        Me.lblShowWarningMessage.Name = "lblShowWarningMessage"
+        Me.lblShowWarningMessage.Size = New System.Drawing.Size(306, 32)
+        Me.lblShowWarningMessage.TabIndex = 1
+        Me.lblShowWarningMessage.Text = "Auto Conditioning Active"
+        Me.lblShowWarningMessage.Visible = False
         '
         'TabBoards
         '
@@ -5875,21 +5883,44 @@ Partial Class frmMain
         'TabPageServicePanel
         '
         Me.TabPageServicePanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.TabPageServicePanel.Controls.Add(Me.Label2)
-        Me.TabPageServicePanel.Controls.Add(Me.Label3)
+        Me.TabPageServicePanel.Controls.Add(Me.GroupBoxTestAutoCondition)
+        Me.TabPageServicePanel.Controls.Add(Me.ProgressBarAutoCondition)
         Me.TabPageServicePanel.Controls.Add(Me.Label9)
         Me.TabPageServicePanel.Controls.Add(Me.btnLoadParameters)
-        Me.TabPageServicePanel.Controls.Add(Me.BlueRect3)
         Me.TabPageServicePanel.Controls.Add(Me.btnSaveAllParams)
         Me.TabPageServicePanel.Controls.Add(Me.btnServiceRestoreFactoryDefaults)
-        Me.TabPageServicePanel.Controls.Add(Me.btnMagnetronConditioning)
+        Me.TabPageServicePanel.Controls.Add(Me.btnStopMagnetronConditioning)
+        Me.TabPageServicePanel.Controls.Add(Me.btnStartMagnetronConditioning)
         Me.TabPageServicePanel.Controls.Add(Me.btnLockAFCtoHomePos)
         Me.TabPageServicePanel.Controls.Add(Me.btnZeroArcPulseCounters)
+        Me.TabPageServicePanel.Controls.Add(Me.BlueRect3)
         Me.TabPageServicePanel.Location = New System.Drawing.Point(0, 0)
         Me.TabPageServicePanel.Name = "TabPageServicePanel"
         Me.TabPageServicePanel.Size = New System.Drawing.Size(680, 580)
         Me.TabPageServicePanel.TabIndex = 12
         Me.TabPageServicePanel.Text = "TabPageService"
+        '
+        'GroupBoxTestAutoCondition
+        '
+        Me.GroupBoxTestAutoCondition.Controls.Add(Me.txtAutoConditioningActiveValue)
+        Me.GroupBoxTestAutoCondition.Controls.Add(Me.Label2)
+        Me.GroupBoxTestAutoCondition.Controls.Add(Me.txtAutoConditioningProgressValue)
+        Me.GroupBoxTestAutoCondition.Controls.Add(Me.Label11)
+        Me.GroupBoxTestAutoCondition.Location = New System.Drawing.Point(41, 461)
+        Me.GroupBoxTestAutoCondition.Name = "GroupBoxTestAutoCondition"
+        Me.GroupBoxTestAutoCondition.Size = New System.Drawing.Size(610, 91)
+        Me.GroupBoxTestAutoCondition.TabIndex = 420
+        Me.GroupBoxTestAutoCondition.TabStop = False
+        Me.GroupBoxTestAutoCondition.Text = "FOR TESTING"
+        Me.GroupBoxTestAutoCondition.Visible = False
+        '
+        'txtAutoConditioningActiveValue
+        '
+        Me.txtAutoConditioningActiveValue.Location = New System.Drawing.Point(36, 53)
+        Me.txtAutoConditioningActiveValue.Name = "txtAutoConditioningActiveValue"
+        Me.txtAutoConditioningActiveValue.Size = New System.Drawing.Size(253, 22)
+        Me.txtAutoConditioningActiveValue.TabIndex = 418
+        Me.txtAutoConditioningActiveValue.Text = "0"
         '
         'Label2
         '
@@ -5897,23 +5928,40 @@ Partial Class frmMain
         Me.Label2.BackColor = System.Drawing.SystemColors.Control
         Me.Label2.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label2.ForeColor = System.Drawing.Color.Black
-        Me.Label2.Location = New System.Drawing.Point(76, 137)
+        Me.Label2.Location = New System.Drawing.Point(36, 29)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(60, 21)
-        Me.Label2.TabIndex = 412
-        Me.Label2.Text = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(237, 21)
+        Me.Label2.TabIndex = 413
+        Me.Label2.Text = "test-Auto Conditioning Active"
         '
-        'Label3
+        'txtAutoConditioningProgressValue
         '
-        Me.Label3.AutoSize = True
-        Me.Label3.BackColor = System.Drawing.SystemColors.Control
-        Me.Label3.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label3.ForeColor = System.Drawing.Color.Black
-        Me.Label3.Location = New System.Drawing.Point(76, 102)
-        Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(60, 21)
-        Me.Label3.TabIndex = 413
-        Me.Label3.Text = "Label1"
+        Me.txtAutoConditioningProgressValue.Location = New System.Drawing.Point(334, 53)
+        Me.txtAutoConditioningProgressValue.Name = "txtAutoConditioningProgressValue"
+        Me.txtAutoConditioningProgressValue.Size = New System.Drawing.Size(253, 22)
+        Me.txtAutoConditioningProgressValue.TabIndex = 418
+        Me.txtAutoConditioningProgressValue.Text = "0"
+        '
+        'Label11
+        '
+        Me.Label11.AutoSize = True
+        Me.Label11.BackColor = System.Drawing.SystemColors.Control
+        Me.Label11.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label11.ForeColor = System.Drawing.Color.Black
+        Me.Label11.Location = New System.Drawing.Point(334, 29)
+        Me.Label11.Name = "Label11"
+        Me.Label11.Size = New System.Drawing.Size(254, 21)
+        Me.Label11.TabIndex = 413
+        Me.Label11.Text = "test-Auto Conditioning Progress"
+        '
+        'ProgressBarAutoCondition
+        '
+        Me.ProgressBarAutoCondition.Location = New System.Drawing.Point(65, 109)
+        Me.ProgressBarAutoCondition.Maximum = 98
+        Me.ProgressBarAutoCondition.Name = "ProgressBarAutoCondition"
+        Me.ProgressBarAutoCondition.Size = New System.Drawing.Size(551, 23)
+        Me.ProgressBarAutoCondition.Step = 5
+        Me.ProgressBarAutoCondition.TabIndex = 419
         '
         'Label9
         '
@@ -5932,7 +5980,7 @@ Partial Class frmMain
         Me.btnLoadParameters.BackColor = System.Drawing.Color.Blue
         Me.btnLoadParameters.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnLoadParameters.ForeColor = System.Drawing.Color.Blue
-        Me.btnLoadParameters.Location = New System.Drawing.Point(52, 471)
+        Me.btnLoadParameters.Location = New System.Drawing.Point(363, 345)
         Me.btnLoadParameters.Name = "btnLoadParameters"
         Me.btnLoadParameters.Size = New System.Drawing.Size(253, 33)
         Me.btnLoadParameters.TabIndex = 409
@@ -5940,22 +5988,12 @@ Partial Class frmMain
         Me.btnLoadParameters.Text = "Load All Parameters"
         Me.btnLoadParameters.UseVisualStyleBackColor = True
         '
-        'BlueRect3
-        '
-        Me.BlueRect3.Enabled = False
-        Me.BlueRect3.Location = New System.Drawing.Point(52, 78)
-        Me.BlueRect3.MyBorderColor = System.Drawing.Color.Black
-        Me.BlueRect3.MyBorderWidth = 0.001!
-        Me.BlueRect3.Name = "BlueRect3"
-        Me.BlueRect3.Size = New System.Drawing.Size(578, 98)
-        Me.BlueRect3.TabIndex = 415
-        '
         'btnSaveAllParams
         '
         Me.btnSaveAllParams.BackColor = System.Drawing.Color.Blue
         Me.btnSaveAllParams.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnSaveAllParams.ForeColor = System.Drawing.Color.Blue
-        Me.btnSaveAllParams.Location = New System.Drawing.Point(52, 415)
+        Me.btnSaveAllParams.Location = New System.Drawing.Point(363, 286)
         Me.btnSaveAllParams.Name = "btnSaveAllParams"
         Me.btnSaveAllParams.Size = New System.Drawing.Size(253, 33)
         Me.btnSaveAllParams.TabIndex = 409
@@ -5968,7 +6006,7 @@ Partial Class frmMain
         Me.btnServiceRestoreFactoryDefaults.BackColor = System.Drawing.Color.Blue
         Me.btnServiceRestoreFactoryDefaults.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnServiceRestoreFactoryDefaults.ForeColor = System.Drawing.Color.Blue
-        Me.btnServiceRestoreFactoryDefaults.Location = New System.Drawing.Point(52, 300)
+        Me.btnServiceRestoreFactoryDefaults.Location = New System.Drawing.Point(61, 404)
         Me.btnServiceRestoreFactoryDefaults.Name = "btnServiceRestoreFactoryDefaults"
         Me.btnServiceRestoreFactoryDefaults.Size = New System.Drawing.Size(253, 33)
         Me.btnServiceRestoreFactoryDefaults.TabIndex = 409
@@ -5976,25 +6014,38 @@ Partial Class frmMain
         Me.btnServiceRestoreFactoryDefaults.Text = "Restore Factory Settings"
         Me.btnServiceRestoreFactoryDefaults.UseVisualStyleBackColor = True
         '
-        'btnMagnetronConditioning
+        'btnStopMagnetronConditioning
         '
-        Me.btnMagnetronConditioning.BackColor = System.Drawing.Color.Blue
-        Me.btnMagnetronConditioning.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnMagnetronConditioning.ForeColor = System.Drawing.Color.Blue
-        Me.btnMagnetronConditioning.Location = New System.Drawing.Point(377, 248)
-        Me.btnMagnetronConditioning.Name = "btnMagnetronConditioning"
-        Me.btnMagnetronConditioning.Size = New System.Drawing.Size(253, 33)
-        Me.btnMagnetronConditioning.TabIndex = 409
-        Me.btnMagnetronConditioning.Tag = "1"
-        Me.btnMagnetronConditioning.Text = "Magnetron Conditioning"
-        Me.btnMagnetronConditioning.UseVisualStyleBackColor = True
+        Me.btnStopMagnetronConditioning.BackColor = System.Drawing.Color.Blue
+        Me.btnStopMagnetronConditioning.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnStopMagnetronConditioning.ForeColor = System.Drawing.Color.Blue
+        Me.btnStopMagnetronConditioning.Location = New System.Drawing.Point(363, 161)
+        Me.btnStopMagnetronConditioning.Name = "btnStopMagnetronConditioning"
+        Me.btnStopMagnetronConditioning.Size = New System.Drawing.Size(253, 33)
+        Me.btnStopMagnetronConditioning.TabIndex = 409
+        Me.btnStopMagnetronConditioning.Tag = "1"
+        Me.btnStopMagnetronConditioning.Text = "Stop Auto Conditioning"
+        Me.btnStopMagnetronConditioning.UseVisualStyleBackColor = True
+        '
+        'btnStartMagnetronConditioning
+        '
+        Me.btnStartMagnetronConditioning.BackColor = System.Drawing.Color.Blue
+        Me.btnStartMagnetronConditioning.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnStartMagnetronConditioning.ForeColor = System.Drawing.Color.Blue
+        Me.btnStartMagnetronConditioning.Location = New System.Drawing.Point(61, 161)
+        Me.btnStartMagnetronConditioning.Name = "btnStartMagnetronConditioning"
+        Me.btnStartMagnetronConditioning.Size = New System.Drawing.Size(253, 33)
+        Me.btnStartMagnetronConditioning.TabIndex = 409
+        Me.btnStartMagnetronConditioning.Tag = "1"
+        Me.btnStartMagnetronConditioning.Text = "Start Auto Conditioning"
+        Me.btnStartMagnetronConditioning.UseVisualStyleBackColor = True
         '
         'btnLockAFCtoHomePos
         '
         Me.btnLockAFCtoHomePos.BackColor = System.Drawing.Color.Blue
         Me.btnLockAFCtoHomePos.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnLockAFCtoHomePos.ForeColor = System.Drawing.Color.Blue
-        Me.btnLockAFCtoHomePos.Location = New System.Drawing.Point(377, 300)
+        Me.btnLockAFCtoHomePos.Location = New System.Drawing.Point(61, 286)
         Me.btnLockAFCtoHomePos.Name = "btnLockAFCtoHomePos"
         Me.btnLockAFCtoHomePos.Size = New System.Drawing.Size(253, 33)
         Me.btnLockAFCtoHomePos.TabIndex = 409
@@ -6007,7 +6058,7 @@ Partial Class frmMain
         Me.btnZeroArcPulseCounters.BackColor = System.Drawing.Color.Blue
         Me.btnZeroArcPulseCounters.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnZeroArcPulseCounters.ForeColor = System.Drawing.Color.Blue
-        Me.btnZeroArcPulseCounters.Location = New System.Drawing.Point(52, 248)
+        Me.btnZeroArcPulseCounters.Location = New System.Drawing.Point(61, 345)
         Me.btnZeroArcPulseCounters.Name = "btnZeroArcPulseCounters"
         Me.btnZeroArcPulseCounters.Size = New System.Drawing.Size(253, 33)
         Me.btnZeroArcPulseCounters.TabIndex = 409
@@ -6015,12 +6066,24 @@ Partial Class frmMain
         Me.btnZeroArcPulseCounters.Text = "Zero Arc && Pulse Counters"
         Me.btnZeroArcPulseCounters.UseVisualStyleBackColor = True
         '
+        'BlueRect3
+        '
+        Me.BlueRect3.Enabled = False
+        Me.BlueRect3.Location = New System.Drawing.Point(49, 78)
+        Me.BlueRect3.MyBorderColor = System.Drawing.Color.Black
+        Me.BlueRect3.MyBorderWidth = 0.001!
+        Me.BlueRect3.Name = "BlueRect3"
+        Me.BlueRect3.Size = New System.Drawing.Size(593, 174)
+        Me.BlueRect3.TabIndex = 415
+        '
         'tabPageDeveloper
         '
         Me.tabPageDeveloper.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.tabPageDeveloper.Controls.Add(Me.Label11)
+        Me.tabPageDeveloper.Controls.Add(Me.Label3)
+        Me.tabPageDeveloper.Controls.Add(Me.CBoxAutoStartPos)
+        Me.tabPageDeveloper.Controls.Add(Me.btnAutoConditioningSimulateArc)
+        Me.tabPageDeveloper.Controls.Add(Me.btnStartMagnetronConditioningAtPosition)
         Me.tabPageDeveloper.Controls.Add(Me.LabelGUIVersionDeploy)
-        Me.tabPageDeveloper.Controls.Add(Me.Label12)
         Me.tabPageDeveloper.Controls.Add(Me.Label17)
         Me.tabPageDeveloper.Controls.Add(Me.btnZeroOnTime)
         Me.tabPageDeveloper.Controls.Add(Me.btnRestoreData)
@@ -6035,17 +6098,52 @@ Partial Class frmMain
         Me.tabPageDeveloper.TabIndex = 13
         Me.tabPageDeveloper.Text = "TabPageDeveloper"
         '
-        'Label11
+        'Label3
         '
-        Me.Label11.AutoSize = True
-        Me.Label11.BackColor = System.Drawing.SystemColors.Control
-        Me.Label11.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label11.ForeColor = System.Drawing.Color.Black
-        Me.Label11.Location = New System.Drawing.Point(76, 129)
-        Me.Label11.Name = "Label11"
-        Me.Label11.Size = New System.Drawing.Size(69, 21)
-        Me.Label11.TabIndex = 412
-        Me.Label11.Text = "Label11"
+        Me.Label3.AutoSize = True
+        Me.Label3.Font = New System.Drawing.Font("Segoe UI", 12.0!)
+        Me.Label3.Location = New System.Drawing.Point(82, 101)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(101, 21)
+        Me.Label3.TabIndex = 420
+        Me.Label3.Text = "Start Voltage:"
+        '
+        'CBoxAutoStartPos
+        '
+        Me.CBoxAutoStartPos.Font = New System.Drawing.Font("Segoe UI", 12.0!)
+        Me.CBoxAutoStartPos.FormattingEnabled = True
+        Me.CBoxAutoStartPos.Items.AddRange(New Object() {"10KV", "11KV", "12KV", "13KV", "14kV", "14.5KV", "15KV", "15.5KV", "16KV"})
+        Me.CBoxAutoStartPos.Location = New System.Drawing.Point(82, 122)
+        Me.CBoxAutoStartPos.Name = "CBoxAutoStartPos"
+        Me.CBoxAutoStartPos.Size = New System.Drawing.Size(143, 29)
+        Me.CBoxAutoStartPos.TabIndex = 419
+        Me.CBoxAutoStartPos.Text = "10KV"
+        '
+        'btnAutoConditioningSimulateArc
+        '
+        Me.btnAutoConditioningSimulateArc.BackColor = System.Drawing.Color.Blue
+        Me.btnAutoConditioningSimulateArc.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnAutoConditioningSimulateArc.ForeColor = System.Drawing.Color.Blue
+        Me.btnAutoConditioningSimulateArc.Location = New System.Drawing.Point(247, 161)
+        Me.btnAutoConditioningSimulateArc.Name = "btnAutoConditioningSimulateArc"
+        Me.btnAutoConditioningSimulateArc.Size = New System.Drawing.Size(337, 33)
+        Me.btnAutoConditioningSimulateArc.TabIndex = 418
+        Me.btnAutoConditioningSimulateArc.Tag = "1"
+        Me.btnAutoConditioningSimulateArc.Text = "Auto Conditioning Simulate Arc"
+        Me.btnAutoConditioningSimulateArc.UseVisualStyleBackColor = True
+        '
+        'btnStartMagnetronConditioningAtPosition
+        '
+        Me.btnStartMagnetronConditioningAtPosition.BackColor = System.Drawing.Color.Blue
+        Me.btnStartMagnetronConditioningAtPosition.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnStartMagnetronConditioningAtPosition.ForeColor = System.Drawing.Color.Blue
+        Me.btnStartMagnetronConditioningAtPosition.Location = New System.Drawing.Point(247, 103)
+        Me.btnStartMagnetronConditioningAtPosition.Name = "btnStartMagnetronConditioningAtPosition"
+        Me.btnStartMagnetronConditioningAtPosition.Size = New System.Drawing.Size(337, 33)
+        Me.btnStartMagnetronConditioningAtPosition.TabIndex = 418
+        Me.btnStartMagnetronConditioningAtPosition.Tag = "1"
+        Me.btnStartMagnetronConditioningAtPosition.Text = "Start Auto Conditioning At Pos"
+        Me.btnStartMagnetronConditioningAtPosition.UseVisualStyleBackColor = True
         '
         'LabelGUIVersionDeploy
         '
@@ -6058,18 +6156,6 @@ Partial Class frmMain
         Me.LabelGUIVersionDeploy.Size = New System.Drawing.Size(126, 21)
         Me.LabelGUIVersionDeploy.TabIndex = 101
         Me.LabelGUIVersionDeploy.Text = "GUI Version 1.00"
-        '
-        'Label12
-        '
-        Me.Label12.AutoSize = True
-        Me.Label12.BackColor = System.Drawing.SystemColors.Control
-        Me.Label12.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label12.ForeColor = System.Drawing.Color.Black
-        Me.Label12.Location = New System.Drawing.Point(76, 94)
-        Me.Label12.Name = "Label12"
-        Me.Label12.Size = New System.Drawing.Size(69, 21)
-        Me.Label12.TabIndex = 413
-        Me.Label12.Text = "Label10"
         '
         'Label17
         '
@@ -6088,7 +6174,7 @@ Partial Class frmMain
         Me.btnZeroOnTime.BackColor = System.Drawing.Color.Blue
         Me.btnZeroOnTime.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnZeroOnTime.ForeColor = System.Drawing.Color.Blue
-        Me.btnZeroOnTime.Location = New System.Drawing.Point(377, 225)
+        Me.btnZeroOnTime.Location = New System.Drawing.Point(364, 277)
         Me.btnZeroOnTime.Name = "btnZeroOnTime"
         Me.btnZeroOnTime.Size = New System.Drawing.Size(253, 33)
         Me.btnZeroOnTime.TabIndex = 409
@@ -6114,7 +6200,7 @@ Partial Class frmMain
         Me.btnServiceReloadInitialDefaults.BackColor = System.Drawing.Color.Blue
         Me.btnServiceReloadInitialDefaults.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnServiceReloadInitialDefaults.ForeColor = System.Drawing.Color.Blue
-        Me.btnServiceReloadInitialDefaults.Location = New System.Drawing.Point(52, 228)
+        Me.btnServiceReloadInitialDefaults.Location = New System.Drawing.Point(52, 276)
         Me.btnServiceReloadInitialDefaults.Name = "btnServiceReloadInitialDefaults"
         Me.btnServiceReloadInitialDefaults.Size = New System.Drawing.Size(253, 33)
         Me.btnServiceReloadInitialDefaults.TabIndex = 409
@@ -6127,7 +6213,7 @@ Partial Class frmMain
         Me.btnClearDebugData.BackColor = System.Drawing.Color.Blue
         Me.btnClearDebugData.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnClearDebugData.ForeColor = System.Drawing.Color.Blue
-        Me.btnClearDebugData.Location = New System.Drawing.Point(377, 292)
+        Me.btnClearDebugData.Location = New System.Drawing.Point(364, 344)
         Me.btnClearDebugData.Name = "btnClearDebugData"
         Me.btnClearDebugData.Size = New System.Drawing.Size(253, 33)
         Me.btnClearDebugData.TabIndex = 409
@@ -6142,7 +6228,7 @@ Partial Class frmMain
         Me.BlueRect17.MyBorderColor = System.Drawing.Color.Black
         Me.BlueRect17.MyBorderWidth = 0.001!
         Me.BlueRect17.Name = "BlueRect17"
-        Me.BlueRect17.Size = New System.Drawing.Size(578, 98)
+        Me.BlueRect17.Size = New System.Drawing.Size(578, 158)
         Me.BlueRect17.TabIndex = 415
         '
         'btnServiceSaveFactoryDefaults
@@ -6150,7 +6236,7 @@ Partial Class frmMain
         Me.btnServiceSaveFactoryDefaults.BackColor = System.Drawing.Color.Blue
         Me.btnServiceSaveFactoryDefaults.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnServiceSaveFactoryDefaults.ForeColor = System.Drawing.Color.Blue
-        Me.btnServiceSaveFactoryDefaults.Location = New System.Drawing.Point(52, 292)
+        Me.btnServiceSaveFactoryDefaults.Location = New System.Drawing.Point(52, 336)
         Me.btnServiceSaveFactoryDefaults.Name = "btnServiceSaveFactoryDefaults"
         Me.btnServiceSaveFactoryDefaults.Size = New System.Drawing.Size(253, 33)
         Me.btnServiceSaveFactoryDefaults.TabIndex = 409
@@ -6209,7 +6295,7 @@ Partial Class frmMain
         Me.Controls.Add(Me.Panel2)
         Me.Controls.Add(Me.Label29)
         Me.Controls.Add(Me.lblScanMode)
-        Me.Controls.Add(Me.lblShowDumpData)
+        Me.Controls.Add(Me.lblShowWarningMessage)
         Me.Controls.Add(Me.LabelECBState)
         Me.Controls.Add(Me.BlueRectMain)
         Me.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -6261,6 +6347,8 @@ Partial Class frmMain
         Me.TabPageService.PerformLayout()
         Me.TabPageServicePanel.ResumeLayout(False)
         Me.TabPageServicePanel.PerformLayout()
+        Me.GroupBoxTestAutoCondition.ResumeLayout(False)
+        Me.GroupBoxTestAutoCondition.PerformLayout()
         Me.tabPageDeveloper.ResumeLayout(False)
         Me.tabPageDeveloper.PerformLayout()
         Me.ResumeLayout(False)
@@ -6679,12 +6767,8 @@ Partial Class frmMain
     Friend WithEvents btnDispServicePanel As CustomControls.ButtonSelected
     Friend WithEvents TabPageServicePanel As System.Windows.Forms.TabPage
     Friend WithEvents tabPageDeveloper As System.Windows.Forms.TabPage
-    Friend WithEvents Label2 As System.Windows.Forms.Label
-    Friend WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents Label9 As System.Windows.Forms.Label
     Friend WithEvents BlueRect3 As CustomControls.BlueRect
-    Friend WithEvents Label11 As System.Windows.Forms.Label
-    Friend WithEvents Label12 As System.Windows.Forms.Label
     Friend WithEvents Label17 As System.Windows.Forms.Label
     Friend WithEvents BlueRect17 As CustomControls.BlueRect
     Friend WithEvents Label5 As System.Windows.Forms.Label
@@ -6711,12 +6795,12 @@ Partial Class frmMain
     Friend WithEvents txtIonPumpLogInterval As System.Windows.Forms.TextBox
     Friend WithEvents PanelArcCounts As System.Windows.Forms.Panel
     Friend WithEvents PanelMagnetronLeds As System.Windows.Forms.Panel
-    Friend WithEvents btnMagnetronConditioning As System.Windows.Forms.Button
+    Friend WithEvents btnStartMagnetronConditioning As System.Windows.Forms.Button
     Friend WithEvents btnLoadParameters As System.Windows.Forms.Button
     Friend WithEvents btnSaveAllParams As System.Windows.Forms.Button
     Friend WithEvents btnRestoreData As System.Windows.Forms.Button
     Friend WithEvents btnDumpData As System.Windows.Forms.Button
-    Friend WithEvents lblShowDumpData As System.Windows.Forms.Label
+    Friend WithEvents lblShowWarningMessage As System.Windows.Forms.Label
     Friend WithEvents lblGUIVersionAgile As System.Windows.Forms.Label
     Friend WithEvents btnLockAFCtoHomePos As System.Windows.Forms.Button
     Friend WithEvents ledIonMagnetronWGArc As CustomControls.OvalLed
@@ -6726,4 +6810,15 @@ Partial Class frmMain
     Friend WithEvents Label10 As System.Windows.Forms.Label
     Friend WithEvents Label7 As System.Windows.Forms.Label
     Friend WithEvents btnAfcPosScan As System.Windows.Forms.Button
+    Friend WithEvents btnStopMagnetronConditioning As System.Windows.Forms.Button
+    Friend WithEvents btnStartMagnetronConditioningAtPosition As System.Windows.Forms.Button
+    Friend WithEvents btnAutoConditioningSimulateArc As System.Windows.Forms.Button
+    Friend WithEvents txtAutoConditioningProgressValue As System.Windows.Forms.TextBox
+    Friend WithEvents txtAutoConditioningActiveValue As System.Windows.Forms.TextBox
+    Friend WithEvents Label11 As System.Windows.Forms.Label
+    Friend WithEvents Label2 As System.Windows.Forms.Label
+    Friend WithEvents ProgressBarAutoCondition As System.Windows.Forms.ProgressBar
+    Friend WithEvents GroupBoxTestAutoCondition As System.Windows.Forms.GroupBox
+    Friend WithEvents CBoxAutoStartPos As System.Windows.Forms.ComboBox
+    Friend WithEvents Label3 As System.Windows.Forms.Label
 End Class
