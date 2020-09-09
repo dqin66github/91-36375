@@ -338,6 +338,7 @@ Public Class frmMain
                     lblSF6Pressure.Text = blank_string
 
                     Meter.Value = 0
+                    lblSF6Level.Text = blank_string
                     lblAutofillRemain1.Text = blank_string
                     btnReenableAutofill1.Enabled = False
                 Else
@@ -349,6 +350,7 @@ Public Class frmMain
                     uTemp = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_COOLING).ecb_local_data(0)
                     Meter.MaxValue = IIf(uTemp < 700, 700, uTemp)
                     Meter.Value = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_COOLING).log_data(14)
+                    lblSF6Level.Text = Meter.Value.ToString() + " / " + Meter.MaxValue.ToString()
                     uTemp = ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_COOLING).log_data(12)
                     lblAutofillRemain1.Text = uTemp
                     btnReenableAutofill1.Enabled = IIf(uTemp = 0, True, False)
@@ -1141,8 +1143,21 @@ Public Class frmMain
                 End If
                 If (auto_condition_progress <= 98) Then ProgressBarAutoCondition.Value = auto_condition_progress
                 ProgressBarAutoCondition.Visible = True
+                btnAutoConditioningSimulateArc.Enabled = True
+                btnStartMagnetronConditioning.Enabled = False
+                btnStartMagnetronConditioningAtPosition.Enabled = False
+                btnStopMagnetronConditioning.Enabled = True
             Else
                 ProgressBarAutoCondition.Visible = False
+                btnAutoConditioningSimulateArc.Enabled = False
+                btnStopMagnetronConditioning.Enabled = False
+                If (ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(0) = &H30) Then
+                    btnStartMagnetronConditioning.Enabled = True
+                    btnStartMagnetronConditioningAtPosition.Enabled = True
+                Else
+                    btnStartMagnetronConditioning.Enabled = False
+                    btnStartMagnetronConditioningAtPosition.Enabled = False
+                End If
             End If
             If (ServerSettings.show_dump_data Or auto_condition_active > 0) Then
                 lblShowWarningMessage.Visible = flash_toggle
@@ -3634,11 +3649,15 @@ Public Class frmMain
     End Sub
 
     Private Sub txtAutoConditioningActiveValue_TextChanged(sender As Object, e As EventArgs) Handles txtAutoConditioningActiveValue.TextChanged
-        ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).ecb_local_data(2) = Val(txtAutoConditioningActiveValue.Text)
+        ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).ecb_local_data(2) = Val(txtAutoConditioningActiveValue.Text) ' for testing
 
     End Sub
 
     Private Sub txtAutoConditioningProgressValue_TextChanged(sender As Object, e As EventArgs) Handles txtAutoConditioningProgressValue.TextChanged
-        ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).ecb_local_data(3) = Val(txtAutoConditioningProgressValue.Text)
+        ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).ecb_local_data(3) = Val(txtAutoConditioningProgressValue.Text) ' for testing
+    End Sub
+
+    Private Sub txtTestEcbState_TextChanged(sender As Object, e As EventArgs) Handles txtTestEcbState.TextChanged
+        ServerSettings.ETMEthernetBoardLoggingData(MODBUS_COMMANDS.MODBUS_WR_ETHERNET).log_data(0) = Val(txtTestEcbState.Text) ' for testing
     End Sub
 End Class

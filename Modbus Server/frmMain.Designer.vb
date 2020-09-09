@@ -490,6 +490,9 @@ Partial Class frmMain
         Me.btnServiceSaveFactoryDefaults = New System.Windows.Forms.Button()
         Me.btnDumpData = New System.Windows.Forms.Button()
         Me.BlueRectMain = New CustomControls.BlueRect()
+        Me.txtTestEcbState = New System.Windows.Forms.TextBox()
+        Me.Label12 = New System.Windows.Forms.Label()
+        Me.lblSF6Level = New System.Windows.Forms.Label()
         Me.panelDispButtons.SuspendLayout()
         CType(Me.PictureBoxLogo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel2.SuspendLayout()
@@ -1289,6 +1292,7 @@ Partial Class frmMain
         '
         Me.TabPageOverview.BackColor = System.Drawing.SystemColors.Control
         Me.TabPageOverview.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
+        Me.TabPageOverview.Controls.Add(Me.lblSF6Level)
         Me.TabPageOverview.Controls.Add(Me.Label283)
         Me.TabPageOverview.Controls.Add(Me.Label4)
         Me.TabPageOverview.Controls.Add(Me.Label277)
@@ -5902,13 +5906,15 @@ Partial Class frmMain
         '
         'GroupBoxTestAutoCondition
         '
+        Me.GroupBoxTestAutoCondition.Controls.Add(Me.txtTestEcbState)
         Me.GroupBoxTestAutoCondition.Controls.Add(Me.txtAutoConditioningActiveValue)
         Me.GroupBoxTestAutoCondition.Controls.Add(Me.Label2)
         Me.GroupBoxTestAutoCondition.Controls.Add(Me.txtAutoConditioningProgressValue)
+        Me.GroupBoxTestAutoCondition.Controls.Add(Me.Label12)
         Me.GroupBoxTestAutoCondition.Controls.Add(Me.Label11)
-        Me.GroupBoxTestAutoCondition.Location = New System.Drawing.Point(41, 461)
+        Me.GroupBoxTestAutoCondition.Location = New System.Drawing.Point(41, 443)
         Me.GroupBoxTestAutoCondition.Name = "GroupBoxTestAutoCondition"
-        Me.GroupBoxTestAutoCondition.Size = New System.Drawing.Size(610, 91)
+        Me.GroupBoxTestAutoCondition.Size = New System.Drawing.Size(610, 126)
         Me.GroupBoxTestAutoCondition.TabIndex = 420
         Me.GroupBoxTestAutoCondition.TabStop = False
         Me.GroupBoxTestAutoCondition.Text = "FOR TESTING"
@@ -6266,6 +6272,38 @@ Partial Class frmMain
         Me.BlueRectMain.Name = "BlueRectMain"
         Me.BlueRectMain.Size = New System.Drawing.Size(296, 154)
         Me.BlueRectMain.TabIndex = 80
+        '
+        'txtTestEcbState
+        '
+        Me.txtTestEcbState.Location = New System.Drawing.Point(334, 91)
+        Me.txtTestEcbState.Name = "txtTestEcbState"
+        Me.txtTestEcbState.Size = New System.Drawing.Size(253, 22)
+        Me.txtTestEcbState.TabIndex = 418
+        Me.txtTestEcbState.Text = "0"
+        '
+        'Label12
+        '
+        Me.Label12.AutoSize = True
+        Me.Label12.BackColor = System.Drawing.SystemColors.Control
+        Me.Label12.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label12.ForeColor = System.Drawing.Color.Black
+        Me.Label12.Location = New System.Drawing.Point(219, 92)
+        Me.Label12.Name = "Label12"
+        Me.Label12.Size = New System.Drawing.Size(109, 21)
+        Me.Label12.TabIndex = 413
+        Me.Label12.Text = "test-ECBstate"
+        '
+        'lblSF6Level
+        '
+        Me.lblSF6Level.BackColor = System.Drawing.SystemColors.Control
+        Me.lblSF6Level.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblSF6Level.ForeColor = System.Drawing.Color.Black
+        Me.lblSF6Level.Location = New System.Drawing.Point(129, 512)
+        Me.lblSF6Level.Name = "lblSF6Level"
+        Me.lblSF6Level.Size = New System.Drawing.Size(163, 21)
+        Me.lblSF6Level.TabIndex = 114
+        Me.lblSF6Level.Text = "0/2400 "
+        Me.lblSF6Level.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'frmMain
         '
@@ -6821,4 +6859,7 @@ Partial Class frmMain
     Friend WithEvents GroupBoxTestAutoCondition As System.Windows.Forms.GroupBox
     Friend WithEvents CBoxAutoStartPos As System.Windows.Forms.ComboBox
     Friend WithEvents Label3 As System.Windows.Forms.Label
+    Friend WithEvents txtTestEcbState As System.Windows.Forms.TextBox
+    Friend WithEvents Label12 As System.Windows.Forms.Label
+    Friend WithEvents lblSF6Level As System.Windows.Forms.Label
 End Class
